@@ -1,1 +1,0 @@
-import{c as a,f as t,H as e,b as o,I as s,V as n}from"./BMDjZ6nO.js";import{M as r,a as c}from"./CE4ZcmA0.js";const i={class:"layout-shell"},_={class:"container main-content"},f={__name:"MainLayout",setup(l){return(m,u)=>(t(),a("div",i,[e(r),o("main",_,[e(s(n))]),e(c)]))}};export{f as default};
