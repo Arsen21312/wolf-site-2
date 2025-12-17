@@ -1,0 +1,8 @@
+const index_vue_vue_type_style_index_0_scoped_c2a51525_lang = ".banner-img[data-v-c2a51525]{border-radius:14px;display:block;width:100%}.stats-responsive[data-v-c2a51525]{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.section-title[data-v-c2a51525]{align-items:baseline;display:flex;flex-wrap:wrap;gap:12px}[data-v-c2a51525] .hero-rotating{align-items:baseline;background:linear-gradient(120deg,#6ad7ff26,#fca63d1f);border:1px solid var(--border);border-radius:12px;display:inline-flex;gap:8px;padding:6px 12px 8px}[data-v-c2a51525] .hero-rotating .sr-only{height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;clip:rect(0,0,0,0);border:0;white-space:nowrap}[data-v-c2a51525] .hero-rotating-word{display:inline-flex;overflow:hidden}[data-v-c2a51525] .hero-rotating-letter{color:var(--accent);display:inline-block;font-weight:800}";
+
+const indexStyles_yxXn4tG5 = [
+  index_vue_vue_type_style_index_0_scoped_c2a51525_lang
+];
+
+export { indexStyles_yxXn4tG5 as default };
+//# sourceMappingURL=index-styles.yxXn4tG5.mjs.map

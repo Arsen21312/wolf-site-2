@@ -1,0 +1,1 @@
+.snow-overlay[data-v-c43d47b3]{inset:0;pointer-events:none;position:fixed;z-index:2}.snowflake[data-v-c43d47b3]{animation:snow-fall-c43d47b3 linear infinite;color:#fffc;position:absolute;top:-10%}@keyframes snow-fall-c43d47b3{0%{transform:translateY(-10vh) rotate(0)}to{transform:translateY(120vh) rotate(180deg)}}

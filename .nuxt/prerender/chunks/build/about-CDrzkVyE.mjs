@@ -1,0 +1,220 @@
+import { ref, mergeProps, useSSRContext } from 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/vue/index.mjs';
+import { ssrRenderAttrs, ssrRenderList, ssrInterpolate, ssrRenderAttr, ssrRenderClass } from 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/vue/server-renderer/index.mjs';
+import { _ as _export_sfc } from './server.mjs';
+import { u as useHead } from './v3-D81umCog.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/ofetch/dist/node.mjs';
+import '../_/renderer.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/h3/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/ufo/dist/index.mjs';
+import '../_/nitro.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/destr/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/hookable/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/node-mock-http/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unstorage/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unstorage/drivers/fs.mjs';
+import 'file:///C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unstorage/drivers/fs-lite.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/ohash/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/klona/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/defu/dist/defu.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/scule/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/radix3/dist/index.mjs';
+import 'node:fs';
+import 'node:url';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/pathe/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unhead/dist/server.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/devalue/index.js';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unhead/dist/utils.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unhead/dist/plugins.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/unctx/dist/index.mjs';
+import 'file://C:/Users/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D1%82%D0%B8%D0%B9/Desktop/%D0%B2%D0%BE%D0%BB%D0%B8%D0%B9%20%D1%81%D0%B0%D0%B9%D1%82%202/node_modules/vue-router/vue-router.node.mjs';
+
+const _sfc_main = {
+  __name: "about",
+  __ssrInlineRender: true,
+  setup(__props) {
+    useHead({
+      title: "\u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435 \u2014 \u041D\u0435\u0439\u0440\u043E\u043D\u043D\u044B\u0439 \u0412\u043E\u043B\u043A",
+      meta: [{ name: "description", content: "\u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435, \u041D\u0435\u0439\u0440\u043E\u043D\u043D\u044B\u0439 \u0412\u043E\u043B\u043A" }]
+    });
+    const tocItems = [
+      { id: "mission", label: "\u0417\u0430\u0447\u0435\u043C \u043C\u044B \u044D\u0442\u043E \u0434\u0435\u043B\u0430\u0435\u043C" },
+      { id: "ads", label: "\u0420\u0435\u043A\u043B\u0430\u043C\u0430 \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430" },
+      { id: "socials", label: "\u0413\u0434\u0435 \u043D\u0430\u0441 \u043D\u0430\u0439\u0442\u0438" },
+      { id: "faq", label: "FAQ" }
+    ];
+    const missionPoints = [
+      {
+        icon: "\u26A1",
+        title: "\u041C\u0438\u043D\u0438\u043C\u0443\u043C \u043A\u043E\u0434\u0430",
+        text: "\u0418\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u044B \u0437\u0430\u043F\u0443\u0441\u043A\u0430\u044E\u0442\u0441\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E, \u0431\u0435\u0437 \u0441\u043B\u043E\u0436\u043D\u043E\u0439 \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438."
+      },
+      {
+        icon: "\u{1F916}",
+        title: "\u041C\u0430\u043A\u0441\u0438\u043C\u0443\u043C AI",
+        text: "\u0412\u043E\u043B\u043A \u043F\u043E\u0434\u0442\u044F\u0433\u0438\u0432\u0430\u0435\u0442 \u043C\u043E\u0434\u0435\u043B\u0438, \u0447\u0442\u043E\u0431\u044B \u0440\u0435\u0448\u0435\u043D\u0438\u044F \u0431\u044B\u043B\u0438 \u0443\u043C\u043D\u0435\u0435 \u0438 \u0436\u0438\u0432\u0435\u0435."
+      },
+      {
+        icon: "\u{1F4BC}",
+        title: "\u041D\u043E\u043B\u044C \u0431\u044E\u0440\u043E\u043A\u0440\u0430\u0442\u0438\u0438",
+        text: "\u0411\u0435\u0437 \u0444\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0435\u0439: \u043E\u0442\u043A\u0440\u044B\u043B \u0438 \u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0448\u044C\u0441\u044F."
+      },
+      {
+        icon: "\u{1F43A}",
+        title: "\u0420\u0435\u0448\u0435\u043D\u0438\u0435 \u0432\u0430\u0436\u043D\u0435\u0435 \u0444\u043E\u0440\u043C\u044B",
+        text: "\u041D\u0435 \u043A\u0430\u043A \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E, \u0430 \u043A\u0430\u043A \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0438\u043C\u0435\u043D\u043D\u043E \u0441\u0435\u0439\u0447\u0430\u0441."
+      }
+    ];
+    const techCards = [
+      { icon: "\u2728", title: "\u041D\u0435\u0439\u0440\u043E\u0441\u0435\u0442\u0438", text: "\u041F\u043E\u0434\u0441\u043A\u0430\u0437\u044B\u0432\u0430\u044E\u0442, \u0433\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u044E\u0442 \u0438 \u043F\u043E\u043C\u043E\u0433\u0430\u044E\u0442 \u043F\u0440\u0438\u043D\u044F\u0442\u044C \u0440\u0435\u0448\u0435\u043D\u0438\u0435." },
+      { icon: "\u{1F310}", title: "Web", text: "\u0420\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0438\u0437 \u043B\u044E\u0431\u043E\u0433\u043E \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0430 \u0438 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430." },
+      { icon: "\u2601\uFE0F", title: "Cloud", text: "\u041D\u0430\u0434\u0435\u0436\u043D\u044B\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u044B, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u043D\u0435 \u0437\u0430\u0441\u044B\u043F\u0430\u044E\u0442." },
+      { icon: "\u{1F517}", title: "API", text: "\u0413\u043E\u0442\u043E\u0432\u043D\u043E\u0441\u0442\u044C \u0438\u043D\u0442\u0435\u0433\u0440\u0438\u0440\u043E\u0432\u0430\u0442\u044C\u0441\u044F, \u043A\u043E\u0433\u0434\u0430 \u044D\u0442\u043E \u043D\u0443\u0436\u043D\u043E." }
+    ];
+    const supportCards = [
+      {
+        icon: "\u{1F4E2}",
+        title: "\u0420\u0435\u043A\u043B\u0430\u043C\u0430 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435",
+        text: "\u041D\u0430\u0442\u0438\u0432\u043D\u044B\u0435 \u0444\u043E\u0440\u043C\u0430\u0442\u044B \u0431\u0435\u0437 \u0440\u0430\u0437\u0434\u0440\u0430\u0436\u0430\u044E\u0449\u0435\u0433\u043E \u0448\u0443\u043C\u0430.",
+        points: ["\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0438 \u0432 \u0440\u0435\u043B\u0435\u0432\u0430\u043D\u0442\u043D\u044B\u0445 \u0440\u0430\u0437\u0434\u0435\u043B\u0430\u0445", "\u0422\u043E\u043D\u043A\u0430\u044F \u043F\u043E\u0434\u0430\u0447\u0430, \u0443\u0432\u0430\u0436\u0435\u043D\u0438\u0435 \u043A \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044E", "\u041E\u0442\u0447\u0435\u0442\u043D\u043E\u0441\u0442\u044C \u043F\u043E \u043F\u043E\u043A\u0430\u0437\u0430\u043C"]
+      },
+      {
+        icon: "\u{1F4E8}",
+        title: "\u0421\u043E\u0446\u0441\u0435\u0442\u0438 \u0438 \u0440\u0430\u0441\u0441\u044B\u043B\u043A\u0438",
+        text: "\u0420\u0430\u0441\u0441\u043A\u0430\u0436\u0435\u043C \u0432 \u043A\u0430\u043D\u0430\u043B\u0430\u0445, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0447\u0438\u0442\u0430\u0435\u0442 \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F \u0412\u043E\u043B\u043A\u0430.",
+        points: ["\u041F\u043E\u0441\u0442\u044B \u0432 Telegram (1K+ \u043F\u043E\u0434\u043F\u0438\u0441\u0447\u0438\u043A\u043E\u0432)", "Stories \u0438 \u043F\u043E\u0441\u0442\u044B \u0432 Instagram (100\u043A)", "\u0423\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u044F \u0432 TikTok \u0438 YouTube (10\u043A+)"]
+      },
+      {
+        icon: "\u{1F91D}",
+        title: "\u041F\u0430\u0440\u0442\u043D\u0435\u0440\u0441\u043A\u0438\u0435 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u044B",
+        text: "\u0421\u043E\u0431\u0435\u0440\u0435\u043C win-win: \u0442\u044B \u0434\u0430\u0435\u0448\u044C \u0446\u0435\u043D\u043D\u043E\u0441\u0442\u044C, \u043C\u044B \u0442\u0440\u0430\u0444\u0438\u043A.",
+        points: ["\u0421\u043F\u0435\u0446\u043F\u0440\u043E\u0435\u043A\u0442\u044B \u043F\u043E\u0434 \u0437\u0430\u0434\u0430\u0447\u0443", "\u0423\u0447\u0430\u0441\u0442\u0438\u0435 \u0432 \u0438\u0433\u0440\u043E\u0432\u044B\u0445 \u043C\u0435\u0445\u0430\u043D\u0438\u043A\u0430\u0445", "\u041F\u0440\u043E\u043C\u043E\u043A\u043E\u0434\u044B \u0438 \u0431\u043E\u043D\u0443\u0441\u044B"]
+      }
+    ];
+    const socials = [
+      {
+        icon: "\u{1F4E3}",
+        title: "Telegram \u043A\u0430\u043D\u0430\u043B",
+        text: "\u0413\u043B\u0430\u0432\u043D\u044B\u0435 \u043D\u043E\u0432\u043E\u0441\u0442\u0438, \u043C\u043D\u043E\u0433\u043E \u043C\u0435\u043C\u043E\u0432 \u0438 \u0430\u0443\u0444\u043D\u043E\u0439 \u0444\u0438\u043B\u043E\u0441\u043E\u0444\u0438\u0438",
+        status: "\u041E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043A\u0430\u0436\u0434\u044B\u0439 \u0434\u0435\u043D\u044C",
+        href: "https://t.me/neural_wise_wolf"
+      },
+      {
+        icon: "\u{1F916}",
+        title: "\u0411\u043E\u0442 \u041C\u0443\u0434\u0440\u044B\u0439 \u041A\u043B\u044B\u043A",
+        text: "\u0413\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0434\u0435\u0433\u0435\u043D\u0435\u0440\u0430\u0442\u0441\u043A\u0438\u0435 \u043F\u0430\u0446\u0430\u043D\u0441\u043A\u0438\u0435 \u0446\u0438\u0442\u0430\u0442\u044B \u0441 \u043F\u043E\u043C\u043E\u0449\u044C\u044E \u043D\u0435\u0439\u0440\u043E\u0441\u0435\u0442\u0435\u0439 GPT-3 \u0438 BigGAN",
+        status: "\u0412\u0441\u0435\u0433\u0434\u0430 \u0432\u043A\u043B\u044E\u0447\u0435\u043D",
+        href: "https://t.me/neural_wise_wolf_bot"
+      },
+      {
+        icon: "\u{1F4F8}",
+        title: "Instagram",
+        text: "\u041C\u0435\u043C\u044B \u0438 \u043D\u0435 \u0442\u043E\u043B\u044C\u043A\u043E. \u0421\u0430\u043C\u043E\u0435 \u0431\u043E\u043B\u044C\u0448\u043E\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u0441\u0442\u0432\u043E",
+        status: "\u0411\u043E\u043B\u0435\u0435 90\u043A \u043F\u043E\u0434\u043F\u0438\u0441\u0447\u0438\u043A\u043E\u0432",
+        href: "https://instagram.com/neural_wise_wolf"
+      },
+      {
+        icon: "\u25B6\uFE0F",
+        title: "YouTube",
+        text: "\u0420\u0430\u0437\u0431\u043E\u0440\u044B \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432, \u043C\u0435\u043C\u044B \u0438 \u043C\u043D\u043E\u0433\u043E \u0430\u0443\u0444\u0430.",
+        status: "\u041F\u043E\u0434\u043F\u0438\u0448\u0438\u0441\u044C \u0431\u0440\u0430\u0442",
+        href: "https://youtube.com/@neural_wolf"
+      },
+      {
+        icon: "\u{1F3B5}",
+        title: "TikTok",
+        text: "\u0421\u0442\u0440\u0438\u043C\u044B, \u043C\u0435\u043C\u044B \u0438 \u043C\u043D\u043E\u0433\u043E \u0432\u043E\u043B\u043A\u043E\u0432",
+        status: "\u0422\u0443\u0442 \u0432\u043E\u043B\u043A \u0431\u044B\u0432\u0430\u0435\u0442 \u043E\u043D\u043B\u0430\u0439\u043D",
+        href: "https://tiktok.com/@neural_wolf"
+      },
+      {
+        icon: "\u{1F4AC}",
+        title: "\u041F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+        text: "\u0415\u0441\u043B\u0438 \u0447\u0442\u043E-\u0442\u043E \u0441\u043B\u043E\u043C\u0430\u043B\u043E\u0441\u044C \u0438\u043B\u0438 \u0435\u0441\u0442\u044C \u0438\u0434\u0435\u0438.",
+        status: "\u041D\u0435 \u0441\u0442\u0435\u0441\u043D\u044F\u0439\u0441\u044F, \u043F\u0438\u0448\u0438",
+        href: "https://t.me/neural_wolf"
+      }
+    ];
+    const faqItems = ref([
+      {
+        q: "\u041F\u0440\u043E\u0435\u043A\u0442 \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439?",
+        a: "\u0414\u0430. \u0411\u043E\u043B\u044C\u0448\u0438\u043D\u0441\u0442\u0432\u043E \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432 \u0438 \u0438\u0433\u0440 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E. \u0415\u0441\u043B\u0438 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u043F\u043B\u0430\u0442\u043D\u044B\u0435 \u0448\u0442\u0443\u043A\u0438 \u0431\u0443\u0434\u0435\u0442 \u0447\u0435\u0441\u0442\u043D\u043E\u0435 \u043F\u0440\u0435\u0434\u0443\u043F\u0440\u0435\u0436\u0434\u0435\u043D\u0438\u0435.",
+        open: true
+      },
+      {
+        q: "\u041A\u0430\u043A \u043F\u043E\u0434\u043A\u0438\u043D\u0443\u0442\u044C \u0438\u0434\u0435\u044E \u0434\u043B\u044F \u043D\u043E\u0432\u043E\u0433\u043E \u0441\u0435\u0440\u0432\u0438\u0441\u0430?",
+        a: "\u041F\u0438\u0448\u0438 \u0432 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443 \u0438\u043B\u0438 \u0432 Telegram. \u0412\u043E\u043B\u043A \u043B\u044E\u0431\u0438\u0442 \u0445\u043E\u0440\u043E\u0448\u0438\u0435 \u0438\u0434\u0435\u0438 \u0438 \u0447\u0430\u0441\u0442\u043E \u0434\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u0442 \u0438\u0445 \u0432 \u0431\u044D\u043A\u043B\u043E\u0433.",
+        open: false
+      },
+      {
+        q: "\u0413\u0434\u0435 \u0438\u0441\u0445\u043E\u0434\u043D\u0438\u043A\u0438?",
+        a: "\u041A\u043E\u0434 \u0441\u043E\u0431\u0438\u0440\u0430\u0435\u0442\u0441\u044F \u0438\u0437 \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u0438\u0445 \u0447\u0430\u0441\u0442\u0435\u0439. \u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u043C \u0442\u043E, \u0447\u0442\u043E \u043C\u043E\u0436\u0435\u043C, \u0438 \u043F\u0443\u0431\u043B\u0438\u043A\u0443\u0435\u043C \u043E\u0442\u0434\u0435\u043B\u044C\u043D\u044B\u0435 \u043C\u043E\u0434\u0443\u043B\u0438 \u043F\u043E \u043C\u0435\u0440\u0435 \u0433\u043E\u0442\u043E\u0432\u043D\u043E\u0441\u0442\u0438.",
+        open: false
+      },
+      {
+        q: "\u041A\u0430\u043A \u0447\u0430\u0441\u0442\u043E \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u0441\u0430\u0439\u0442?",
+        a: "\u041D\u043E\u0432\u044B\u0435 \u0438\u0433\u0440\u044B \u0438 \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440\u044B \u043F\u0440\u0438\u043B\u0435\u0442\u0430\u044E\u0442 \u043A\u0430\u0436\u0434\u0443\u044E \u043D\u0435\u0434\u0435\u043B\u044E, \u0430 \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 \u043F\u043E \u043C\u0435\u0440\u0435 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438.",
+        open: false
+      },
+      {
+        q: "\u041D\u0430 \u043A\u0430\u043A\u0438\u0445 \u044F\u0437\u044B\u043A\u0430\u0445 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0412\u043E\u043B\u043A?",
+        a: "\u0421\u0435\u0439\u0447\u0430\u0441 \u043E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u044F\u0437\u044B\u043A \u0440\u0443\u0441\u0441\u043A\u0438\u0439, \u043D\u043E \u0447\u0430\u0441\u0442\u044C \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432 \u0443\u0436\u0435 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442 \u0430\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438\u0439. \u0414\u043E\u0431\u0430\u0432\u043B\u044F\u0435\u043C \u043B\u043E\u043A\u0430\u043B\u0438 \u043F\u043E \u0437\u0430\u043F\u0440\u043E\u0441\u0443.",
+        open: false
+      },
+      {
+        q: "\u041A\u0430\u043A \u043F\u0440\u043E\u0435\u043A\u0442 \u043C\u043E\u043D\u0435\u0442\u0438\u0437\u0438\u0440\u0443\u0435\u0442\u0441\u044F?",
+        a: "\u041B\u0435\u0433\u043A\u0430\u044F \u043D\u0430\u0442\u0438\u0432\u043D\u0430\u044F \u0440\u0435\u043A\u043B\u0430\u043C\u0430 \u0438 \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u0441\u043A\u0438\u0435 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438. \u041D\u0438\u043A\u0430\u043A\u0438\u0445 \u0430\u0433\u0440\u0435\u0441\u0441\u0438\u0432\u043D\u044B\u0445 \u0431\u0430\u043D\u043D\u0435\u0440\u043E\u0432 \u0438 \u0442\u0440\u0435\u043A\u0438\u043D\u0433\u0430.",
+        open: false
+      }
+    ]);
+    const activeSection = ref(tocItems[0].id);
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<section${ssrRenderAttrs(mergeProps({ class: "about-page" }, _attrs))} data-v-cc5afb5f><div class="pill" data-v-cc5afb5f><span data-v-cc5afb5f>\u0414\u0435\u043B\u0430\u0435\u0442\u0441\u044F \u0441\u0438\u043B\u0430\u043C\u0438 \u043E\u0434\u043D\u043E\u0433\u043E \u0432\u043E\u043B\u043A\u0430</span><strong data-v-cc5afb5f>\u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435</strong></div><div class="about-grid" data-v-cc5afb5f><div class="about-main" data-v-cc5afb5f><article class="card about-hero" id="mission" data-v-cc5afb5f><div class="hero-head" data-v-cc5afb5f><h1 class="section-title" data-v-cc5afb5f>\u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435</h1><p class="section-lead" data-v-cc5afb5f> \u041A\u0430\u0442\u0430\u043B\u043E\u0433 \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0445 \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432, \u0438\u0433\u0440, \u0440\u0430\u0441\u0447\u0435\u0442\u043E\u0432 \u0438 \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u0439, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u0441\u043E\u0431\u0438\u0440\u0430\u0435\u0442 \u041D\u0435\u0439\u0440\u043E\u043D\u043D\u044B\u0439 \u0412\u043E\u043B\u043A. </p></div><div class="stats hero-stats" data-v-cc5afb5f><div class="stat" data-v-cc5afb5f><div class="stat-icon" data-v-cc5afb5f>\u{1F9F0}</div><div data-v-cc5afb5f><h4 data-v-cc5afb5f>100+ \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432</h4><p data-v-cc5afb5f>\u0418\u0433\u0440\u044B, \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440\u044B, \u0440\u0435\u0448\u0435\u043D\u0438\u044F \u0434\u043B\u044F \u0431\u044B\u0441\u0442\u0440\u044B\u0445 \u0432\u043E\u043F\u0440\u043E\u0441\u043E\u0432.</p></div></div><div class="stat" data-v-cc5afb5f><div class="stat-icon" data-v-cc5afb5f>\u{1F319}</div><div data-v-cc5afb5f><h4 data-v-cc5afb5f>24/7 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u043C</h4><p data-v-cc5afb5f>\u0421\u0435\u0440\u0432\u0438\u0441 \u0432\u0441\u0435\u0433\u0434\u0430 \u043F\u043E\u0434 \u0440\u0443\u043A\u043E\u0439 \u0438 \u0431\u0435\u0437 \u043E\u0447\u0435\u0440\u0435\u0434\u0438.</p></div></div><div class="stat" data-v-cc5afb5f><div class="stat-icon" data-v-cc5afb5f>\u{1F43A}</div><div data-v-cc5afb5f><h4 data-v-cc5afb5f>50k+ \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439</h4><p data-v-cc5afb5f>\u0421\u043E\u043E\u0431\u0449\u0435\u0441\u0442\u0432\u043E, \u043A\u043E\u0442\u043E\u0440\u043E\u0435 \u043B\u044E\u0431\u0438\u0442 \u0436\u0438\u0432\u044B\u0435 \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u044B.</p></div></div></div></article><article class="card section-card" data-v-cc5afb5f><div class="section-header" data-v-cc5afb5f><div class="tag" data-v-cc5afb5f>\u0417\u0430\u0447\u0435\u043C \u043C\u044B \u044D\u0442\u043E \u0434\u0435\u043B\u0430\u0435\u043C</div><h3 data-v-cc5afb5f>\u0427\u0442\u043E\u0431\u044B \u0440\u0435\u0448\u0430\u0442\u044C \u0431\u044B\u0441\u0442\u0440\u043E, \u0438\u0433\u0440\u0430\u0442\u044C \u0441\u043C\u0435\u043B\u043E \u0438 \u043D\u0435 \u0442\u043E\u043D\u0443\u0442\u044C \u0432 \u0431\u044E\u0440\u043E\u043A\u0440\u0430\u0442\u0438\u0438</h3><p class="muted" data-v-cc5afb5f> \u0412\u043E\u043B\u043A \u0441\u043E\u0431\u0438\u0440\u0430\u0435\u0442 \u043C\u0435\u0441\u0442\u043E, \u0433\u0434\u0435 \u0432\u0441\u0451 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0431\u0435\u0437 \u043B\u0438\u0448\u043D\u0438\u0445 \u0431\u0430\u0440\u044C\u0435\u0440\u043E\u0432: \u043C\u0438\u043D\u0438\u043C\u0443\u043C \u043A\u043B\u0438\u043A\u043E\u0432, \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C \u043F\u043E\u043B\u044C\u0437\u044B. \u0417\u0434\u0435\u0441\u044C \u0436\u0438\u0432\u0443\u0442 \u0438\u0433\u0440\u043E\u0432\u044B\u0435 \u043C\u0435\u0445\u0430\u043D\u0438\u043A\u0438, \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440\u044B \u0438 \u043F\u043E\u0434\u0441\u043A\u0430\u0437\u043A\u0438, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0440\u0435\u0430\u043B\u044C\u043D\u043E \u044D\u043A\u043E\u043D\u043E\u043C\u044F\u0442 \u0432\u0440\u0435\u043C\u044F. </p></div><div class="mission-grid" data-v-cc5afb5f><div class="mission-left" data-v-cc5afb5f><ul class="icon-list" data-v-cc5afb5f><!--[-->`);
+      ssrRenderList(missionPoints, (item) => {
+        _push(`<li data-v-cc5afb5f><span class="icon" data-v-cc5afb5f>${ssrInterpolate(item.icon)}</span><div data-v-cc5afb5f><strong data-v-cc5afb5f>${ssrInterpolate(item.title)}</strong><p class="muted" data-v-cc5afb5f>${ssrInterpolate(item.text)}</p></div></li>`);
+      });
+      _push(`<!--]--></ul></div><div class="mission-right" data-v-cc5afb5f><div class="tech-grid" data-v-cc5afb5f><!--[-->`);
+      ssrRenderList(techCards, (tech) => {
+        _push(`<div class="mini-card" data-v-cc5afb5f><div class="mini-card__icon" data-v-cc5afb5f>${ssrInterpolate(tech.icon)}</div><div class="mini-card__title" data-v-cc5afb5f>${ssrInterpolate(tech.title)}</div><p class="muted mini-card__text" data-v-cc5afb5f>${ssrInterpolate(tech.text)}</p></div>`);
+      });
+      _push(`<!--]--></div></div></div></article><article class="card section-card" id="ads" data-v-cc5afb5f><div class="section-header" data-v-cc5afb5f><div class="tag" data-v-cc5afb5f>\u0420\u0435\u043A\u043B\u0430\u043C\u0430 \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430</div><h3 data-v-cc5afb5f>\u041F\u043E\u043C\u043E\u0433\u0438 \u0432\u043E\u043B\u043A\u0443 \u0440\u0430\u0441\u0442\u0438 \u2014 \u0440\u0430\u0441\u0441\u043A\u0430\u0436\u0435\u043C \u043E \u0442\u0432\u043E\u0451\u043C \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0435</h3><p class="muted" data-v-cc5afb5f> \u041C\u044B \u0432\u044B\u0431\u0438\u0440\u0430\u0435\u043C \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u043E\u0432, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0440\u0435\u0437\u043E\u043D\u0438\u0440\u0443\u044E\u0442 \u0441 \u0444\u0438\u043B\u043E\u0441\u043E\u0444\u0438\u0435\u0439 \u043F\u0440\u043E\u0435\u043A\u0442\u0430: \u0447\u0435\u0441\u0442\u043D\u043E, \u043F\u043E\u043B\u0435\u0437\u043D\u043E, \u0431\u0435\u0437 \u043D\u0430\u0432\u044F\u0437\u0447\u0438\u0432\u043E\u0441\u0442\u0438. </p></div><div class="grid three" data-v-cc5afb5f><!--[-->`);
+      ssrRenderList(supportCards, (card) => {
+        _push(`<div class="mini-card" data-v-cc5afb5f><div class="mini-card__icon" data-v-cc5afb5f>${ssrInterpolate(card.icon)}</div><div class="mini-card__title" data-v-cc5afb5f>${ssrInterpolate(card.title)}</div><p class="muted mini-card__text" data-v-cc5afb5f>${ssrInterpolate(card.text)}</p><ul class="bullet-list" data-v-cc5afb5f><!--[-->`);
+        ssrRenderList(card.points, (point) => {
+          _push(`<li data-v-cc5afb5f>${ssrInterpolate(point)}</li>`);
+        });
+        _push(`<!--]--></ul></div>`);
+      });
+      _push(`<!--]--></div><div class="cta-card" data-v-cc5afb5f><div data-v-cc5afb5f><h4 data-v-cc5afb5f>\u041E\u0431\u0441\u0443\u0434\u0438\u043C \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u043E</h4><p class="muted" data-v-cc5afb5f>\u0420\u0430\u0441\u0441\u043A\u0430\u0436\u0438, \u0447\u0442\u043E \u0445\u043E\u0447\u0435\u0448\u044C \u043F\u0440\u043E\u0434\u0432\u0438\u043D\u0443\u0442\u044C, \u0438 \u043C\u044B \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0438\u043C \u0444\u043E\u0440\u043C\u0430\u0442.</p></div><a class="btn" href="https://t.me/neural_wolf" target="_blank" rel="noreferrer" data-v-cc5afb5f>\u041D\u0430\u043F\u0438\u0441\u0430\u0442\u044C \u0432 Telegram</a></div></article><article class="card section-card" id="socials" data-v-cc5afb5f><div class="section-header" data-v-cc5afb5f><div class="tag" data-v-cc5afb5f>\u0413\u0434\u0435 \u043D\u0430\u0441 \u043D\u0430\u0439\u0442\u0438</div><h3 data-v-cc5afb5f>\u041F\u043E\u0434\u043F\u0438\u0448\u0438\u0441\u044C, \u0447\u0442\u043E\u0431\u044B \u043D\u0435 \u043F\u0440\u043E\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u043D\u043E\u0432\u044B\u0435 \u0444\u0438\u0448\u043A\u0438</h3><p class="muted" data-v-cc5afb5f>\u041A\u0430\u043D\u0430\u043B\u044B, \u0431\u043E\u0442, \u0441\u043E\u0446\u0441\u0435\u0442\u0438 \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430 \u2014 \u0412\u043E\u043B\u043A \u043D\u0430 \u0441\u0432\u044F\u0437\u0438 \u0432 \u0443\u0434\u043E\u0431\u043D\u043E\u043C \u043C\u0435\u0441\u0442\u0435.</p></div><div class="grid two socials-grid" data-v-cc5afb5f><!--[-->`);
+      ssrRenderList(socials, (social) => {
+        _push(`<a class="social-card"${ssrRenderAttr("href", social.href)} target="_blank" rel="noreferrer" data-v-cc5afb5f><div class="social-card__icon" data-v-cc5afb5f>${ssrInterpolate(social.icon)}</div><div data-v-cc5afb5f><div class="social-card__title" data-v-cc5afb5f>${ssrInterpolate(social.title)}</div><p class="muted social-card__text" data-v-cc5afb5f>${ssrInterpolate(social.text)}</p><span class="status" data-v-cc5afb5f>${ssrInterpolate(social.status)}</span></div><span class="social-card__arrow" data-v-cc5afb5f>\u2197</span></a>`);
+      });
+      _push(`<!--]--></div></article><article class="card section-card" id="faq" data-v-cc5afb5f><div class="section-header" data-v-cc5afb5f><div class="tag" data-v-cc5afb5f>FAQ</div><h3 data-v-cc5afb5f>\u0412\u043E\u043F\u0440\u043E\u0441\u044B, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0437\u0430\u0434\u0430\u044E\u0442 \u0447\u0430\u0449\u0435 \u0432\u0441\u0435\u0433\u043E</h3></div><div class="faq-list" data-v-cc5afb5f><!--[-->`);
+      ssrRenderList(faqItems.value, (item, idx) => {
+        _push(`<div class="${ssrRenderClass([{ open: item.open }, "faq-item"])}" data-v-cc5afb5f><button class="faq-trigger" type="button" data-v-cc5afb5f><span data-v-cc5afb5f>${ssrInterpolate(item.q)}</span><span class="faq-icon" data-v-cc5afb5f>${ssrInterpolate(item.open ? "\u2212" : "+")}</span></button>`);
+        if (item.open) {
+          _push(`<p class="faq-answer muted" data-v-cc5afb5f>${ssrInterpolate(item.a)}</p>`);
+        } else {
+          _push(`<!---->`);
+        }
+        _push(`</div>`);
+      });
+      _push(`<!--]--></div></article></div><aside class="toc-card" data-v-cc5afb5f><div class="toc-inner" data-v-cc5afb5f><div class="toc-title" data-v-cc5afb5f>\u041E\u0433\u043B\u0430\u0432\u043B\u0435\u043D\u0438\u0435</div><nav class="toc-nav" data-v-cc5afb5f><!--[-->`);
+      ssrRenderList(tocItems, (item) => {
+        _push(`<button class="${ssrRenderClass([{ active: activeSection.value === item.id }, "toc-link"])}" type="button" data-v-cc5afb5f>${ssrInterpolate(item.label)}</button>`);
+      });
+      _push(`<!--]--></nav></div></aside></div></section>`);
+    };
+  }
+};
+const _sfc_setup = _sfc_main.setup;
+_sfc_main.setup = (props, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("pages/about.vue");
+  return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
+};
+const about = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-cc5afb5f"]]);
+
+export { about as default };
+//# sourceMappingURL=about-CDrzkVyE.mjs.map
