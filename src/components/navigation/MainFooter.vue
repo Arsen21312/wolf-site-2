@@ -38,8 +38,11 @@ const year = new Date().getFullYear()
 
 @media (max-width: 640px) {
   .nw-footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
   }
 }
 

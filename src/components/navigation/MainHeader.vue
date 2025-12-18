@@ -9,8 +9,8 @@
         <BubbleMenu
           :items="menuItems"
           menu-aria-label="Открыть меню"
-          menu-bg="rgba(255,255,255,0.08)"
-          menu-content-color="#0c1117"
+          menu-bg="#0f172a"
+          menu-content-color="#ffffff"
           :use-fixed-position="false"
           animation-ease="back.out(1.4)"
           :animation-duration="0.35"

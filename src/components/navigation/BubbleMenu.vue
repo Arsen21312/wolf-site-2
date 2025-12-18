@@ -14,7 +14,7 @@
       </span>
     </button>
 
-    <div class="bubble-menu__list" ref="listRef" :style="{ backgroundColor: menuBg }">
+    <div class="bubble-menu__list" ref="listRef" :style="{ background: menuSurface }">
       <component
         v-for="(item, index) in items"
         :is="linkTag(item.href)"
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onBeforeUpdate, onMounted, ref, toRefs, watch } from 'vue'
+import { computed, onBeforeUnmount, onBeforeUpdate, onMounted, ref, toRefs, watch } from 'vue'
 import { gsap } from 'gsap'
 import { useRouter } from '#app'
 
@@ -61,8 +61,8 @@ const props = withDefaults(
   }>(),
   {
     menuAriaLabel: 'Toggle navigation',
-    menuBg: '#ffffff',
-    menuContentColor: '#111111',
+    menuBg: '#0f172a',
+    menuContentColor: '#ffffff',
     useFixedPosition: false,
     animationEase: 'back.out(1.3)',
     animationDuration: 0.35,
@@ -72,6 +72,10 @@ const props = withDefaults(
 
 const { items, menuAriaLabel, menuBg, menuContentColor, useFixedPosition, animationEase, animationDuration, staggerDelay } =
   toRefs(props)
+
+const menuSurface = computed(
+  () => 'linear-gradient(165deg, rgba(15, 23, 42, 0.94), rgba(4, 7, 16, 0.92))'
+)
 
 const isOpen = ref(false)
 const listRef = ref<HTMLElement | null>(null)
@@ -282,7 +286,8 @@ const handleItemClick = async (item: MenuItem, event: Event) => {
   gap: 10px;
   padding: 12px;
   border-radius: 16px;
-  background: var(--panel, rgba(0, 0, 0, 0.35));
+  background: linear-gradient(165deg, rgba(15, 23, 42, 0.94), rgba(4, 7, 16, 0.92));
+  color: #fff;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   min-width: 180px;

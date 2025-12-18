@@ -383,6 +383,7 @@ useHead(() => ({
 .wolf-page {
   background: transparent;
   color: #e5e7eb;
+  overflow-x: hidden;
 }
 
 .wolf-stage {
@@ -619,6 +620,8 @@ useHead(() => ({
   justify-items: center;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .seo-card {
@@ -626,7 +629,8 @@ useHead(() => ({
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 0;
+  padding: 0 16px;
+  box-sizing: border-box;
   display: grid;
   gap: 14px;
 }
@@ -669,7 +673,7 @@ useHead(() => ({
 
 .dual-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 14px;
 }
 
@@ -929,16 +933,22 @@ useHead(() => ({
 @media (max-width: 768px) {
   .wolf-page {
     align-items: flex-start;
-    padding: 12px 14px 20px;
+    padding: 12px 14px 24px;
   }
 
   .wolf-stage {
-    padding: 16px 14px 20px;
+    padding: 22px 16px 26px;
+    align-items: flex-start;
   }
 
   .wolf-intro {
     gap: 14px;
     padding: 4px 0 6px;
+  }
+
+  .wolf-container {
+    margin-top: 0;
+    gap: 16px;
   }
 
   .wolf-subtitle {
@@ -955,10 +965,11 @@ useHead(() => ({
   }
 
   .seo-card {
-    padding: 18px 14px;
+    padding: 20px 18px 22px;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
-</style>
 .wolf-seo::before {
   content: '';
   position: absolute;
@@ -966,3 +977,4 @@ useHead(() => ({
   background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08), transparent 45%);
   pointer-events: none;
 }
+</style>
