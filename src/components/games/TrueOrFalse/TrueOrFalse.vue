@@ -229,47 +229,49 @@ function answer(value) {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px 24px 28px;
+  padding: clamp(14px, 3vw, 28px);
   background: transparent;
   color: #e5e7eb;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .tof-content {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 1080px;
+  width: min(1100px, 100%);
   display: grid;
-  gap: 20px;
+  gap: clamp(16px, 3vw, 24px);
   justify-items: center;
-  padding: 24px 16px 20px;
+  padding: clamp(16px, 3vw, 28px) clamp(12px, 3vw, 24px) clamp(14px, 3vw, 26px);
+  margin: 0 auto;
 }
 
 .tof-content:not(.tof-game) {
   max-width: 900px;
-  margin: -240px auto 0;
+  margin: 0 auto;
 }
 
 .tof-content.tof-game {
-  gap: 28px;
+  gap: clamp(18px, 3vw, 28px);
   justify-items: center;
   align-items: center;
   min-height: 80vh;
-  padding: 16px 0 24px;
-  margin-top: -200px;
+  padding: clamp(12px, 2vw, 20px) 0 clamp(16px, 3vw, 26px);
+  margin-top: 0;
   width: 100%;
 }
 
 .tof-shell h1 {
   margin: 0 0 6px;
-  font-size: 70px;
+  font-size: clamp(34px, 7vw, 64px);
   letter-spacing: 0;
   color: #e5e7eb;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
   font-weight: 800;
+  line-height: 1.05;
 }
 
 .tof-sub {
@@ -280,14 +282,16 @@ function answer(value) {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  font-size: clamp(15px, 2vw, 18px);
 }
 
 .tof-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 14px);
   justify-content: center;
   margin-bottom: 8px;
+  width: 100%;
 }
 
 .tof-chip {
@@ -295,14 +299,16 @@ function answer(value) {
   background: rgba(255, 255, 255, 0.03);
   color: #cbd5e1;
   border-radius: 999px;
-  padding: 12px 18px;
+  padding: clamp(10px, 2vw, 14px) clamp(14px, 3vw, 18px);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
   font-weight: 800;
   display: inline-flex;
   gap: 8px;
   align-items: center;
+  justify-content: center;
+  flex: 1 1 clamp(140px, 28%, 220px);
 }
 
 .tof-chip-active {
@@ -319,15 +325,15 @@ function answer(value) {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 28px;
+  padding: clamp(20px, 3vw, 32px);
   display: grid;
-  gap: 18px;
+  gap: clamp(12px, 2vw, 20px);
   position: relative;
   overflow: hidden;
-  max-width: 900px;
+  max-width: min(900px, 100%);
   width: 100%;
-  min-height: 320px;
-  margin: -40px auto 0;
+  min-height: clamp(240px, 42vh, 360px);
+  margin: 0 auto;
   box-shadow: none;
 }
 
@@ -353,30 +359,30 @@ function answer(value) {
 }
 
 .tof-prompt {
-  font-size: 34px;
+  font-size: clamp(24px, 5vw, 34px);
   font-weight: 700;
   line-height: 1.4;
   color: #e5e7eb;
   margin: 0;
   text-align: center;
-  min-height: 200px;
+  min-height: clamp(140px, 30vh, 200px);
   display: grid;
   place-items: center;
 }
 
 .tof-buttons {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.6vw, 14px);
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .tof-btn {
-  padding: 16px 26px;
+  padding: clamp(12px, 2vw, 16px) clamp(18px, 3vw, 26px);
   border-radius: 999px;
   border: none;
   font-weight: 800;
-  font-size: 17px;
+  font-size: clamp(15px, 2vw, 17px);
   cursor: pointer;
   min-width: 150px;
   color: #0f172a;
@@ -459,15 +465,15 @@ function answer(value) {
 @media (max-width: 640px) {
   .tof-shell {
     align-items: flex-start;
-    padding: 4px 16px 12px;
+    padding: 8px 14px 14px;
   }
 
   .tof-content {
-    padding: 4px 12px 10px;
+    padding: 8px 12px 12px;
   }
 
   .tof-content:not(.tof-game) {
-    margin-top: -20px;
+    margin-top: 0;
   }
 
   .tof-filters {
@@ -475,24 +481,24 @@ function answer(value) {
   }
 
   .tof-shell h1 {
-    font-size: 52px;
-    line-height: 1.05;
+    font-size: clamp(30px, 9vw, 46px);
+    line-height: 1.08;
   }
 
   .tof-sub {
     max-width: 90%;
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .tof-card {
-    margin-top: -20px;
-    min-height: 280px;
-    padding: 22px 14px;
+    margin-top: 0;
+    min-height: 240px;
+    padding: 18px 14px;
   }
 
   .tof-prompt {
-    font-size: 24px;
-    min-height: 140px;
+    font-size: clamp(20px, 6vw, 26px);
+    min-height: 120px;
   }
 
   .tof-btn {
@@ -500,4 +506,3 @@ function answer(value) {
   }
 }
 </style>
-

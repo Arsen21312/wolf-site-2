@@ -391,7 +391,8 @@ useHead(() => ({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 28px 18px 36px;
+  padding: clamp(18px, 4vw, 36px) clamp(16px, 4vw, 30px) clamp(28px, 4vw, 44px);
+  box-sizing: border-box;
 }
 
 .wolf-container {
@@ -399,17 +400,17 @@ useHead(() => ({
   max-width: 1080px;
   display: grid;
   justify-items: center;
-  gap: 20px;
-  margin-top: -100px;
+  gap: clamp(16px, 3vw, 28px);
+  margin: 0 auto;
 }
 
 .wolf-intro {
   text-align: center;
   display: grid;
-  gap: 18px;
+  gap: clamp(14px, 3vw, 22px);
   justify-items: center;
   align-items: center;
-  padding: 20px 0 14px;
+  padding: clamp(14px, 3vw, 26px) 0 clamp(10px, 3vw, 18px);
   max-width: 900px;
 }
 
@@ -419,6 +420,7 @@ useHead(() => ({
   line-height: 1.05;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
   font-weight: 800;
+  text-align: center;
 }
 
 .wolf-subtitle {
@@ -426,7 +428,8 @@ useHead(() => ({
   color: #cbd5e1;
   max-width: 680px;
   line-height: 1.6;
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
+  text-align: center;
 }
 
 .wolf-hint {
@@ -454,7 +457,7 @@ useHead(() => ({
 
 .wolf-actions {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.8vw, 14px);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -468,9 +471,9 @@ useHead(() => ({
   background: rgba(255, 255, 255, 0.02);
   color: #e5e7eb;
   border-radius: 999px;
-  padding: 14px 22px;
+  padding: clamp(12px, 2vw, 16px) clamp(18px, 3vw, 26px);
   font-weight: 800;
-  font-size: 16px;
+  font-size: clamp(15px, 2vw, 17px);
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
@@ -496,7 +499,7 @@ useHead(() => ({
 
 .wolf-game {
   display: grid;
-  gap: 18px;
+  gap: clamp(16px, 3vw, 26px);
   justify-items: center;
   align-items: center;
   min-height: 70vh;
@@ -506,7 +509,7 @@ useHead(() => ({
 .wolf-categories {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 12px);
   justify-content: center;
   margin: -6px 0 14px;
 }
@@ -520,7 +523,7 @@ useHead(() => ({
   display: grid;
   gap: 4px;
   cursor: pointer;
-  min-width: 140px;
+  flex: 1 1 clamp(140px, 28%, 220px);
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
 }
 
@@ -551,13 +554,13 @@ useHead(() => ({
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 26px;
+  padding: clamp(20px, 3vw, 30px);
   display: grid;
-  gap: 14px;
+  gap: clamp(10px, 2vw, 18px);
   position: relative;
   overflow: hidden;
   width: min(900px, 100%);
-  margin-top: 8px;
+  margin: 4px auto 0;
   text-align: center;
   min-height: 320px;
 }
@@ -581,20 +584,20 @@ useHead(() => ({
 }
 
 .wolf-quote-shell {
-  min-height: 180px;
+  min-height: clamp(160px, 32vh, 220px);
   display: grid;
   align-items: center;
   justify-items: center;
 }
 
 .wolf-quote {
-  font-size: clamp(24px, 4vw, 36px);
+  font-size: clamp(22px, 4vw, 34px);
   font-weight: 800;
   line-height: 1.35;
   transition: opacity 0.2s ease, transform 0.2s ease;
   opacity: 0.3;
   transform: translateY(6px);
-  max-width: 100%;
+  max-width: min(760px, 100%);
   word-break: break-word;
 }
 
@@ -615,7 +618,7 @@ useHead(() => ({
 }
 
 .wolf-seo {
-  padding: 32px 18px 48px;
+  padding: clamp(42px, 5vw, 70px) clamp(16px, 4vw, 30px) clamp(54px, 5vw, 90px);
   display: grid;
   justify-items: center;
   position: relative;
@@ -625,14 +628,14 @@ useHead(() => ({
 }
 
 .seo-card {
-  width: min(1080px, 100%);
+  width: min(1100px, 100%);
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 0 16px;
+  padding: 0 clamp(12px, 3vw, 18px);
   box-sizing: border-box;
   display: grid;
-  gap: 14px;
+  gap: clamp(12px, 3vw, 18px);
 }
 
 .seo-card h2 {
@@ -673,8 +676,8 @@ useHead(() => ({
 
 .dual-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(12px, 2vw, 18px);
 }
 
 .seo-section {
@@ -813,7 +816,7 @@ useHead(() => ({
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 8px;
+  gap: 10px;
 }
 
 .category-card {
@@ -933,17 +936,17 @@ useHead(() => ({
 @media (max-width: 768px) {
   .wolf-page {
     align-items: flex-start;
-    padding: 12px 14px 24px;
+    padding: 0;
   }
 
   .wolf-stage {
-    padding: 22px 16px 26px;
+    padding: 18px 14px 24px;
     align-items: flex-start;
   }
 
   .wolf-intro {
-    gap: 14px;
-    padding: 4px 0 6px;
+    gap: 12px;
+    padding: 8px 0 10px;
   }
 
   .wolf-container {
@@ -952,11 +955,11 @@ useHead(() => ({
   }
 
   .wolf-subtitle {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .wolf-card {
-    padding: 22px;
+    padding: 18px;
   }
 
   .wolf-actions {
@@ -965,7 +968,7 @@ useHead(() => ({
   }
 
   .seo-card {
-    padding: 20px 18px 22px;
+    padding: 20px 14px 22px;
     width: 100%;
     box-sizing: border-box;
   }

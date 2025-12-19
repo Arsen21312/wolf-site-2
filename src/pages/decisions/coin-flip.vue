@@ -256,10 +256,11 @@ useHead(() => ({
 
 <style scoped>
 .coin-page {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  padding: 24px 0 48px;
+  display: grid;
+  gap: clamp(20px, 3vw, 36px);
+  width: min(1100px, 100% - clamp(24px, 6vw, 64px));
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 32px) 0 clamp(32px, 4vw, 56px);
 }
 
 .coin-hero {
@@ -286,12 +287,14 @@ useHead(() => ({
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 28px;
+  padding: clamp(20px, 3vw, 32px);
   display: grid;
-  gap: 18px;
+  gap: clamp(12px, 2vw, 20px);
   justify-items: center;
   position: relative;
   overflow: hidden;
+  width: min(960px, 100%);
+  margin: 0 auto;
 }
 
 .coin-card::after {

@@ -354,23 +354,24 @@ function handlePopup() {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px 24px 28px;
+  padding: clamp(14px, 3vw, 28px);
   background: transparent;
   color: #e5e7eb;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .nhi-content {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 1080px;
+  width: min(1100px, 100%);
   display: grid;
-  gap: 20px;
+  gap: clamp(16px, 3vw, 24px);
   justify-items: center;
-  padding: 24px 16px 20px;
+  padding: clamp(16px, 3vw, 28px) clamp(12px, 3vw, 24px) clamp(14px, 3vw, 26px);
+  margin: 0 auto;
 }
 
 .nhi-hero,
@@ -381,22 +382,25 @@ function handlePopup() {
 
 .nhi-hero h1 {
   margin: 0 0 6px;
-  font-size: 70px;
+  font-size: clamp(34px, 7vw, 64px);
   letter-spacing: 0;
   color: #e5e7eb;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
   font-weight: 800;
+  line-height: 1.05;
 }
 
 .nhi-hero {
   text-align: center;
   display: grid;
-  gap: 20px;
+  gap: clamp(16px, 4vw, 26px);
   justify-items: center;
   align-items: center;
-  padding: 20px 0 20px;
+  align-content: center;
+  padding: clamp(12px, 3vw, 26px) 0 clamp(10px, 3vw, 18px);
   max-width: 900px;
-  margin: -240px auto 0;
+  margin: 0 auto;
+  min-height: clamp(60vh, 78vw, 70vh);
 }
 
 .nhi-sub {
@@ -407,6 +411,7 @@ function handlePopup() {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  font-size: clamp(15px, 2vw, 18px);
 }
 
 .nhi-hero p {
@@ -415,12 +420,12 @@ function handlePopup() {
 
 .nhi-cta {
   margin: 8px auto 10px;
-  padding: 16px 26px;
+  padding: clamp(14px, 2.4vw, 18px) clamp(20px, 3vw, 28px);
   border-radius: 999px;
   border: none;
   cursor: pointer;
   font-weight: 700;
-  font-size: 17px;
+  font-size: clamp(15px, 2vw, 18px);
   background: linear-gradient(120deg, #ff7eb6, #ff4d6d);
   color: #0f172a;
   box-shadow: 0 15px 30px rgba(255, 126, 182, 0.25);
@@ -453,21 +458,22 @@ function handlePopup() {
 
 .nhi-game {
   display: grid;
-  gap: 28px;
+  gap: clamp(18px, 3vw, 30px);
   justify-items: center;
   align-items: center;
   min-height: 80vh;
-  padding: 16px 0 24px;
-  margin-top: -200px;
+  padding: clamp(12px, 2vw, 22px) 0 clamp(16px, 3vw, 28px);
+  margin-top: 0;
   width: 100%;
 }
 
 .nhi-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 14px);
   justify-content: center;
   margin-bottom: 8px;
+  width: 100%;
 }
 
 .nhi-chip {
@@ -475,14 +481,16 @@ function handlePopup() {
   background: rgba(255, 255, 255, 0.03);
   color: #cbd5e1;
   border-radius: 999px;
-  padding: 12px 18px;
+  padding: clamp(10px, 2vw, 14px) clamp(14px, 3vw, 18px);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
   font-weight: 800;
   display: inline-flex;
   gap: 8px;
   align-items: center;
+  justify-content: center;
+  flex: 1 1 clamp(140px, 28%, 220px);
 }
 
 .nhi-chip-active {
@@ -592,17 +600,17 @@ function handlePopup() {
   }
 
   .nhi-hero h1 {
-    font-size: 52px;
-    line-height: 1.05;
+    font-size: clamp(30px, 9vw, 46px);
+    line-height: 1.08;
   }
 
   .nhi-sub {
-    max-width: 90%;
-    font-size: 16px;
+    max-width: 92%;
+    font-size: 15px;
   }
 
   .nhi-cta {
-    padding: 14px 24px;
+    padding: 12px 22px;
   }
 
   .nhi-phrase {
@@ -614,11 +622,11 @@ function handlePopup() {
   }
 
   .nhi-game {
-    margin-top: -10px;
+    margin-top: 0;
   }
 
   .nhi-card {
-    margin-top: -20px;
+    margin-top: 0;
   }
 }
 </style>

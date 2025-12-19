@@ -343,18 +343,21 @@ useHead(() => ({
 <style scoped>
 .micro-page {
   color: #e5e7eb;
+  overflow-x: hidden;
 }
 
 .micro-stage {
+  width: 100%;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px 24px 28px;
+  padding: clamp(16px, 3vw, 32px);
+  box-sizing: border-box;
 }
 
 .micro-seo {
-  padding: 48px 18px 60px;
+  padding: clamp(44px, 5vw, 72px) clamp(16px, 4vw, 28px) clamp(56px, 6vw, 90px);
   display: grid;
   justify-items: center;
   position: relative;
@@ -366,16 +369,16 @@ useHead(() => ({
 }
 
 .tod-container {
-  width: 100%;
-  max-width: 1080px;
+  width: min(1100px, 100%);
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 24px 16px 20px;
+  padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 26px);
   box-shadow: none;
   display: grid;
   justify-items: center;
-  margin-top: -100px;
+  margin: 0 auto;
+  gap: clamp(16px, 3vw, 28px);
 }
 
 .pill-hero {
@@ -391,28 +394,29 @@ useHead(() => ({
 .tod-intro {
   text-align: center;
   display: grid;
-  gap: 20px;
+  gap: clamp(16px, 4vw, 26px);
   justify-items: center;
   align-items: center;
-  padding: 40px 0 24px;
+  padding: clamp(20px, 5vw, 52px) 0 clamp(12px, 3vw, 28px);
   max-width: 900px;
   margin: 0 auto;
 }
 
 .tod-title {
   margin: 0 0 6px;
-  font-size: clamp(36px, 6vw, 70px);
+  font-size: clamp(32px, 7vw, 64px);
   letter-spacing: 0;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
   font-weight: 800;
+  line-height: 1.05;
 }
 
 .tod-subtitle {
   margin: 0 0 12px;
   color: #cbd5e1;
-  max-width: 620px;
+  max-width: min(680px, 100%);
   line-height: 1.6;
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
   text-align: center;
 }
 
@@ -427,7 +431,7 @@ useHead(() => ({
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: clamp(8px, 1.6vw, 12px) clamp(12px, 2.6vw, 16px);
   color: #e5e7eb;
   cursor: pointer;
   font-weight: 700;
@@ -444,9 +448,9 @@ useHead(() => ({
   background: transparent;
   color: #e5e7eb;
   border-radius: 999px;
-  padding: 16px 26px;
+  padding: clamp(12px, 2vw, 16px) clamp(18px, 3vw, 28px);
   font-weight: 800;
-  font-size: 17px;
+  font-size: clamp(15px, 2vw, 18px);
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, border 0.2s ease;
 }
@@ -464,8 +468,7 @@ useHead(() => ({
   border: none;
   color: #0b1220;
   box-shadow: 0 15px 30px rgba(34, 197, 94, 0.25);
-  padding: 16px 30px;
-  font-size: 18px;
+  font-size: clamp(16px, 2vw, 18px);
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -475,18 +478,18 @@ useHead(() => ({
 
 .tod-game {
   display: grid;
-  gap: 28px;
+  gap: clamp(18px, 3vw, 32px);
   justify-items: center;
   align-items: center;
   min-height: 80vh;
-  padding: 24px 0 32px;
+  padding: clamp(12px, 2vw, 24px) 0 clamp(18px, 3vw, 32px);
   width: 100%;
 }
 
 .tod-modes {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: clamp(10px, 2vw, 16px);
   justify-content: center;
   margin-bottom: 8px;
   width: 100%;
@@ -501,11 +504,11 @@ useHead(() => ({
   padding: 10px 14px;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease, box-shadow 0.2s ease;
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
   font-weight: 800;
   display: grid;
   gap: 4px;
-  min-width: 190px;
+  flex: 1 1 clamp(140px, 30%, 220px);
   justify-items: center;
   text-align: center;
 }
@@ -560,14 +563,14 @@ useHead(() => ({
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 28px;
+  padding: clamp(20px, 3vw, 32px);
   display: grid;
-  gap: 18px;
+  gap: clamp(12px, 2vw, 20px);
   position: relative;
   overflow: hidden;
-  max-width: 900px;
+  max-width: min(900px, 100%);
   margin: 0 auto;
-  min-height: 260px;
+  min-height: clamp(200px, 40vh, 320px);
 }
 
 .tod-card::after {
@@ -592,15 +595,15 @@ useHead(() => ({
 }
 
 .tod-question-text {
-  font-size: 34px;
+  font-size: clamp(22px, 4vw, 34px);
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
   transition: opacity 0.18s ease, transform 0.18s ease;
   opacity: 0.3;
   transform: translateY(4px);
   text-align: center;
   margin: 6px 0 4px;
-  min-height: 120px;
+  min-height: clamp(120px, 28vh, 200px);
   display: grid;
   align-items: center;
 }
@@ -623,15 +626,16 @@ useHead(() => ({
 
 .tod-actions {
   display: grid;
-  gap: 12px;
+  gap: clamp(10px, 2vw, 14px);
   justify-items: center;
   margin-top: 8px;
 }
 
 .tod-buttons {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.6vw, 14px);
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .tod-btn-ghost {
@@ -925,33 +929,33 @@ useHead(() => ({
 
 @media (max-width: 768px) {
   .micro-stage {
-    padding: 12px 14px 20px;
+    padding: 10px 14px 18px;
     align-items: flex-start;
   }
 
   .tod-container {
-    padding: 4px 12px 10px;
-    margin-top: -30px;
+    padding: 6px 12px 12px;
+    margin-top: 0;
   }
 
   .tod-intro {
-    gap: 16px;
-    padding: 4px 0 8px;
-    min-height: 70vh;
+    gap: 14px;
+    padding: 10px 0 14px;
+    min-height: 68vh;
   }
 
   .tod-title {
-    font-size: 52px;
-    line-height: 1.05;
+    font-size: clamp(32px, 9vw, 46px);
+    line-height: 1.08;
   }
 
   .tod-subtitle {
-    max-width: 90%;
-    font-size: 16px;
+    max-width: 92%;
+    font-size: 15px;
   }
 
   .tod-btn-primary {
-    padding: 14px 24px;
+    padding: 12px 22px;
   }
 
   .tod-hint {

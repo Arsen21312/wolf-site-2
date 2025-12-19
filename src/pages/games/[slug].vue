@@ -269,11 +269,12 @@ const showTodDetails = ref(false)
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 0 24px;
+  padding: clamp(18px, 4vw, 36px) clamp(12px, 4vw, 24px) clamp(28px, 4vw, 44px);
 }
 
 .game-host {
-  width: 100%;
+  width: min(1100px, 100%);
+  margin: 0 auto;
 }
 
 .seo-section {

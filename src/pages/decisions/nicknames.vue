@@ -150,49 +150,54 @@ function generate() {
   min-height: 100vh;
   align-items: center;
   justify-content: center;
-  padding: 24px 24px 28px;
+  padding: clamp(14px, 3vw, 28px);
   background: transparent;
   color: #e5e7eb;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .tod-container {
-  width: 100%;
-  max-width: 1080px;
+  width: min(1100px, 100%);
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 24px 16px 20px;
+  padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 26px);
   box-shadow: none;
   display: grid;
   justify-items: center;
+  gap: clamp(16px, 3vw, 28px);
+  margin: 0 auto;
 }
 
 .tod-intro {
   text-align: center;
   display: grid;
-  gap: 16px;
+  gap: clamp(16px, 4vw, 26px);
   justify-items: center;
   align-items: center;
-  padding: 30px 0 24px;
+  padding: clamp(20px, 5vw, 48px) 0 clamp(12px, 3vw, 28px);
   max-width: 900px;
-  margin: -100px auto 0;
+  margin: 0 auto;
 }
 
 .tod-title {
   margin: 0 0 6px;
-  font-size: 60px;
+  font-size: clamp(32px, 7vw, 60px);
   letter-spacing: 0;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
   font-weight: 800;
+  line-height: 1.05;
 }
 
 .tod-subtitle {
   margin: 0 0 12px;
   color: #cbd5e1;
-  max-width: 620px;
+  max-width: min(680px, 100%);
   line-height: 1.6;
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
   text-align: center;
 }
 
@@ -232,9 +237,9 @@ input {
   background: transparent;
   color: #e5e7eb;
   border-radius: 999px;
-  padding: 14px 20px;
+  padding: clamp(12px, 2vw, 16px) clamp(18px, 3vw, 24px);
   font-weight: 800;
-  font-size: 16px;
+  font-size: clamp(15px, 2vw, 17px);
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, border 0.2s ease;
 }
@@ -252,8 +257,8 @@ input {
   border: none;
   color: #0b1220;
   box-shadow: 0 15px 30px rgba(56, 189, 248, 0.25);
-  padding: 14px 26px;
-  font-size: 17px;
+  padding: clamp(14px, 2.6vw, 18px) clamp(22px, 3vw, 28px);
+  font-size: clamp(16px, 2vw, 18px);
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -264,12 +269,12 @@ input {
 
 .tod-game {
   display: grid;
-  gap: 24px;
+  gap: clamp(18px, 3vw, 30px);
   justify-items: center;
   align-items: center;
   min-height: 70vh;
-  padding: 20px 0 24px;
-  margin-top: -60px;
+  padding: clamp(12px, 2vw, 24px) 0 clamp(18px, 3vw, 32px);
+  margin-top: 0;
   width: 100%;
 }
 
@@ -277,12 +282,12 @@ input {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 24px;
+  padding: clamp(20px, 3vw, 32px);
   display: grid;
-  gap: 18px;
+  gap: clamp(12px, 2vw, 20px);
   position: relative;
   overflow: hidden;
-  max-width: 900px;
+  max-width: min(900px, 100%);
   margin: 0 auto 0;
 }
 
@@ -327,15 +332,16 @@ input {
 
 .tod-actions {
   display: grid;
-  gap: 14px;
+  gap: clamp(10px, 2vw, 16px);
   justify-items: center;
   width: 100%;
 }
 
 .tod-buttons {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.6vw, 14px);
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .tod-btn-ghost {
@@ -346,30 +352,30 @@ input {
   .tod-page {
     align-items: flex-start;
     min-height: 100vh;
-    padding: 6px 14px 14px;
+    padding: 10px 14px 18px;
   }
 
   .tod-container {
-    padding: 4px 12px 10px;
+    padding: 6px 12px 12px;
   }
 
   .tod-intro {
     gap: 14px;
-    padding: 4px 0 10px;
-    margin-top: -40px;
+    padding: 10px 0 14px;
+    margin-top: 0;
   }
   .tod-game {
-    margin-top: -30px;
+    margin-top: 0;
   }
 
   .tod-title {
-    font-size: 44px;
-    line-height: 1.05;
+    font-size: clamp(32px, 9vw, 44px);
+    line-height: 1.08;
   }
 
   .tod-subtitle {
-    max-width: 90%;
-    font-size: 16px;
+    max-width: 92%;
+    font-size: 15px;
   }
 
   .tod-form-inline {
@@ -391,21 +397,23 @@ input {
 .seo-section {
   width: 100%;
   margin-top: 28px;
-  padding: 72px 24px 90px;
+  padding: clamp(54px, 6vw, 90px) clamp(16px, 4vw, 28px) clamp(70px, 7vw, 110px);
   background: transparent;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .seo-container {
-  max-width: 1080px;
+  max-width: 1100px;
   margin: 0 auto;
   text-align: left;
   color: #cbd5e1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .seo-title {
   margin: 0 0 12px;
-  font-size: 34px;
+  font-size: clamp(26px, 4vw, 34px);
   font-weight: 900;
   letter-spacing: -0.02em;
   color: #e5e7eb;
@@ -414,10 +422,10 @@ input {
 
 .seo-lead {
   margin: 0 0 26px;
-  max-width: 880px;
+  max-width: min(880px, 100%);
   line-height: 1.75;
   color: #94a3b8;
-  font-size: 16px;
+  font-size: clamp(15px, 2vw, 16px);
 }
 
 .seo-grid {
@@ -526,11 +534,11 @@ input {
   }
 
   .seo-section {
-    padding: 54px 16px 72px;
+    padding: clamp(48px, 6vw, 70px) clamp(14px, 4vw, 22px) clamp(60px, 7vw, 90px);
   }
 
   .seo-title {
-    font-size: 26px;
+    font-size: clamp(24px, 6vw, 28px);
   }
 }
 </style>

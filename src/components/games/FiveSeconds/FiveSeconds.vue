@@ -231,52 +231,57 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px 24px 28px;
+  padding: clamp(14px, 3vw, 28px);
   color: #e5e7eb;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .fs-content {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 1080px;
+  width: min(1100px, 100%);
   display: grid;
-  gap: 20px;
+  gap: clamp(16px, 3vw, 24px);
   justify-items: center;
-  padding: 24px 16px 20px;
+  padding: clamp(16px, 3vw, 28px) clamp(12px, 3vw, 24px) clamp(14px, 3vw, 26px);
+  margin: 0 auto;
+  align-content: center;
 }
 
 .fs-content:not(.fs-game) {
   max-width: 900px;
-  margin: -240px auto 0;
+  margin: 0 auto;
+  min-height: clamp(70vh, 90vw, 80vh);
+  align-content: center;
 }
 
 .fs-content.fs-game {
-  gap: 28px;
+  gap: clamp(18px, 3vw, 28px);
   justify-items: center;
   align-items: center;
   min-height: 80vh;
-  padding: 16px 0 24px;
-  margin-top: -200px;
+  padding: clamp(12px, 2vw, 20px) 0 clamp(16px, 3vw, 26px);
+  margin-top: 0;
   width: 100%;
 }
 
 .fs-shell h1 {
   margin: 0 0 6px;
-  font-size: 70px;
+  font-size: clamp(34px, 7vw, 64px);
   letter-spacing: 0;
   color: #e5e7eb;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
   font-weight: 800;
+  line-height: 1.05;
 }
 
 .fs-sub {
   margin: 6px 0 14px;
   color: #cbd5e1;
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
   line-height: 1.55;
   max-width: 760px;
   text-align: center;
@@ -286,12 +291,12 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
 
 .fs-cta {
   margin: 8px auto 10px;
-  padding: 16px 26px;
+  padding: clamp(14px, 2.4vw, 18px) clamp(20px, 3vw, 28px);
   border-radius: 999px;
   border: none;
   cursor: pointer;
   font-weight: 700;
-  font-size: 17px;
+  font-size: clamp(15px, 2vw, 18px);
   background: linear-gradient(120deg, #38bdf8, #a855f7);
   color: #0b1220;
   box-shadow: 0 15px 30px rgba(56, 189, 248, 0.25);
@@ -325,14 +330,15 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
 .fs-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 14px);
   justify-content: center;
   margin-bottom: 8px;
+  width: 100%;
 }
 
 .fs-chip {
   border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 12px 18px;
+  padding: clamp(10px, 2vw, 14px) clamp(14px, 3vw, 18px);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.03);
   color: #cbd5e1;
@@ -340,9 +346,11 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   display: inline-flex;
   gap: 8px;
   align-items: center;
+  justify-content: center;
+  flex: 1 1 clamp(140px, 28%, 220px);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
 }
 
 .fs-chip-active {
@@ -359,15 +367,15 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 28px;
+  padding: clamp(20px, 3vw, 30px);
   display: grid;
-  gap: 18px;
+  gap: clamp(12px, 2vw, 20px);
   position: relative;
   overflow: hidden;
   max-width: 900px;
   width: 100%;
-  min-height: 360px;
-  margin: -40px auto 0;
+  min-height: clamp(280px, 46vh, 380px);
+  margin: 0 auto;
   box-shadow: none;
 }
 
@@ -393,13 +401,13 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
 }
 
 .fs-prompt {
-  font-size: 34px;
+  font-size: clamp(24px, 5vw, 34px);
   font-weight: 700;
   line-height: 1.4;
   color: #e5e7eb;
   margin: 0;
   text-align: center;
-  min-height: 180px;
+  min-height: clamp(130px, 30vh, 200px);
   display: grid;
   place-items: center;
 }
@@ -453,13 +461,13 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
 }
 
 .fs-next {
-  padding: 14px 28px;
+  padding: clamp(12px, 2vw, 16px) clamp(18px, 3vw, 28px);
   border-radius: 999px;
   border: none;
   background: linear-gradient(120deg, #38bdf8, #a855f7);
   color: #0b1220;
   font-weight: 800;
-  font-size: 18px;
+  font-size: clamp(16px, 2vw, 18px);
   cursor: pointer;
   box-shadow: 0 14px 28px rgba(56, 189, 248, 0.25);
   transition: transform 0.12s ease, box-shadow 0.2s ease;
@@ -476,15 +484,15 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
 @media (max-width: 640px) {
   .fs-shell {
     align-items: flex-start;
-    padding: 4px 16px 12px;
+    padding: 8px 14px 14px;
   }
 
   .fs-content {
-    padding: 4px 12px 10px;
+    padding: 8px 12px 12px;
   }
 
   .fs-content:not(.fs-game) {
-    margin-top: -20px;
+    margin-top: 0;
   }
 
   .fs-chip {
@@ -493,24 +501,24 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   }
 
   .fs-shell h1 {
-    font-size: 52px;
-    line-height: 1.05;
+    font-size: clamp(30px, 9vw, 46px);
+    line-height: 1.08;
   }
 
   .fs-sub {
-    max-width: 90%;
-    font-size: 16px;
+    max-width: 92%;
+    font-size: 15px;
   }
 
   .fs-card {
-    margin-top: -20px;
-    min-height: 300px;
-    padding: 22px 14px;
+    margin-top: 0;
+    min-height: 260px;
+    padding: 18px 14px;
   }
 
   .fs-prompt {
-    font-size: 24px;
-    min-height: 130px;
+    font-size: clamp(20px, 6vw, 26px);
+    min-height: 120px;
   }
 
   .fs-btn {
