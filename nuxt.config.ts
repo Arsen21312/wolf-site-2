@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css'],
   nitro: {
     prerender: {
-      routes: ['/generators/wolf-quotes', '/generators/wolf-quotes/', '/sitemap.xml']
+      routes: ['/', '/generators/wolf-quotes', '/generators/wolf-quotes/', '/sitemap.xml']
     }
   },
   app: {

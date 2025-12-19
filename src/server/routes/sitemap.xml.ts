@@ -3,7 +3,9 @@ import { promises as fs } from 'fs'
 import path from 'path'
 
 const SITE_URL = 'https://neuralwisewolf.com'
-const dynamicRoutes = [
+
+// Ручные маршруты, которые не лежат прямо в src/pages (или которые нужно включить явно).
+const extraRoutes = [
   '/games/truth-or-dare',
   '/games/never-have-i-ever',
   '/games/5-seconds',
@@ -44,7 +46,7 @@ const collectPageRoutes = async () => {
   }
 
   await walk(pagesDir)
-  dynamicRoutes.forEach((route) => routes.add(route))
+  extraRoutes.forEach((route) => routes.add(route))
   return Array.from(routes).sort()
 }
 
