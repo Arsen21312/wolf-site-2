@@ -1,9 +1,9 @@
-﻿<template>
+<template>
   <header class="nav-shell">
     <div class="container nav-bar">
-      <NuxtLink to="/" class="brand">
-        <span class="brand-icon" role="img" aria-label="Нейронный Волк">🐺</span>
-        <strong class="brand-title">Сайт нейронного волка</strong>
+      <NuxtLink to="/" class="brand logo-wrap">
+        <img :src="logoSrc" alt="Логотип Нейронного Волка" class="logo-icon" />
+        <span class="brand-title logo-text">Сайт нейронного волка</span>
       </NuxtLink>
       <nav class="nav-links">
         <BubbleMenu
@@ -21,8 +21,10 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import BubbleMenu from './BubbleMenu.vue'
+
+import logoSrc from '~/assets/images/wolf-favicon.png'
 
 const menuItems = [
   { label: 'Игры', href: '/games', ariaLabel: 'Игры', rotation: -2, hoverStyles: { bgColor: '#fca63d', textColor: '#0c1117' } },
@@ -61,22 +63,23 @@ const menuItems = [
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   color: var(--text);
   text-decoration: none;
   min-width: 0;
   flex: 1 1 auto;
 }
 
-.brand-icon {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #6ad7ff, #fca63d);
+.logo-wrap {
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  font-size: 34px;
   flex-shrink: 0;
 }
 
@@ -96,10 +99,9 @@ const menuItems = [
 }
 
 @media (max-width: 900px) {
-  .brand-icon {
-    width: 56px;
-    height: 56px;
-    font-size: 30px;
+  .logo-icon {
+    width: 28px;
+    height: 28px;
   }
 
   .brand-title {

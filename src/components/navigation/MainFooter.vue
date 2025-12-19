@@ -3,19 +3,21 @@
     <div class="nw-footer-inner">
       <NuxtLink to="/" class="nw-brand">
         <span class="nw-title">Нейронный волк</span>
-        <span class="nw-dot">🐺</span>
+        <img class="nw-icon" :src="faviconSrc" alt="" aria-hidden="true" />
         <span class="nw-year">{{ year }}</span>
       </NuxtLink>
 
       <NuxtLink to="/ads" class="nw-tg-btn">
-        <span class="nw-tg-icon" aria-hidden="true" />
+        <img class="nw-tg-icon" :src="faviconSrc" alt="" aria-hidden="true" />
         <span>Реклама</span>
       </NuxtLink>
     </div>
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import faviconSrc from '~/assets/images/wolf-favicon.png'
+
 const year = new Date().getFullYear()
 </script>
 
@@ -63,9 +65,12 @@ const year = new Date().getFullYear()
   font-size: 15px;
 }
 
-.nw-dot {
-  color: #64748b;
-  font-size: 15px;
+.nw-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.4);
 }
 
 .nw-year {
@@ -102,10 +107,8 @@ const year = new Date().getFullYear()
 .nw-tg-icon {
   width: 18px;
   height: 18px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 30% 20%, #e0f2fe, #0ea5e9),
-    #0ea5e9;
-  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.6);
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.6);
 }
 </style>
