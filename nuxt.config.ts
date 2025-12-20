@@ -1,6 +1,15 @@
+import { config as loadEnv } from 'dotenv'
+
+loadEnv({ path: '.env' })
+loadEnv({ path: '.env.local', override: true })
+
 export default defineNuxtConfig({
   srcDir: 'src',
   devtools: { enabled: true },
+  runtimeConfig: {
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+  },
   css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css'],
   nitro: {
     prerender: {

@@ -1,143 +1,278 @@
-<template>
+﻿<template>
   <section class="wc-shell">
     <div class="wc-container">
       <div class="wc-head">
-        <p class="wc-pill">Демо-версия</p>
+        <div class="wc-topbar">
+          <div class="wc-chips">
+            <button
+              type="button"
+              class="wc-chip"
+              :class="{ active: activeMode === 'random' }"
+              @click="setMode('random')"
+            >
+              Случайная
+            </button>
+            <button
+              type="button"
+              class="wc-chip"
+              :class="{ active: activeMode === 'tasks' }"
+              @click="setMode('tasks')"
+            >
+              Задания
+            </button>
+            <button
+              type="button"
+              class="wc-chip"
+              :class="{ active: activeMode === 'create' }"
+              @click="setMode('create')"
+            >
+              Загадай слово
+            </button>
+            <button
+              type="button"
+              class="wc-chip"
+              :class="{ active: activeMode === 'party' }"
+              @click="setMode('party')"
+            >
+              Вечеринка
+            </button>
+          </div>
+          <button class="wc-howto" type="button" @click="isHowToOpen = true">Как играть</button>
+        </div>
         <h1 class="section-title wc-title">Волчий Контекст</h1>
-        <p class="wc-status-line">Попыток: {{ attempts.length }} · Подсказок: {{ hintsUsed }}</p>
+        <p class="wc-status-line">Попыток: {{ attemptsCount }} · Подсказок: {{ hintsCount }}</p>
       </div>
 
       <div class="wc-form">
-        <label class="wc-label" for="guess-input">введи слово</label>
         <div class="wc-input-row">
           <input
             id="guess-input"
             v-model="guessInput"
             class="wc-input"
             type="text"
-            placeholder="ассоциация или догадка"
+            placeholder="Пиши ассоциацию"
             @keyup.enter="submitGuess"
+            :disabled="isWon"
           />
-          <button class="wc-send" type="button" @click="submitGuess" aria-label="Проверить">
-            <span class="wc-arrow">➜</span>
+          <button
+            class="wc-send"
+            type="button"
+            @click="submitGuess"
+            aria-label="Проверить"
+            :disabled="isWon || isGuessing || isHinting"
+          >
+            <span class="wc-arrow">&gt;</span>
           </button>
-          <button class="wc-btn ghost" type="button" @click="giveHint" :disabled="!canGiveHint">Подсказка</button>
+          <button
+            class="wc-btn ghost"
+            type="button"
+            @click="giveHint"
+            :disabled="!canGiveHint || isGuessing || isHinting"
+          >
+            Подсказка
+          </button>
         </div>
+        <p v-if="isGuessing || isHinting" class="wc-status wc-loading">
+          <span class="wc-spinner"></span>
+          Думаю...
+        </p>
         <p class="wc-reaction">{{ reactionMessage }}</p>
-        <p v-if="statusMessage && statusMessage !== reactionMessage" class="wc-status">{{ statusMessage }}</p>
+        <p v-if="errorMessage" class="wc-status">{{ errorMessage }}</p>
+        <button v-if="isWon" class="wc-btn primary" type="button" @click="loadRandomGame">Новая игра</button>
+      </div>
+
+      <div v-if="!guesses.length" class="wc-rules">
+        <h2 class="wc-rules-title">Как играть в Волчий контекст</h2>
+        <div class="wc-rules-list">
+          <div class="wc-rules-item">
+            <span class="wc-rules-label">Цель</span>
+            <p class="wc-rules-text">
+              Есть секретное слово — оно номер 1 в большом списке. Твоя задача — добраться до него, угадывая ассоциации.
+            </p>
+          </div>
+          <div class="wc-rules-item">
+            <span class="wc-rules-label">Правила</span>
+            <p class="wc-rules-text">
+              У тебя неограниченное количество попыток. Пиши любые русские слова. Чем меньше номер, тем ближе слово к ответу. После каждой попытки ты видишь позицию и цвет полоски от льда к огню.
+            </p>
+          </div>
+          <div class="wc-rules-item">
+            <span class="wc-rules-label">Как это работает</span>
+            <p class="wc-rules-text">
+              Это «горячо/холодно» для слов: если ответ «кот», то «кошка» ближе, чем «собака». Алгоритм смотрит, как слова встречаются в текстах, и оценивает их похожесть по контексту.
+            </p>
+          </div>
+          <div class="wc-rules-item">
+            <span class="wc-rules-label">Подсказки</span>
+            <p class="wc-rules-text">
+              Если застрял, жми «Подсказка». Игра предложит слово, которое лучше твоего текущего результата.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div class="wc-history">
-        <div v-if="attemptsSorted.length" class="wc-history-list">
-          <div
-            v-for="item in attemptsSorted"
-            :key="item.word"
-            :class="['wc-row', 'wc-bar', getBarClass(item.rankValue, item.maxRank)]"
-            :style="{ width: item.width }"
-          >
-            <span class="wc-word">{{ item.word }}</span>
-            <span class="wc-rank">{{ item.rankLabel }}</span>
+        <div v-if="lastGuess" class="wc-history-current">
+          <div :class="['wc-row', lastGuess.isHint ? 'wc-row-hint' : 'wc-row-current']">
+            <div
+              class="wc-row-fill"
+              :style="{ width: `${5 + 95 * (lastGuess.heatScore ?? 0)}%`, background: getZoneColor(lastGuess.zone) }"
+            ></div>
+            <div class="wc-row-content">
+              <span class="wc-word">
+                {{ lastGuess.lemma }}
+                <span v-if="lastGuess.isHint" class="wc-hint-pill">подсказка</span>
+                <span v-else class="wc-hint-pill wc-current-pill">текущий ход</span>
+              </span>
+              <span class="wc-rank">{{ lastGuess.position }}</span>
+            </div>
           </div>
         </div>
+        <ul v-if="attemptsSorted.length" class="wc-history-list">
+          <li v-for="item in attemptsSorted" :key="`${item.id}-${item.position}-${item.createdAt}`" class="wc-history-item">
+            <div :class="['wc-row', item.isHint ? 'wc-row-hint' : '']">
+              <div
+                class="wc-row-fill"
+                :style="{ width: `${5 + 95 * (item.heatScore ?? 0)}%`, background: getZoneColor(item.zone) }"
+              ></div>
+              <div class="wc-row-content">
+                <span class="wc-word">
+                  {{ item.lemma }}
+                  <span v-if="item.isHint" class="wc-hint-pill">подсказка</span>
+                </span>
+                <span class="wc-rank">{{ item.position }}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
         <p v-else class="wc-muted">История пока пуста</p>
       </div>
     </div>
+    <ContextHowToModal v-model="isHowToOpen" />
+    <ContextTasksModal v-model="isTasksOpen" />
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { officialSecrets } from '@/data/wolf-context/officialSecrets'
-import { neighbors } from '@/data/wolf-context/neighbors'
-import { wolfDictionary } from '@/data/wolf-context/dictionary'
+import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
+import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
 
-type Attempt = {
-  word: string
-  rank: number | null
+type Guess = {
+  id: number
+  lemma: string
+  position: number
+  total: number
+  similarity: number
+  heatScore: number
+  zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire'
+  isHint: boolean
   createdAt: number
-  status: 'hit' | 'missed' | 'unknown' | 'hint'
-  reaction: string
 }
 
+type RandomWordResponse = {
+  ok: boolean
+  word?: { lemma?: string; gameId?: number; id?: number; rank?: number } & Record<string, unknown>
+  error?: string
+}
+
+type GuessResponse =
+  | {
+      ok: false
+      exists: false
+      message: string
+    }
+  | {
+      ok: true
+      exists: true
+      isHint?: boolean
+      position: number
+      total: number
+      percentile: number
+      zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire'
+      isWin?: boolean
+      target: { id: number; lemma: string; rank: number | null }
+      guess: {
+        id: number
+        lemma: string
+        rank: number | null
+        position: number
+        total: number
+        similarity: number
+        heatScore: number
+        zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire'
+      }
+    }
+
 useHead({
-  title: 'Волчий Контекст, угадай слово по смыслу',
+  title: 'Волчий Контекст — игра на ассоциации',
   meta: [
     {
       name: 'description',
       content:
-        'Игра где угадываешь секретное слово по смысловой близости, вводишь слова и смотришь ранг, чем ближе к 1, тем горячее след'
+        'Угадай секретное слово по контексту. Чем меньше номер, тем ближе к ответу. Подсказки помогают продвигаться к цели.'
     },
-    { property: 'og:title', content: 'Волчий Контекст, угадай слово по смыслу' },
+    { property: 'og:title', content: 'Волчий Контекст — игра на ассоциации' },
     {
       property: 'og:description',
       content:
-        'Угадай секретное слово по смыслу, без аккаунтов и комнат. Режимы: случайная охота, слово дня и свои загадки.'
+        'Угадай секретное слово по контексту. Чем меньше номер, тем ближе к ответу. Подсказки помогают продвигаться к цели.'
     }
   ]
 })
 
 const guessInput = ref('')
-const secret = ref<string | null>(null)
-const secretNeighbors = ref<string[]>([])
-const rankMap = ref<Map<string, number> | null>(null)
-const attempts = ref<Attempt[]>([])
+const targetId = ref<number | null>(null)
+const targetGameId = ref<number | null>(null)
+const targetLemma = ref<string | null>(null)
+const targetRank = ref<number | null>(null)
+const guesses = ref<Guess[]>([])
+const lastGuess = ref<Guess | null>(null)
 const reactionMessage = ref('Готов к охоте')
-const statusMessage = ref('')
-const hintsUsed = ref(0)
+const errorMessage = ref('')
+const isWon = ref(false)
+const isGuessing = ref(false)
+const isHinting = ref(false)
+const activeMode = ref<'random' | 'create' | 'party' | 'tasks'>('random')
+const isHowToOpen = ref(false)
+const isTasksOpen = ref(false)
 
-const normalizedNeighbors: Record<string, string[]> = Object.entries(neighbors).reduce((acc, [key, value]) => {
-  acc[normalizeWord(key)] = value
-  return acc
-}, {} as Record<string, string[]>)
+const attemptsCount = computed(() => guesses.value.filter((a) => !a.isHint).length)
+const hintsCount = computed(() => guesses.value.filter((a) => a.isHint).length)
 
-const dictionary = new Set(wolfDictionary.map((w) => normalizeWord(w)))
-const dictionaryKeys = new Set(Object.keys(normalizedNeighbors))
-const availableOfficial = officialSecrets.filter((item) => dictionaryKeys.has(normalizeWord(item)))
-
-const bestIndex = computed(() => {
-  const ranks = attempts.value.map((a) => a.rank).filter((n): n is number => n !== null)
-  if (!ranks.length) return Number.POSITIVE_INFINITY
-  return Math.min(...ranks)
+const bestPosition = computed(() => {
+  const positions = guesses.value.map((a) => a.position).filter((n) => Number.isFinite(n))
+  if (!positions.length) return Number.POSITIVE_INFINITY
+  return Math.min(...positions)
 })
 
 const attemptsSorted = computed(() => {
-  const maxRank = Math.max(...attempts.value.map((a) => (a.rank ?? 0)), secretNeighbors.value.length || 1)
-  const sorted = [...attempts.value].sort((a, b) => {
-    const rankA = a.rank ?? Number.POSITIVE_INFINITY
-    const rankB = b.rank ?? Number.POSITIVE_INFINITY
-    if (rankA === rankB) return a.createdAt - b.createdAt
-    return rankA - rankB
+  const sorted = [...guesses.value].sort((a, b) => {
+    if (a.position === b.position) return a.createdAt - b.createdAt
+    return a.position - b.position
   })
-  return sorted.map((item) => {
-    const rank = item.rank ?? maxRank
-    const progress = 1 - (rank - 1) / Math.max(maxRank, 1)
-    const width = `${Math.max(30, Math.min(100, Math.round(progress * 100)))}%`
-    return {
-      word: item.word,
-      rankLabel: item.rank !== null ? item.rank : '-',
-      width,
-      rankValue: rank,
-      maxRank
-    }
-  })
+  return sorted
 })
 
-function getBarClass(index: number, maxRank: number) {
-  if (index === 1) return 'wc-bar-best'
-  const ratio = index / maxRank
-  if (ratio <= 0.2) return 'wc-bar-hot'
-  if (ratio <= 0.5) return 'wc-bar-warm'
-  return 'wc-bar-cold'
+function getZoneColor(zone: Guess['zone']) {
+  switch (zone) {
+    case 'fire':
+      return 'linear-gradient(90deg, #fb923c, #facc15)'
+    case 'hot':
+      return '#fb923c'
+    case 'warm':
+      return '#f59e0b'
+    case 'cold':
+      return '#3b82f6'
+    default:
+      return '#1f2937'
+  }
 }
 
 const canGiveHint = computed(() => {
-  if (!secret.value || !secretNeighbors.value.length) return false
-  if (bestIndex.value <= 1) return false
-  const hintRank = bestIndex.value === Number.POSITIVE_INFINITY ? secretNeighbors.value.length : bestIndex.value - 1
-  const hintWord = secretNeighbors.value[hintRank - 1]
-  if (!hintWord) return false
-  const normalizedHint = normalizeWord(hintWord)
-  return !attempts.value.some((a) => a.word === normalizedHint)
+  if (!targetId.value || !targetGameId.value) return false
+  if (isWon.value) return false
+  return true
 })
 
 function normalizeWord(value: string): string {
@@ -148,105 +283,234 @@ function normalizeWord(value: string): string {
     .trim()
 }
 
-function reactionForRank(rank: number | null): string {
-  if (rank === 1) return 'АУФ, в точку'
-  if (rank !== null && rank <= 10) return 'горячо, рядом'
-  if (rank !== null && rank <= 50) return 'пахнет лесом'
-  if (rank !== null && rank <= 200) return 'след есть, но далеко'
-  if (rank !== null) return 'ты пока в степи'
-  return 'след не найден'
+function zoneFromHeat(heatScore: number) {
+  if (heatScore < 0.25) return 'ice'
+  if (heatScore < 0.5) return 'cold'
+  if (heatScore < 0.75) return 'warm'
+  return 'hot'
 }
 
-function startRandomHunt() {
+function reactionForZone(zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire') {
+  if (zone === 'fire') return 'Огонь, ты совсем рядом'
+  if (zone === 'hot') return 'Горячо, почти нашел'
+  if (zone === 'warm') return 'Тепло, уже ближе'
+  if (zone === 'cold') return 'Холодно еще, но след есть'
+  return 'Ты далеко от цели'
+}
+
+function setMode(mode: 'random' | 'create' | 'party' | 'tasks') {
+  activeMode.value = mode
+  if (mode === 'create') {
+    navigateTo('/context/create')
+    return
+  }
+  if (mode === 'party') {
+    navigateTo('/context/party')
+    return
+  }
+  if (mode === 'tasks') {
+    isTasksOpen.value = true
+  }
+}
+
+async function loadRandomGame() {
   try {
-    const nextSecret = pickRandomSecret()
-    const data = normalizedNeighbors[nextSecret]
-    secret.value = nextSecret
-    secretNeighbors.value = data || []
-    rankMap.value = data ? buildRankMap(data) : null
-    attempts.value = []
+    const response = await $fetch<RandomWordResponse>('/api/context/random-word?gameId=1')
+    if (!response?.ok) {
+      throw new Error(response?.error || 'Failed to load a random word')
+    }
+    const lemma = typeof response.word?.lemma === 'string' ? response.word.lemma : ''
+    if (!lemma) {
+      throw new Error('Supabase word has no Lemma')
+    }
+    const rawId = response.word?.id
+    const rawGameId = response.word?.gameId
+    const rawRank = response.word?.rank
+    const resolvedId = typeof rawId === 'number' ? rawId : Number(rawId)
+    const resolvedGameId = typeof rawGameId === 'number' ? rawGameId : Number(rawGameId)
+    const resolvedRank = typeof rawRank === 'number' ? rawRank : Number(rawRank)
+
+    if (!Number.isFinite(resolvedId) || !Number.isFinite(resolvedGameId)) {
+      throw new Error('Supabase word has invalid ids')
+    }
+
+    targetId.value = resolvedId
+    targetGameId.value = resolvedGameId
+    targetLemma.value = lemma
+    targetRank.value = Number.isFinite(resolvedRank) ? resolvedRank : null
+    guesses.value = []
+    lastGuess.value = null
     reactionMessage.value = 'Готов к охоте'
-    statusMessage.value = ''
-    hintsUsed.value = 0
+    errorMessage.value = ''
     guessInput.value = ''
+    isWon.value = false
   } catch (e) {
-    console.error('Не удалось запустить игру Волчий Контекст', e)
+    console.error('Не удалось получить слово из Supabase', e)
+    errorMessage.value = 'Не удалось получить слово из Supabase'
   }
-}
-
-function pickRandomSecret(): string {
-  if (availableOfficial.length) {
-    const idx = Math.floor(Math.random() * availableOfficial.length)
-    return normalizeWord(availableOfficial[idx])
-  }
-  const keys = Object.keys(normalizedNeighbors)
-  return normalizeWord(keys[Math.floor(Math.random() * keys.length)])
-}
-
-function buildRankMap(list: string[]): Map<string, number> {
-  const map = new Map<string, number>()
-  list.forEach((word, idx) => {
-    map.set(normalizeWord(word), idx + 1)
-  })
-  return map
 }
 
 function submitGuess() {
-  if (!rankMap.value) return
+  if (!targetId.value || !targetGameId.value || isWon.value) return
   const guess = normalizeWord(guessInput.value)
   if (!guess) return
 
   guessInput.value = ''
-  statusMessage.value = ''
+  errorMessage.value = ''
 
-  if (attempts.value.some((item) => item.word === guess)) return
-
-  if (!dictionary.has(guess)) {
-    addAttempt({ word: guess, rank: null, status: 'unknown', reaction: reactionForRank(null) })
-    statusMessage.value = 'Слова нет в словаре'
+  const alreadyUsed = guesses.value.some((item) => item.lemma.toLowerCase() === guess)
+  if (alreadyUsed) {
+    errorMessage.value = `Слово "${guess}" уже было введено`
     return
   }
 
-  if (!rankMap.value.has(guess)) {
-    addAttempt({ word: guess, rank: null, status: 'missed', reaction: reactionForRank(null) })
-    statusMessage.value = 'След не найден'
-    return
+  const payload = {
+    gameId: targetGameId.value ?? 1,
+    targetId: targetId.value,
+    guess,
+    mode: 'guess'
   }
 
-  const rank = rankMap.value.get(guess) ?? null
-  const reaction = reactionForRank(rank)
-  addAttempt({ word: guess, rank, status: 'hit', reaction })
-  statusMessage.value = reaction
+  isGuessing.value = true
+  $fetch<GuessResponse>('/api/context/guess', {
+    method: 'POST',
+    body: payload
+  })
+    .then((response) => {
+      if (!response.ok) {
+        errorMessage.value = 'message' in response ? response.message : 'Не удалось проверить слово'
+        return
+      }
+
+      if (response.ok && response.exists) {
+        const heatScore = Number.isFinite(response.guess.heatScore) ? response.guess.heatScore : 0
+        const zone = zoneFromHeat(heatScore)
+        const reaction = reactionForZone(zone)
+        addAttempt({
+          id: response.guess.id,
+          lemma: response.guess.lemma,
+          position: response.guess.position,
+          total: response.total,
+          similarity: response.guess.similarity,
+          heatScore,
+          zone,
+          isHint: Boolean(response.isHint)
+        })
+        reactionMessage.value = reaction
+        errorMessage.value = ''
+        const win = response.isWin === true
+        if (win) isWon.value = true
+        return
+      }
+
+      errorMessage.value = 'Не удалось проверить слово'
+    })
+    .catch((error) => {
+      console.error(error)
+      errorMessage.value = 'Не удалось проверить слово'
+    })
+    .finally(() => {
+      isGuessing.value = false
+    })
 }
 
-function addAttempt(payload: { word: string; rank: number | null; status: Attempt['status']; reaction: string }) {
-  attempts.value.push({
-    word: payload.word,
-    rank: payload.rank,
-    status: payload.status,
-    reaction: payload.reaction,
+function addAttempt(payload: {
+  id: number
+  lemma: string
+  position: number
+  total: number
+  similarity: number
+  heatScore: number
+  zone: Guess['zone']
+  isHint: boolean
+}) {
+  const guessItem: Guess = {
+    id: payload.id,
+    lemma: payload.lemma,
+    position: payload.position,
+    total: payload.total,
+    similarity: payload.similarity,
+    heatScore: payload.heatScore,
+    zone: payload.zone,
+    isHint: payload.isHint,
     createdAt: Date.now()
-  })
-  reactionMessage.value = payload.reaction
+  }
+  guesses.value.push(guessItem)
+  lastGuess.value = guessItem
 }
 
 function giveHint() {
-  if (!rankMap.value || !secret.value || !secretNeighbors.value.length) return
-  if (bestIndex.value <= 1) return
+  if (!targetId.value || !targetGameId.value || isWon.value) return
 
-  const hintRank = bestIndex.value === Number.POSITIVE_INFINITY ? secretNeighbors.value.length : bestIndex.value - 1
-  const hintWord = secretNeighbors.value[hintRank - 1]
-  if (!hintWord) return
+  const best = Number.isFinite(bestPosition.value) ? bestPosition.value : null
 
-  const normalizedHint = normalizeWord(hintWord)
-  if (attempts.value.some((item) => item.word === normalizedHint)) return
+  const payload = {
+    gameId: targetGameId.value ?? 1,
+    targetId: targetId.value,
+    hint: true,
+    bestPosition: best,
+    mode: 'hint'
+  }
 
-  addAttempt({ word: normalizedHint, rank: hintRank, status: 'hint', reaction: 'подсказка' })
-  hintsUsed.value += 1
+  isHinting.value = true
+  $fetch<GuessResponse>('/api/context/guess', {
+    method: 'POST',
+    body: payload
+  })
+    .then((response) => {
+      if (response.ok && response.exists) {
+        const heatScore = Number.isFinite(response.guess.heatScore) ? response.guess.heatScore : 0
+        const zone = zoneFromHeat(heatScore)
+        const reaction = reactionForZone(zone)
+        addAttempt({
+          id: response.guess.id,
+          lemma: response.guess.lemma,
+          position: response.guess.position,
+          total: response.total,
+          similarity: response.guess.similarity,
+          heatScore,
+          zone,
+          isHint: true
+        })
+        reactionMessage.value = reaction
+        errorMessage.value = ''
+        const win = response.isWin === true
+        if (win) isWon.value = true
+        return
+      }
+
+      if (!response.ok) {
+        errorMessage.value = 'message' in response ? response.message : 'Не удалось получить подсказку'
+        return
+      }
+
+      errorMessage.value = 'Не удалось получить подсказку'
+    })
+    .catch((error) => {
+      console.error(error)
+      errorMessage.value = 'Не удалось получить подсказку'
+    })
+    .finally(() => {
+      isHinting.value = false
+    })
 }
 
 onMounted(() => {
-  startRandomHunt()
+  const queryTargetId = Number(useRoute().query.targetId)
+  const queryGameId = Number(useRoute().query.gameId ?? 1)
+  if (Number.isFinite(queryTargetId)) {
+    targetId.value = queryTargetId
+    targetGameId.value = Number.isFinite(queryGameId) ? queryGameId : 1
+    guesses.value = []
+    lastGuess.value = null
+    reactionMessage.value = 'Готов к охоте'
+    errorMessage.value = ''
+    guessInput.value = ''
+    isWon.value = false
+    return
+  }
+
+  loadRandomGame()
 })
 </script>
 
@@ -267,6 +531,65 @@ onMounted(() => {
   display: grid;
   gap: 6px;
   text-align: center;
+}
+
+.wc-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 100%;
+}
+
+.wc-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wc-chip {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.5);
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.wc-chip.active {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.8);
+  color: #f8fafc;
+}
+
+.wc-chip:hover {
+  transform: translateY(-1px);
+}
+
+.wc-howto {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.35);
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.wc-howto:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.8);
 }
 
 .wc-title {
@@ -361,6 +684,75 @@ onMounted(() => {
   text-align: center;
 }
 
+.wc-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.wc-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(226, 232, 240, 0.25);
+  border-top-color: #e2e8f0;
+  animation: wc-spin 0.9s linear infinite;
+}
+
+@keyframes wc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wc-rules {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.45);
+}
+
+.wc-rules-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #f1f5f9;
+}
+
+.wc-rules-list {
+  display: grid;
+  gap: 12px;
+}
+
+.wc-rules-item {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.wc-rules-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c7d2fe;
+}
+
+.wc-rules-text {
+  margin: 0;
+  color: #e2e8f0;
+  line-height: 1.55;
+}
+
 .wc-history {
   display: grid;
   gap: 10px;
@@ -368,21 +760,60 @@ onMounted(() => {
 
 .wc-history-list {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wc-history-item {
+  width: 100%;
 }
 
 .wc-row {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.wc-row-hint {
+  border-color: rgba(52, 211, 153, 0.6);
+}
+
+.wc-row-current {
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.wc-history-current {
+  margin-bottom: 10px;
+}
+
+.wc-row-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  opacity: 0.65;
+}
+
+.wc-row-content {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 12px;
+  gap: 12px;
+  padding: 10px 14px;
   color: #e5e7eb;
-  transition: width 0.2s ease;
+  font-weight: 700;
 }
 
 .wc-word {
   font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .wc-rank {
@@ -390,26 +821,19 @@ onMounted(() => {
   color: #e5e7eb;
 }
 
-.wc-bar {
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: linear-gradient(90deg, rgba(74, 222, 128, 0.18), rgba(52, 211, 153, 0.28));
+.wc-hint-pill {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(52, 211, 153, 0.6);
+  color: #d1fae5;
 }
 
-.wc-bar-cold {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.18));
-}
-
-.wc-bar-warm {
-  background: linear-gradient(90deg, rgba(251, 191, 36, 0.28), rgba(249, 115, 22, 0.26));
-}
-
-.wc-bar-hot {
-  background: linear-gradient(90deg, rgba(74, 222, 128, 0.32), rgba(52, 211, 153, 0.36));
-}
-
-.wc-bar-best {
-  background: linear-gradient(90deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.48));
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.35);
+.wc-current-pill {
+  border-color: rgba(251, 191, 36, 0.6);
+  color: #fde68a;
 }
 
 .wc-btn {
