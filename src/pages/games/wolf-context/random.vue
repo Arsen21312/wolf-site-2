@@ -72,16 +72,38 @@
             Подсказка
           </button>
         </div>
-        <p v-if="isGuessing || isHinting" class="wc-status wc-loading">
-          <span class="wc-spinner"></span>
-          Думаю...
-        </p>
-        <p class="wc-reaction">{{ reactionMessage }}</p>
-        <p v-if="errorMessage" class="wc-status">{{ errorMessage }}</p>
         <button v-if="isWon" class="wc-btn primary" type="button" @click="loadRandomGame">Новая игра</button>
       </div>
 
-      <div v-if="!guesses.length" class="wc-rules">
+      <div class="wc-history-current">
+        <div
+          v-if="panelState.type !== 'guess'"
+          :class="['wc-row', 'wc-row-status', panelState.type === 'error' ? 'wc-row-status-error' : '']"
+        >
+          <div class="wc-row-content wc-row-status-content">
+            <span class="wc-status-text">
+              <span v-if="panelState.type === 'loading'" class="wc-spinner"></span>
+              {{ panelState.text }}
+            </span>
+          </div>
+        </div>
+        <div v-else :class="['wc-row', lastGuess?.isHint ? 'wc-row-hint' : 'wc-row-current']">
+          <div
+            class="wc-row-fill"
+            :style="{ width: `${5 + 95 * (lastGuess?.heatScore ?? 0)}%`, background: getZoneColor(lastGuess?.zone || 'ice') }"
+          ></div>
+          <div class="wc-row-content">
+            <span class="wc-word">
+              {{ lastGuess?.lemma }}
+              <span v-if="lastGuess?.isHint" class="wc-hint-pill">подсказка</span>
+              <span v-else class="wc-hint-pill wc-current-pill">текущий ход</span>
+            </span>
+            <span class="wc-rank">{{ lastGuess?.position }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="showRules" class="wc-rules">
         <h2 class="wc-rules-title">Как играть в Волчий контекст</h2>
         <div class="wc-rules-list">
           <div class="wc-rules-item">
@@ -112,22 +134,6 @@
       </div>
 
       <div class="wc-history">
-        <div v-if="lastGuess" class="wc-history-current">
-          <div :class="['wc-row', lastGuess.isHint ? 'wc-row-hint' : 'wc-row-current']">
-            <div
-              class="wc-row-fill"
-              :style="{ width: `${5 + 95 * (lastGuess.heatScore ?? 0)}%`, background: getZoneColor(lastGuess.zone) }"
-            ></div>
-            <div class="wc-row-content">
-              <span class="wc-word">
-                {{ lastGuess.lemma }}
-                <span v-if="lastGuess.isHint" class="wc-hint-pill">подсказка</span>
-                <span v-else class="wc-hint-pill wc-current-pill">текущий ход</span>
-              </span>
-              <span class="wc-rank">{{ lastGuess.position }}</span>
-            </div>
-          </div>
-        </div>
         <ul v-if="attemptsSorted.length" class="wc-history-list">
           <li v-for="item in attemptsSorted" :key="`${item.id}-${item.position}-${item.createdAt}`" class="wc-history-item">
             <div :class="['wc-row', item.isHint ? 'wc-row-hint' : '']">
@@ -154,9 +160,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
+import { contextOfficialTasks } from '~/data/contextOfficialTasks'
 
 type Guess = {
   id: number
@@ -237,8 +244,22 @@ const activeMode = ref<'random' | 'create' | 'party' | 'tasks'>('random')
 const isHowToOpen = ref(false)
 const isTasksOpen = ref(false)
 
+const panelState = computed(() => {
+  if (isGuessing.value || isHinting.value) {
+    return { type: 'loading' as const, text: 'Думаю...' }
+  }
+  if (errorMessage.value) {
+    return { type: 'error' as const, text: errorMessage.value }
+  }
+  if (lastGuess.value) {
+    return { type: 'guess' as const, text: '' }
+  }
+  return { type: 'info' as const, text: reactionMessage.value }
+})
+
 const attemptsCount = computed(() => guesses.value.filter((a) => !a.isHint).length)
 const hintsCount = computed(() => guesses.value.filter((a) => a.isHint).length)
+const showRules = computed(() => !guesses.value.length && !guessInput.value.trim() && !isGuessing.value && !isHinting.value)
 
 const bestPosition = computed(() => {
   const positions = guesses.value.map((a) => a.position).filter((n) => Number.isFinite(n))
@@ -314,8 +335,12 @@ function setMode(mode: 'random' | 'create' | 'party' | 'tasks') {
 }
 
 async function loadRandomGame() {
+  await loadGameFromApi('/api/context/random-word?gameId=1')
+}
+
+async function loadGameFromApi(url: string) {
   try {
-    const response = await $fetch<RandomWordResponse>('/api/context/random-word?gameId=1')
+    const response = await $fetch<RandomWordResponse>(url)
     if (!response?.ok) {
       throw new Error(response?.error || 'Failed to load a random word')
     }
@@ -350,8 +375,32 @@ async function loadRandomGame() {
   }
 }
 
+function resolveOfficialTask(official: string) {
+  const numeric = Number(official)
+  if (Number.isFinite(numeric) && numeric > 0 && numeric <= contextOfficialTasks.length) {
+    return contextOfficialTasks[numeric - 1]
+  }
+  return contextOfficialTasks.find((item) => item.slug === official)
+}
+
+async function loadOfficialGame(official: string) {
+  const task = resolveOfficialTask(official)
+  if (!task) {
+    console.warn('Unknown official task', official)
+    await loadRandomGame()
+    return
+  }
+  const url = `/api/context/random-word?gameId=1&lemma=${encodeURIComponent(task.lemma)}`
+  await loadGameFromApi(url)
+}
+
 function submitGuess() {
-  if (!targetId.value || !targetGameId.value || isWon.value) return
+  if (!targetId.value || !targetGameId.value || isWon.value) {
+    if (!targetId.value || !targetGameId.value) {
+      errorMessage.value = 'Подожди, игра загружается'
+    }
+    return
+  }
   const guess = normalizeWord(guessInput.value)
   if (!guess) return
 
@@ -449,7 +498,9 @@ function giveHint() {
     targetId: targetId.value,
     hint: true,
     bestPosition: best,
-    mode: 'hint'
+    mode: 'hint',
+    usedIds: guesses.value.map((item) => item.id),
+    usedLemmas: guesses.value.map((item) => item.lemma)
   }
 
   isHinting.value = true
@@ -496,8 +547,28 @@ function giveHint() {
 }
 
 onMounted(() => {
-  const queryTargetId = Number(useRoute().query.targetId)
-  const queryGameId = Number(useRoute().query.gameId ?? 1)
+  initFromRoute()
+})
+
+const lastRouteKey = ref('')
+
+function buildRouteKey(route: ReturnType<typeof useRoute>) {
+  const target = typeof route.query.targetId === 'string' ? route.query.targetId : ''
+  const game = typeof route.query.gameId === 'string' ? route.query.gameId : ''
+  const official = typeof route.query.official === 'string' ? route.query.official : ''
+  return `${target}|${game}|${official}`
+}
+
+function initFromRoute() {
+  const route = useRoute()
+  const routeKey = buildRouteKey(route)
+  if (routeKey === lastRouteKey.value) return
+  lastRouteKey.value = routeKey
+
+  const queryTargetId = Number(route.query.targetId)
+  const queryGameId = Number(route.query.gameId ?? 1)
+  const officialSlug = typeof route.query.official === 'string' ? route.query.official : ''
+
   if (Number.isFinite(queryTargetId)) {
     targetId.value = queryTargetId
     targetGameId.value = Number.isFinite(queryGameId) ? queryGameId : 1
@@ -510,8 +581,20 @@ onMounted(() => {
     return
   }
 
+  if (officialSlug) {
+    loadOfficialGame(officialSlug)
+    return
+  }
+
   loadRandomGame()
-})
+}
+
+watch(
+  () => useRoute().query,
+  () => {
+    initFromRoute()
+  }
+)
 </script>
 
 <style scoped>
@@ -671,26 +754,6 @@ onMounted(() => {
   font-size: 16px;
 }
 
-.wc-reaction {
-  margin: 0;
-  font-weight: 800;
-  color: #e0e7ff;
-  text-align: center;
-}
-
-.wc-status {
-  margin: 0;
-  color: #cbd5e1;
-  text-align: center;
-}
-
-.wc-loading {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-}
-
 .wc-spinner {
   width: 14px;
   height: 14px;
@@ -787,6 +850,16 @@ onMounted(() => {
   border-color: rgba(251, 191, 36, 0.6);
 }
 
+.wc-row-status {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.wc-row-status-error {
+  border-color: rgba(248, 113, 113, 0.6);
+  color: #fee2e2;
+}
+
 .wc-history-current {
   margin-bottom: 10px;
 }
@@ -807,6 +880,18 @@ onMounted(() => {
   padding: 10px 14px;
   color: #e5e7eb;
   font-weight: 700;
+}
+
+.wc-row-status-content {
+  justify-content: center;
+}
+
+.wc-status-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: #e0e7ff;
 }
 
 .wc-word {

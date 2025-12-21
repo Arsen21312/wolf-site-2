@@ -8,6 +8,8 @@ type GuessBody = {
   mode?: string
   hint?: boolean
   bestPosition?: number | string
+  usedIds?: Array<number | string>
+  usedLemmas?: string[]
 }
 
 type ContextWord = {
@@ -27,6 +29,7 @@ type RankedWord = ContextWord & {
 const rankedCache: Record<string, RankedWord[]> = {}
 const PAGE_SIZE = 1000
 const EMBEDDING_MIN_WORDS = 100
+const NEIGHBOR_LIMIT = 1000
 
 function normalizeLemma(value: string): string {
   return value.toLowerCase().replace(/ё/g, 'е').trim()
@@ -141,6 +144,57 @@ function cosineSimilarity(a: number[], b: number[]): number {
   }
   if (!na || !nb) return 0
   return dot / (Math.sqrt(na) * Math.sqrt(nb))
+}
+
+function mapRankToPosition(rank: number, totalWords: number | null): number {
+  const total = totalWords && totalWords > 0 ? totalWords : NEIGHBOR_LIMIT
+  if (total <= 1) return 1
+  if (total <= NEIGHBOR_LIMIT) return Math.max(1, Math.min(total, rank))
+  const clampedRank = Math.max(1, Math.min(NEIGHBOR_LIMIT, rank))
+  const pos = Math.round(((clampedRank - 1) / (NEIGHBOR_LIMIT - 1)) * (total - 1) + 1)
+  return Math.max(1, Math.min(total, pos))
+}
+
+function mapPositionToRank(position: number, totalWords: number | null): number {
+  const total = totalWords && totalWords > 0 ? totalWords : NEIGHBOR_LIMIT
+  if (total <= 1) return 1
+  if (total <= NEIGHBOR_LIMIT) return Math.max(1, Math.min(total, position))
+  const clampedPos = Math.max(1, Math.min(total, position))
+  const rank = Math.round(((clampedPos - 1) / (total - 1)) * (NEIGHBOR_LIMIT - 1) + 1)
+  return Math.max(1, Math.min(NEIGHBOR_LIMIT, rank))
+}
+
+function estimateRank(similarity: number, sortedSimilarities: number[]): number {
+  if (!sortedSimilarities.length) return NEIGHBOR_LIMIT
+  let lo = 0
+  let hi = sortedSimilarities.length
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2)
+    if (similarity >= sortedSimilarities[mid]) {
+      hi = mid
+    } else {
+      lo = mid + 1
+    }
+  }
+  return Math.max(1, Math.min(sortedSimilarities.length, lo + 1))
+}
+
+function positionFromSimilarity(similarity: number, total: number): { position: number; percentile: number } {
+  const percentile = Math.max(0, Math.min(1, (similarity + 1) / 2))
+  const position = total > 1 ? Math.round(1 + (1 - percentile) * (total - 1)) : 1
+  return { position, percentile }
+}
+
+function positionFromDistance(distance: number, total: number, maxDistance = 12): { position: number; percentile: number } {
+  const clamped = Math.max(0, Math.min(maxDistance, distance))
+  const percentile = maxDistance > 0 ? 1 - clamped / maxDistance : 0
+  const position = total > 1 ? Math.round(1 + (1 - percentile) * (total - 1)) : 1
+  return { position, percentile }
+}
+
+function similarityFromDistance(distance: number, maxDistance = 12): number {
+  const clamped = Math.max(0, Math.min(maxDistance, distance))
+  return maxDistance > 0 ? 1 - clamped / maxDistance : 0
 }
 
 async function getAllCoreWordsForGame(gameId: number): Promise<ContextWord[]> {
@@ -372,10 +426,52 @@ async function getWordByLemma(gameId: number, lemma: string): Promise<ContextWor
   }
 }
 
+async function getEmbeddingById(wordId: number): Promise<number[] | null> {
+  const supabase = getSupabaseClient()
+  const { data, error } = await supabase
+    .from('context_word_embeddings')
+    .select('embedding')
+    .eq('word_id', wordId)
+    .maybeSingle()
+
+  if (error) {
+    console.error('EMBEDDING LOAD ERROR', error?.message || error)
+    return null
+  }
+
+  return Array.isArray(data?.embedding) ? data.embedding : null
+}
+
+async function getTotalActiveWords(gameId: number): Promise<number | null> {
+  const supabase = getSupabaseClient()
+  const { count, error } = await supabase
+    .from('context_words')
+    .select('id', { count: 'exact', head: true })
+    .eq('game_id', gameId)
+    .eq('is_core', true)
+    .eq('is_active', true)
+
+  if (error) {
+    console.error('TOTAL WORDS ERROR', error?.message || error)
+    return null
+  }
+
+  return count ?? null
+}
+
 export default defineEventHandler(async (event) => {
   try {
     const body = (await readBody(event)) as GuessBody | null
-    const { gameId: gameIdRaw, targetId: targetIdRaw, guess: rawGuess, hint, bestPosition, mode } = body || {}
+    const {
+      gameId: gameIdRaw,
+      targetId: targetIdRaw,
+      guess: rawGuess,
+      hint,
+      bestPosition,
+      mode,
+      usedIds,
+      usedLemmas
+    } = body || {}
 
     const gameId = toNumber(gameIdRaw)
     const targetId = toNumber(targetIdRaw)
@@ -395,6 +491,7 @@ export default defineEventHandler(async (event) => {
 
     const neighbors = await getNeighborsForTarget(targetId)
     const targetWord = await getWordById(gameId, targetId)
+    const totalActiveWords = await getTotalActiveWords(gameId)
 
     if (!targetWord) {
       console.error('CONTEXT GUESS NO TARGET', { gameId, targetId })
@@ -408,13 +505,23 @@ export default defineEventHandler(async (event) => {
     })
 
     if (neighbors.length) {
-      const total = neighbors.length
+      const total = totalActiveWords ?? neighbors.length
+      const usedIdSet = new Set((usedIds ?? []).map((id) => Number(id)).filter((id) => Number.isFinite(id)))
+      const usedLemmaSet = new Set(
+        (usedLemmas ?? []).map((lemma) => (typeof lemma === 'string' ? normalizeLemma(lemma) : '')).filter(Boolean)
+      )
       const byNeighborId = new Map<number, NeighborRow>()
+      const neighborSimilarities: number[] = []
       for (const row of neighbors) {
         const neighborId = Number(row.neighbor_word_id)
         if (!Number.isFinite(neighborId)) continue
         byNeighborId.set(neighborId, row)
+        const sim = Number(row.similarity)
+        if (Number.isFinite(sim)) {
+          neighborSimilarities.push(sim)
+        }
       }
+      neighborSimilarities.sort((a, b) => b - a)
 
       if (!isHint) {
         const guessWord = await getWordByLemma(gameId, guess)
@@ -423,11 +530,36 @@ export default defineEventHandler(async (event) => {
         }
 
         const neighbor = byNeighborId.get(guessWord.id)
-        const position = neighbor ? Number(neighbor.rank) : total
-        const percentile = total > 1 ? 1 - (position - 1) / (total - 1) : 1
+        let rawRank = neighbor ? Number(neighbor.rank) : NEIGHBOR_LIMIT
+        let similarity = neighbor ? Number(neighbor.similarity) : 0
+
+        if (!neighbor) {
+          const targetEmbedding = await getEmbeddingById(targetId)
+          const guessEmbedding = await getEmbeddingById(guessWord.id)
+          if (targetEmbedding && guessEmbedding) {
+            similarity = cosineSimilarity(targetEmbedding, guessEmbedding)
+            rawRank = estimateRank(similarity, neighborSimilarities)
+          }
+        }
+
+        let position: number
+        let percentile: number
+        if (neighbor) {
+          position = mapRankToPosition(rawRank, totalActiveWords)
+          percentile = total > 1 ? 1 - (position - 1) / (total - 1) : 1
+        } else if (similarity !== 0) {
+          const mapped = positionFromSimilarity(similarity, total)
+          position = mapped.position
+          percentile = mapped.percentile
+        } else {
+          const distance = levenshtein(normalizeLemma(guessWord.Lemma), normalizeLemma(targetWord.Lemma))
+          const mapped = positionFromDistance(distance, total)
+          position = mapped.position
+          percentile = mapped.percentile
+          similarity = similarityFromDistance(distance)
+        }
         const heatScore = Math.max(0, Math.min(1, percentile))
         const zone = getZoneByPosition(position, total)
-        const similarity = neighbor ? Number(neighbor.similarity) : 0
         const isWin = guessWord.id === targetId
 
         return {
@@ -465,29 +597,55 @@ export default defineEventHandler(async (event) => {
       }
 
       const getHintTargetPosition = (currentBest: number, totalCount: number) => {
-        if (currentBest > 2000) return Math.max(1, currentBest - 200)
-        if (currentBest > 1000) return Math.max(1, currentBest - 100)
-        if (currentBest > 500) return Math.max(1, currentBest - 50)
-        if (currentBest > 300) return Math.max(1, currentBest - 10)
-        if (currentBest > 50) return Math.max(1, currentBest - 5)
-        if (currentBest > 1) return Math.max(1, currentBest - 1)
-        return 1
+        if (currentBest <= 1) return 1
+        return Math.max(1, Math.ceil(currentBest / 2))
       }
 
       const hintPos = getHintTargetPosition(bestValue, total)
-      const resolvedIndex = Math.max(0, Math.min(total - 1, hintPos - 1))
-      const neighbor = neighbors[resolvedIndex]
-      if (!neighbor) {
-        return { ok: false, message: 'Failed to build a hint' }
+      let desiredRank = mapPositionToRank(hintPos, totalActiveWords)
+      if (hintPos > 1 && desiredRank <= 1) {
+        desiredRank = 2
+      }
+      let resolvedIndex = Math.max(0, Math.min(neighbors.length - 1, desiredRank - 1))
+      let neighbor = neighbors[resolvedIndex]
+      let hintWord: ContextWord | null = null
+      let attempts = 0
+      const maxAttempts = 50
+
+      while (neighbor && attempts < maxAttempts) {
+        const hintWordId = Number(neighbor.neighbor_word_id)
+        if (!Number.isFinite(hintWordId) || usedIdSet.has(hintWordId)) {
+          resolvedIndex += 1
+          neighbor = neighbors[resolvedIndex]
+          attempts += 1
+          continue
+        }
+        const candidate = await getWordById(gameId, hintWordId)
+        if (!candidate) {
+          resolvedIndex += 1
+          neighbor = neighbors[resolvedIndex]
+          attempts += 1
+          continue
+        }
+        const normalizedLemma = normalizeLemma(candidate.Lemma)
+        if (usedLemmaSet.has(normalizedLemma)) {
+          resolvedIndex += 1
+          neighbor = neighbors[resolvedIndex]
+          attempts += 1
+          continue
+        }
+        hintWord = candidate
+        break
       }
 
-      const hintWordId = Number(neighbor.neighbor_word_id)
-      const hintWord = Number.isFinite(hintWordId) ? await getWordById(gameId, hintWordId) : null
+      if (!neighbor || !hintWord) {
+        return { ok: false, message: 'Failed to build a hint' }
+      }
       if (!hintWord) {
         return { ok: false, message: 'Hint word not found' }
       }
 
-      const position = Number(neighbor.rank)
+      const position = Math.max(1, Math.min(total, hintPos))
       const percentile = total > 1 ? 1 - (position - 1) / (total - 1) : 1
       const heatScore = Math.max(0, Math.min(1, percentile))
       const zone = getZoneByPosition(position, total)
@@ -575,18 +733,36 @@ export default defineEventHandler(async (event) => {
     }
 
     const getHintTargetPosition = (currentBest: number, totalCount: number) => {
-      if (currentBest > 2000) return Math.max(1, currentBest - 200)
-      if (currentBest > 1000) return Math.max(1, currentBest - 100)
-      if (currentBest > 500) return Math.max(1, currentBest - 50)
-      if (currentBest > 300) return Math.max(1, currentBest - 10)
-      if (currentBest > 50) return Math.max(1, currentBest - 5)
-      if (currentBest > 1) return Math.max(1, currentBest - 1)
-      return 1
+      if (currentBest <= 1) return 1
+      return Math.max(1, Math.ceil(currentBest / 2))
     }
 
+    const usedIdSet = new Set((usedIds ?? []).map((id) => Number(id)).filter((id) => Number.isFinite(id)))
+    const usedLemmaSet = new Set(
+      (usedLemmas ?? []).map((lemma) => (typeof lemma === 'string' ? normalizeLemma(lemma) : '')).filter(Boolean)
+    )
     const hintPos = getHintTargetPosition(bestValue, total)
-    const resolvedIndex = Math.max(0, Math.min(total - 1, hintPos - 1))
-    const hintWord = ranked[resolvedIndex]
+    let resolvedIndex = Math.max(0, Math.min(total - 1, hintPos - 1))
+    let hintWord = ranked[resolvedIndex]
+    let attempts = 0
+    const maxAttempts = 50
+
+    while (hintWord && attempts < maxAttempts) {
+      if (usedIdSet.has(hintWord.id)) {
+        resolvedIndex += 1
+        hintWord = ranked[resolvedIndex]
+        attempts += 1
+        continue
+      }
+      const normalizedLemma = normalizeLemma(hintWord.Lemma)
+      if (usedLemmaSet.has(normalizedLemma)) {
+        resolvedIndex += 1
+        hintWord = ranked[resolvedIndex]
+        attempts += 1
+        continue
+      }
+      break
+    }
     if (!hintWord) {
       return { ok: false, message: 'Failed to build a hint' }
     }

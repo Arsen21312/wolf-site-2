@@ -7,8 +7,17 @@ export default defineEventHandler(async (event) => {
   await supabase.auth.getSession()
 
   const config = useRuntimeConfig()
-  const url = config.supabaseUrl || process.env.SUPABASE_URL
-  const anonKey = config.supabaseAnonKey || process.env.SUPABASE_ANON_KEY
+  const publicConfig = config.public || {}
+  const url =
+    process.env.SUPABASE_URL ||
+    process.env.NUXT_PUBLIC_SUPABASE_URL ||
+    publicConfig.supabaseUrl ||
+    config.supabaseUrl
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY ||
+    publicConfig.supabaseAnonKey ||
+    config.supabaseAnonKey
 
   const res = await fetch(`${url}/auth/v1/health`, {
     headers: { apikey: anonKey as string }

@@ -13,7 +13,7 @@
             type="button"
             class="context-tab"
             :class="{ active: activeTab === 'official' }"
-            @click="activeTab = 'official'"
+            @click="setTab('official')"
           >
             Официальные
           </button>
@@ -21,7 +21,7 @@
             type="button"
             class="context-tab"
             :class="{ active: activeTab === 'rooms' }"
-            @click="activeTab = 'rooms'"
+            @click="setTab('rooms')"
           >
             Комнаты
           </button>
@@ -29,7 +29,7 @@
             type="button"
             class="context-tab"
             :class="{ active: activeTab === 'user' }"
-            @click="activeTab = 'user'"
+            @click="setTab('user')"
           >
             Пользовательские
           </button>
@@ -37,14 +37,18 @@
 
         <div class="context-modal-body">
           <div v-if="activeTab === 'official'" class="context-list">
+            <div v-if="officialLoading" class="context-list-empty">Загружаю список...</div>
+            <div v-else-if="officialError" class="context-list-empty">{{ officialError }}</div>
             <button
-              v-for="item in gamesOfficial"
-              :key="item.id"
+              v-else
+              v-for="(item, index) in officialTasks"
+              :key="item.slug"
               class="context-list-item"
               type="button"
-              @click="selectOfficial(item.id)"
+              @click="selectOfficial(index + 1)"
             >
-              {{ item.title }}
+              <div class="context-list-title">Игра {{ index + 1 }}</div>
+              <div class="context-list-desc">{{ item.description }}</div>
             </button>
           </div>
 
@@ -56,7 +60,10 @@
           </div>
 
           <div v-else class="context-list">
+            <div v-if="userLoading" class="context-list-empty">Загружаю список...</div>
+            <div v-else-if="gamesUser.length === 0" class="context-list-empty">Пока нет пользовательских игр</div>
             <button
+              v-else
               v-for="item in gamesUser"
               :key="item.id"
               class="context-list-item"
@@ -74,16 +81,24 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+
+type OfficialTaskApi = {
+  slug: string
+  title: string
+  description: string
+  lemma: string
+  wordId: number
+  position: number | null
+}
+
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 
 const activeTab = ref<'official' | 'rooms' | 'user'>('official')
-
-const gamesOfficial = [
-  { id: 30, title: 'Игра #30' },
-  { id: 29, title: 'Игра #29' },
-  { id: 28, title: 'Игра #28' }
-]
+const officialTasks = ref<OfficialTaskApi[]>([])
+const officialLoading = ref(false)
+const officialError = ref('')
+const userLoading = ref(false)
 
 const gamesRooms = [
   { id: '0d25cd3f', name: 'Комната 0d25cd3f', players: 0 },
@@ -96,7 +111,37 @@ function close() {
   emit('update:modelValue', false)
 }
 
+function setTab(tab: 'official' | 'rooms' | 'user') {
+  activeTab.value = tab
+  if (tab === 'official') {
+    loadOfficialTasks()
+  }
+  if (tab === 'user') {
+    loadUserGames()
+  }
+}
+
+async function loadOfficialTasks() {
+  if (officialLoading.value || officialTasks.value.length) return
+  officialLoading.value = true
+  officialError.value = ''
+  try {
+    const response = await $fetch<{ tasks?: OfficialTaskApi[] }>('/api/context/official-tasks')
+    officialTasks.value = response?.tasks ?? []
+    if (!officialTasks.value.length) {
+      officialError.value = 'Пока нет доступных заданий'
+    }
+  } catch (error) {
+    console.error(error)
+    officialError.value = 'Не удалось загрузить задания'
+  } finally {
+    officialLoading.value = false
+  }
+}
+
 async function loadUserGames() {
+  if (userLoading.value) return
+  userLoading.value = true
   try {
     const response = await $fetch<{ ok: boolean; games?: Array<{ id: number; title: string }> }>(
       '/api/context/user-games'
@@ -106,11 +151,14 @@ async function loadUserGames() {
     }
   } catch (error) {
     console.error(error)
+  } finally {
+    userLoading.value = false
   }
 }
 
-function selectOfficial(id: number) {
-  console.log('select official game', id)
+function selectOfficial(code: number) {
+  close()
+  navigateTo(`/games/wolf-context/random?official=${code}`)
 }
 
 function selectUser(id: number) {
@@ -120,7 +168,10 @@ function selectUser(id: number) {
 watch(
   () => props.modelValue,
   (open) => {
-    if (open) {
+    if (open && activeTab.value === 'official') {
+      loadOfficialTasks()
+    }
+    if (open && activeTab.value === 'user') {
       loadUserGames()
     }
   }
@@ -186,6 +237,7 @@ watch(
   padding: 14px 20px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .context-tab {
@@ -223,6 +275,8 @@ watch(
   border-radius: 12px;
   font-weight: 700;
   cursor: pointer;
+  display: grid;
+  gap: 6px;
 }
 
 .context-list-card {
@@ -239,6 +293,17 @@ watch(
 .context-list-meta {
   color: #94a3b8;
   font-size: 13px;
-  margin-top: 4px;
+}
+
+.context-list-desc {
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.context-list-empty {
+  color: #94a3b8;
+  text-align: center;
+  padding: 18px 12px;
 }
 </style>
