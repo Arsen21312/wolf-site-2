@@ -170,14 +170,24 @@ async function generateNeighbors() {
 
 function createGame() {
   if (!neighbors.value.length || !targetWordId.value) return
-  $fetch<{ id: number; playUrl: string }>('/api/context/create-game', {
+  $fetch<{ ok: boolean; id?: number; playUrl?: string; exists?: boolean; message?: string }>('/api/context/create-game', {
     method: 'POST',
     body: { wordId: targetWordId.value }
   })
     .then((response) => {
-      createdGameId.value = response.id
-      playUrl.value = response.playUrl
-      statusMessage.value = 'Игра создана, скоро подключим комнаты'
+      if (!response.ok && response.exists && response.id && response.playUrl) {
+        createdGameId.value = response.id
+        playUrl.value = response.playUrl
+        statusMessage.value = 'Такая игра уже есть. Ссылка ниже.'
+        return
+      }
+      if (response.ok && response.id && response.playUrl) {
+        createdGameId.value = response.id
+        playUrl.value = response.playUrl
+        statusMessage.value = 'Игра создана, скоро подключим комнаты'
+        return
+      }
+      statusMessage.value = response.message || 'Не удалось создать игру'
     })
     .catch((error) => {
       console.error(error)

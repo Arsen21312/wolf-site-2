@@ -22,6 +22,7 @@ const PAGE_SIZE = 1000
 const NEIGHBOR_LIMIT = 5000
 const UPSERT_BATCH = 500
 const SLEEP_MS = 200
+const EMBEDDING_DIM = 384
 
 function loadEnvFile(filePath: string) {
   if (!fs.existsSync(filePath)) return
@@ -76,6 +77,23 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return dot / (Math.sqrt(na) * Math.sqrt(nb))
 }
 
+function parseEmbedding(value: unknown): number[] | null {
+  if (Array.isArray(value)) {
+    return value.every((item) => typeof item === 'number' && Number.isFinite(item)) ? value : null
+  }
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    if (!trimmed.startsWith('[') || !trimmed.endsWith(']')) return null
+    try {
+      const parsed = JSON.parse(trimmed)
+      return Array.isArray(parsed) ? parsed.map((item) => Number(item)) : null
+    } catch (error) {
+      return null
+    }
+  }
+  return null
+}
+
 async function getAllActiveWords(supabase: ReturnType<typeof createClient>): Promise<WordRow[]> {
   const rows: WordRow[] = []
   let from = 0
@@ -125,8 +143,9 @@ async function getEmbeddingsMap(
 
     for (const row of (data ?? []) as EmbeddingRow[]) {
       const id = Number(row.word_id)
-      if (!Number.isFinite(id) || !Array.isArray(row.embedding)) continue
-      map.set(id, row.embedding)
+      const embedding = parseEmbedding(row.embedding)
+      if (!Number.isFinite(id) || !embedding || embedding.length !== EMBEDDING_DIM) continue
+      map.set(id, embedding)
     }
   }
 

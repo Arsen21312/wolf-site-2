@@ -9,6 +9,8 @@
     "preview": "nuxt preview",
     "start": "nuxt start",
     "generate:context-embeddings": "ts-node --esm ./scripts/generate-context-embeddings.ts",
+    "build:context-embeddings": "ts-node --esm ./scripts/build-context-embeddings.ts",
+    "import:context-embeddings": "ts-node --esm ./scripts/import-context-embeddings.ts",
     "cleanup:context-words": "ts-node --esm ./scripts/cleanup-context-words.ts",
     "generate:context-neighbors": "ts-node --esm ./scripts/generate-context-neighbors.ts"
   },
@@ -16,6 +18,8 @@
     "@supabase/supabase-js": "^2.89.0",
     "gsap": "^3.14.2",
     "openai": "^4.72.0",
+    "ml-matrix": "^6.12.0",
+    "ml-pca": "^4.1.1",
     "motion-v": "^1.7.4",
     "nuxt": "^3.13.0"
   },
