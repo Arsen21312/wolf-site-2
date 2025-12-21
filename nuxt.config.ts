@@ -12,6 +12,26 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css'],
   nitro: {
+    routeRules: {
+      '/tools/truth-or-dare-generator.html': {
+        redirect: { to: '/games/truth-or-dare', statusCode: 301 }
+      },
+      '/tools/summa-propisyu.html': {
+        redirect: { to: '/generators/summa-propisyu', statusCode: 301 }
+      },
+      '/tools/love-calculator.html': {
+        redirect: { to: '/decisions/love-calculator', statusCode: 301 }
+      },
+      '/about.html': {
+        redirect: { to: '/about', statusCode: 301 }
+      },
+      '/tools/random-quote-generator.html': {
+        redirect: { to: '/generators/wolf-quotes', statusCode: 301 }
+      },
+      '/tools/random-meme-idea.html': {
+        redirect: { to: '/generators/wolf-quotes', statusCode: 301 }
+      }
+    },
     prerender: {
       routes: ['/', '/generators/wolf-quotes', '/generators/wolf-quotes/', '/sitemap.xml']
     }
