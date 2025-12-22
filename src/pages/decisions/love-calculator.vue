@@ -163,15 +163,40 @@ const ideas = [
   'для знакомства'
 ]
 
+
+const normalizeName = (value) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z\u0430-\u044f\u0451]+/g, '')
+
+const specialNames = new Set([
+  '\u0430\u043b\u0441\u0443',
+  '\u0430\u0440\u0441\u0435\u043d\u0442\u0438\u0439',
+  'alsu',
+  'arsentiy',
+  'arsenty',
+  'arsentii'
+])
+
 function calculate() {
-  const a = (name1.value || '').trim().toLowerCase()
-  const b = (name2.value || '').trim().toLowerCase()
+  const a = normalizeName(name1.value || '')
+  const b = normalizeName(name2.value || '')
   if (!a || !b) {
     error.value = 'Введи оба имени, волк без этого не считает'
     hasResult.value = false
     return
   }
   error.value = ''
+
+
+  const isSpecialPair = specialNames.has(a) && specialNames.has(b) && a !== b
+  if (isSpecialPair) {
+    score.value = 100
+    message.value = '\u0418\u0434\u0435\u0430\u043b\u044c\u043d\u043e\u0435 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u0410\u043b\u0441\u0443 \u0438 \u0410\u0440\u0441\u0435\u043d\u0442\u0438\u044f.'
+    hasResult.value = true
+    return
+  }
 
   const combined = a + b
   let total = 0
