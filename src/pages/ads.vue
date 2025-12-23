@@ -1,60 +1,57 @@
 <template>
-  <section class="ads-page">
+  <section class="promo-page">
     <div class="container">
-      <div class="ads-hero">
-        <div class="ads-hero__text">
-          <div class="pill">
-            <span>Сотрудничество</span>
-            <strong>Реклама</strong>
-          </div>
+      <div class="promo-hero">
+        <div class="promo-hero__text">
+          <Breadcrumbs :items="breadcrumbs" />
           <h1 class="section-title">Реклама и сотрудничество</h1>
           <p class="section-lead">
             Размещайте рекламу на нашем сайте и в соцсетях. Заказывайте кастомные видео с волками для вашего проекта.
           </p>
-          <div class="ads-hero__cta">
+          <div class="promo-hero__cta">
             <a class="btn" :href="ctaLink.href" target="_blank" rel="noreferrer">
               Написать в Telegram
             </a>
           </div>
         </div>
-        <div class="ads-hero__stats">
-          <div v-for="stat in heroStats" :key="stat.label" class="ads-stat card">
-            <div class="ads-stat__value">{{ stat.value }}</div>
-            <div class="ads-stat__label">{{ stat.label }}</div>
+        <div class="promo-hero__stats">
+          <div v-for="stat in heroStats" :key="stat.label" class="promo-stat card">
+            <div class="promo-stat__value">{{ stat.value }}</div>
+            <div class="promo-stat__label">{{ stat.label }}</div>
           </div>
         </div>
       </div>
 
-      <section class="ads-section">
-        <header class="ads-section__header">
+      <section class="promo-section">
+        <header class="promo-section__header">
           <p class="tag">Выберите формат</p>
           <h2>Рекламные предложения</h2>
           <p class="muted">Выберите подходящий вариант рекламы или сотрудничества</p>
         </header>
-        <div class="ads-grid three">
-          <article v-for="offer in offers" :key="offer.id" class="ads-card ads-card--offer">
-            <div class="ads-card__head">
-              <span class="ads-card__icon">{{ offer.icon }}</span>
-              <div class="ads-card__titles">
+        <div class="promo-grid three">
+          <article v-for="offer in offers" :key="offer.id" class="promo-card promo-card--offer">
+            <div class="promo-card__head">
+              <span class="promo-card__icon">{{ offer.icon }}</span>
+              <div class="promo-card__titles">
                 <h3>{{ offer.title }}</h3>
                 <p class="muted">{{ offer.description }}</p>
               </div>
-              <span v-if="offer.badge" class="ads-badge" :class="`tone-${offer.badgeTone || 'blue'}`">
+              <span v-if="offer.badge" class="promo-badge" :class="`tone-${offer.badgeTone || 'blue'}`">
                 {{ offer.badge }}
               </span>
             </div>
-            <ul class="ads-list">
+            <ul class="promo-list">
               <li v-for="feature in offer.features" :key="feature">
                 <span>•</span>
                 <span>{{ feature }}</span>
               </li>
             </ul>
-            <div class="ads-card__footer">
+            <div class="promo-card__footer">
               <div>
-                <div class="ads-price">{{ offer.price }}</div>
+                <div class="promo-price">{{ offer.price }}</div>
                 <p class="muted small">{{ offer.note }}</p>
               </div>
-              <a class="ads-link" :href="ctaLink.href" target="_blank" rel="noreferrer">
+              <a class="promo-link" :href="ctaLink.href" target="_blank" rel="noreferrer">
                 Обсудить
               </a>
             </div>
@@ -62,38 +59,38 @@
         </div>
       </section>
 
-      <section class="ads-section">
-        <header class="ads-section__header">
+      <section class="promo-section">
+        <header class="promo-section__header">
           <p class="tag">Процесс</p>
           <h2>Как мы работаем</h2>
           <p class="muted">Простой и прозрачный процесс сотрудничества</p>
         </header>
-        <div class="ads-grid four">
-          <article v-for="step in processSteps" :key="step.id" class="ads-step">
-            <div class="ads-step__index">{{ step.id }}</div>
-            <div class="ads-step__icon">{{ step.icon }}</div>
+        <div class="promo-grid four">
+          <article v-for="step in processSteps" :key="step.id" class="promo-step">
+            <div class="promo-step__index">{{ step.id }}</div>
+            <div class="promo-step__icon">{{ step.icon }}</div>
             <h3>{{ step.title }}</h3>
             <p class="muted">{{ step.text }}</p>
           </article>
         </div>
       </section>
 
-      <section class="ads-section">
-        <header class="ads-section__header">
+      <section class="promo-section">
+        <header class="promo-section__header">
           <p class="tag">Оплата</p>
           <h2>Способы оплаты</h2>
           <p class="muted">Оплачивайте удобным для вас способом</p>
         </header>
-        <div class="ads-grid three">
-          <article v-for="method in paymentMethods" :key="method.title" class="ads-card ads-card--pay">
-            <div class="ads-card__head">
-              <span class="ads-card__icon">{{ method.icon }}</span>
+        <div class="promo-grid three">
+          <article v-for="method in paymentMethods" :key="method.title" class="promo-card promo-card--pay">
+            <div class="promo-card__head">
+              <span class="promo-card__icon">{{ method.icon }}</span>
               <div>
                 <h3>{{ method.title }}</h3>
                 <p class="muted">Доступные способы</p>
               </div>
             </div>
-            <ul class="ads-list">
+            <ul class="promo-list">
               <li v-for="detail in method.details" :key="detail">
                 <span>•</span>
                 <span>{{ detail }}</span>
@@ -101,16 +98,16 @@
             </ul>
           </article>
         </div>
-        <div class="ads-note">
-          <div class="ads-note__title">Важно</div>
+        <div class="promo-note">
+          <div class="promo-note__title">Важно</div>
           <p>
             Реквизиты предоставляем после обсуждения задачи. Возможна оплата по счету с НДС.
           </p>
         </div>
       </section>
 
-      <section class="ads-cta">
-        <div class="ads-cta__content">
+      <section class="promo-cta">
+        <div class="promo-cta__content">
           <div>
             <p class="tag">Связаться</p>
             <h2>Готовы к сотрудничеству?</h2>
@@ -128,7 +125,13 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { ctaLink, heroStats, offers, paymentMethods, processSteps } from '@/data/ads'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Реклама' }
+]
 
 const pageTitle = 'Реклама и сотрудничество — Нейронный Волк'
 const pageDescription =
@@ -153,12 +156,12 @@ useHead({
 </script>
 
 <style scoped>
-.ads-page {
+.promo-page {
   padding: 24px 0 48px;
   color: #e5e7eb;
 }
 
-.ads-hero {
+.promo-hero {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
@@ -170,22 +173,22 @@ useHead({
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
 }
 
-.ads-hero__text {
+.promo-hero__text {
   display: grid;
   gap: 14px;
 }
 
-.ads-hero__cta {
+.promo-hero__cta {
   margin-top: 6px;
 }
 
-.ads-hero__stats {
+.promo-hero__stats {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
-.ads-stat {
+.promo-stat {
   padding: 16px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.04);
@@ -194,60 +197,60 @@ useHead({
   transition: transform 0.15s ease, border-color 0.2s ease;
 }
 
-.ads-stat:hover {
+.promo-stat:hover {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.ads-stat__value {
+.promo-stat__value {
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.5px;
 }
 
-.ads-stat__label {
+.promo-stat__label {
   margin-top: 6px;
   color: #cbd5e1;
 }
 
-.ads-section {
+.promo-section {
   margin-top: 34px;
 }
 
-.ads-section__header {
+.promo-section__header {
   display: grid;
   gap: 6px;
   margin-bottom: 14px;
 }
 
-.ads-section__header h2 {
+.promo-section__header h2 {
   margin: 0;
   font-size: 28px;
   letter-spacing: -0.4px;
 }
 
-.ads-hero .pill,
-.ads-section__header .tag {
+.promo-hero .pill,
+.promo-section__header .tag {
   width: fit-content;
   align-self: start;
   justify-self: start;
 }
 
-.ads-grid {
+.promo-grid {
   display: grid;
   gap: 14px;
   align-items: stretch;
 }
 
-.ads-grid.three {
+.promo-grid.three {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
-.ads-grid.four {
+.promo-grid.four {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.ads-card {
+.promo-card {
   border-radius: 18px;
   padding: 18px;
   background: rgba(15, 23, 42, 0.8);
@@ -261,13 +264,13 @@ useHead({
   height: 100%;
 }
 
-.ads-card:hover {
+.promo-card:hover {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
 }
 
-.ads-card__head {
+.promo-card__head {
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -276,7 +279,7 @@ useHead({
   flex-direction: column;
 }
 
-.ads-card__icon {
+.promo-card__icon {
   width: 48px;
   height: 48px;
   border-radius: 14px;
@@ -286,35 +289,35 @@ useHead({
   font-size: 22px;
 }
 
-.ads-card--pay .ads-card__head {
+.promo-card--pay .promo-card__head {
   padding-top: 4px;
   padding-right: 12px;
   gap: 6px;
 }
 
-.ads-card--pay .ads-card__icon {
+.promo-card--pay .promo-card__icon {
   position: absolute;
   top: 8px;
   right: 10px;
 }
 
-.ads-card--pay {
+.promo-card--pay {
   padding: 16px;
 }
 
-.ads-card--pay h3 {
+.promo-card--pay h3 {
   margin: 0 0 6px;
 }
 
-.ads-card--pay .muted {
+.promo-card--pay .muted {
   margin: 0 0 8px;
 }
 
-.ads-card__titles h3 {
+.promo-card__titles h3 {
   margin: 0 0 4px;
 }
 
-.ads-list {
+.promo-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -323,7 +326,7 @@ useHead({
   flex: 1;
 }
 
-.ads-list li {
+.promo-list li {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 8px;
@@ -331,7 +334,7 @@ useHead({
   color: #cbd5e1;
 }
 
-.ads-card__footer {
+.promo-card__footer {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -339,17 +342,17 @@ useHead({
   margin-top: auto;
 }
 
-.ads-price {
+.promo-price {
   font-size: 20px;
   font-weight: 800;
 }
 
-.ads-link {
+.promo-link {
   color: #6ad7ff;
   font-weight: 700;
 }
 
-.ads-badge {
+.promo-badge {
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
@@ -375,7 +378,7 @@ useHead({
   color: #fff2e0;
 }
 
-.ads-step {
+.promo-step {
   border-radius: 16px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.04);
@@ -387,12 +390,12 @@ useHead({
   position: relative;
 }
 
-.ads-step:hover {
+.promo-step:hover {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.18);
 }
 
-.ads-step__index {
+.promo-step__index {
   width: 36px;
   height: 36px;
   border-radius: 12px;
@@ -402,14 +405,14 @@ useHead({
   font-weight: 800;
 }
 
-.ads-step__icon {
+.promo-step__icon {
   position: absolute;
   top: 12px;
   right: 12px;
   font-size: 20px;
 }
 
-.ads-note {
+.promo-note {
   margin-top: 20px;
   padding: 16px;
   border-radius: 14px;
@@ -420,16 +423,16 @@ useHead({
   gap: 6px;
 }
 
-.ads-note__title {
+.promo-note__title {
   font-weight: 700;
   color: #e5e7eb;
 }
 
-.ads-cta {
+.promo-cta {
   margin-top: 32px;
 }
 
-.ads-cta__content {
+.promo-cta__content {
   border-radius: 20px;
   padding: 22px;
   background: linear-gradient(135deg, rgba(106, 215, 255, 0.12), rgba(252, 166, 61, 0.1));
@@ -447,21 +450,21 @@ useHead({
 }
 
 @media (max-width: 720px) {
-  .ads-hero {
+  .promo-hero {
     padding: 22px;
   }
 
-  .ads-card__head {
+  .promo-card__head {
     flex-direction: column;
   }
 }
 
 @media (max-width: 540px) {
-  .ads-hero {
+  .promo-hero {
     grid-template-columns: 1fr;
   }
 
-  .ads-hero__stats {
+  .promo-hero__stats {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
 
@@ -470,7 +473,7 @@ useHead({
     justify-content: center;
   }
 
-  .ads-card__footer {
+  .promo-card__footer {
     align-items: flex-start;
   }
 }

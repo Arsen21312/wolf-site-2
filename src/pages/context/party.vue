@@ -2,6 +2,7 @@
   <section class="context-page">
     <div class="context-container">
       <div class="context-header">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <div class="context-topbar">
           <div class="context-chips">
             <button
@@ -95,6 +96,7 @@
 </template>
 
 <script setup lang="ts">
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { ref, computed } from 'vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
 
@@ -105,6 +107,12 @@ const isOpenRoom = ref(true)
 const isRandomWord = ref(true)
 const customWord = ref('')
 const playerName = ref('')
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Волчий Контекст' }
+]
 
 const canCreate = computed(() => {
   if (!isRandomWord.value && !customWord.value.trim()) return false

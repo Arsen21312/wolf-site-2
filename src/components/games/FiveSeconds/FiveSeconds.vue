@@ -1,6 +1,7 @@
 ﻿<template>
   <section class="fs-shell" :class="{ 'fs-started': gameStarted }">
-        <div class="fs-content" v-if="!gameStarted">
+    <div class="fs-content" v-if="!gameStarted">
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <h1>Ответь за 5 секунд</h1>
       <p class="fs-sub">3 ответа, 5 секунд, бесконечный хаос</p>
       <button class="fs-cta" @click="startGame">
@@ -9,6 +10,7 @@
       </button>
     </div>
     <div class="fs-content fs-game" v-else>
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <div class="fs-filters">
         <button
           v-for="c in categories"
@@ -20,6 +22,24 @@
           <span class="fs-chip-icon">{{ c.icon }}</span>
           {{ c.label }}
         </button>
+      </div>
+      <div class="fs-filters-mobile">
+        <button class="fs-chip fs-chip-primary" type="button" @click="toggleCategories">
+          <span v-if="selectedCategoryIcon" class="fs-chip-icon">{{ selectedCategoryIcon }}</span>
+          {{ selectedCategoryLabel }}
+        </button>
+        <div class="fs-filters-extra" :class="{ open: showCategories }">
+          <button
+            v-for="c in mobileCategories"
+            :key="c.id"
+            class="fs-chip"
+            type="button"
+            @click="handleCategorySelect(c.id)"
+          >
+            <span v-if="c.icon" class="fs-chip-icon">{{ c.icon }}</span>
+            {{ c.label }}
+          </button>
+        </div>
       </div>
 
       <div class="fs-card">
@@ -46,18 +66,19 @@
       </div>
     </div>
   </section>
-  <SocialPopup :visible="showPopup" :payload="popupPayload" @close="showPopup = false" />
+  <SocialPopup :visible="showPopup" :payload="popupPayload" @close="handlePopupClose" />
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import SocialPopup from '@/components/ui/SocialPopup.vue';
 
 const categories = [
   { id: 'popular', label: 'Популярное', icon: '🥤' },
-  { id: 'family', label: 'Для семейных пар', icon: '💜' },
+  { id: 'family', label: 'Для пар', icon: '💜' },
   { id: 'extreme', label: 'Экстрим', icon: '🔥' },
-  { id: 'nsfw', label: '18+', icon: '🔞' }
+  { id: 'nsfw', label: 'Пошлое', icon: '🔞' }
 ];
 
 const prompts = [
@@ -115,6 +136,9 @@ const duration = 5;
 const gameStarted = ref(false);
 const timer = ref(duration);
 const activeCategory = ref('popular');
+const randomCategory = { id: 'random', label: 'Случайно' };
+const currentCategoryForPrompt = ref(activeCategory.value);
+const showCategories = ref(false);
 const currentPromptIndex = ref(0);
 const intervalId = ref(null);
 const timeUp = ref(false);
@@ -128,21 +152,14 @@ const socials = [
     text: 'Куча мемов, всё самое свежее тут',
     cta: 'Перейти в логово',
     link: 'https://t.me/neural_wise_wolf',
-    emoji: '📬'
-  },
-  {
-    title: 'Залетай в Instagram',
-    text: 'Самое первое и большое сообщество, много мемов с волками',
-    cta: 'Открыть Instagram',
-    link: 'https://instagram.com/neural_wise_wolf/',
-    emoji: '📸'
+    emoji: '✉️'
   },
   {
     title: 'TikTok Волка',
     text: 'Мемы, стримы и много волков',
     cta: 'Смотреть TikTok',
     link: 'https://www.tiktok.com/@neural_wolf',
-    emoji: '🎵'
+    emoji: '🎬'
   },
   {
     title: 'YouTube канал',
@@ -150,13 +167,27 @@ const socials = [
     cta: 'Открыть YouTube',
     link: 'https://www.youtube.com/@neural_wolf',
     emoji: '▶️'
+  },
+  {
+    title: 'Залетай в Instagram',
+    text: 'Самое первое и большое сообщество, много мемов с волками',
+    cta: 'Открыть Instagram',
+    link: 'https://instagram.com/neural_wise_wolf/',
+    emoji: '📸'
   }
 ];
 
 const popupPayload = computed(() => socials[popupIndex.value % socials.length]);
 
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Ответь за 5 секунд' }
+];
+
+
 const filteredPrompts = computed(() =>
-  prompts.filter((p) => p.category === activeCategory.value)
+  prompts.filter((p) => p.category === currentCategoryForPrompt.value)
 );
 
 const currentPrompt = computed(() => {
@@ -166,9 +197,32 @@ const currentPrompt = computed(() => {
 });
 
 const currentLabel = computed(() => {
+  const c = categories.find((item) => item.id === currentCategoryForPrompt.value);
+  return c ? c.label : '';
+});
+
+const mobileCategories = computed(() => {
+  const selectedId = activeCategory.value || randomCategory.id;
+  return [randomCategory, ...categories].filter((c) => c.id !== selectedId);
+});
+
+const selectedCategoryLabel = computed(() => {
+  if (activeCategory.value === randomCategory.id) return randomCategory.label;
   const c = categories.find((item) => item.id === activeCategory.value);
   return c ? c.label : '';
 });
+
+const selectedCategoryIcon = computed(() => {
+  if (activeCategory.value === randomCategory.id) return '';
+  const c = categories.find((item) => item.id === activeCategory.value);
+  return c?.icon || '';
+});
+
+function pickCategoryForPrompt() {
+  if (activeCategory.value !== randomCategory.id) return activeCategory.value;
+  const idx = Math.floor(Math.random() * categories.length);
+  return categories[idx]?.id || categories[0]?.id || 'popular';
+}
 
 const displayTime = computed(() => Math.max(0, Math.ceil(timer.value)));
 const ringStyle = computed(() => {
@@ -196,7 +250,9 @@ function startTimer() {
 }
 
 function pickPrompt() {
-  const list = filteredPrompts.value;
+  const categoryForPrompt = pickCategoryForPrompt();
+  currentCategoryForPrompt.value = categoryForPrompt;
+  const list = prompts.filter((p) => p.category === categoryForPrompt);
   if (!list.length) return;
   currentPromptIndex.value = Math.floor(Math.random() * list.length);
 }
@@ -212,7 +268,6 @@ function nextPrompt() {
   startTimer();
   promptsSeen.value += 1;
   if (promptsSeen.value % 5 === 0) {
-    popupIndex.value += 1;
     showPopup.value = true;
   }
 }
@@ -223,7 +278,20 @@ function setCategory(cat) {
   startTimer();
 }
 
+function handleCategorySelect(cat) {
+  setCategory(cat);
+  showCategories.value = false;
+}
+
+function toggleCategories() {
+  showCategories.value = !showCategories.value;
+}
+
 onBeforeUnmount(() => clearInterval(intervalId.value));
+function handlePopupClose() {
+  showPopup.value = false;
+  popupIndex.value = (popupIndex.value + 1) % socials.length;
+}
 </script>
 
 <style scoped>
@@ -233,7 +301,7 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: clamp(14px, 3vw, 28px);
+  padding: clamp(8px, 2.2vw, 18px);
   color: #e5e7eb;
   text-align: center;
   box-sizing: border-box;
@@ -259,11 +327,11 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
 }
 
 .fs-content.fs-game {
-  gap: clamp(18px, 3vw, 28px);
+  gap: clamp(14px, 2.6vw, 24px);
   justify-items: center;
   align-items: center;
-  min-height: 80vh;
-  padding: clamp(12px, 2vw, 20px) 0 clamp(16px, 3vw, 26px);
+  min-height: 70vh;
+  padding: clamp(8px, 1.6vw, 16px) 0 clamp(12px, 2.4vw, 20px);
   margin-top: 0;
   width: 100%;
 }
@@ -336,6 +404,14 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   width: 100%;
 }
 
+.fs-filters-mobile {
+  display: none;
+  width: 100%;
+  margin: 0 auto;
+  gap: 10px;
+  justify-items: center;
+}
+
 .fs-chip {
   border: 1px solid rgba(255, 255, 255, 0.14);
   padding: clamp(10px, 2vw, 14px) clamp(14px, 3vw, 18px);
@@ -351,6 +427,30 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   font-size: clamp(14px, 1.8vw, 16px);
+}
+
+.fs-chip-primary {
+  animation: fs-pulse 5s ease-in-out infinite;
+  width: 100%;
+  max-width: 200px;
+  flex: 0 0 auto;
+  align-self: center;
+  box-sizing: border-box;
+}
+
+.fs-filters-extra {
+  display: grid;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+  justify-items: center;
+}
+
+.fs-filters-extra.open {
+  max-height: 420px;
+  opacity: 1;
 }
 
 .fs-chip-active {
@@ -500,6 +600,14 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
     justify-content: center;
   }
 
+  .fs-filters {
+    display: none;
+  }
+
+  .fs-filters-mobile {
+    display: grid;
+  }
+
   .fs-shell h1 {
     font-size: clamp(30px, 9vw, 46px);
     line-height: 1.08;
@@ -525,8 +633,18 @@ onBeforeUnmount(() => clearInterval(intervalId.value));
     width: 100%;
   }
 }
+
+@keyframes fs-pulse {
+  0%,
+  88%,
+  100% {
+    transform: translateY(0);
+  }
+  92% {
+    transform: translateY(-2px);
+  }
+  96% {
+    transform: translateY(1px);
+  }
+}
 </style>
-
-
-
-

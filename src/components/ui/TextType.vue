@@ -82,6 +82,7 @@ watch(
 .typed-line {
   margin: 0;
   font-size: 18px;
+  line-height: 1.5;
   color: inherit;
 }
 
@@ -99,6 +100,12 @@ watch(
   50%,
   100% {
     opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .typed-line {
+    min-height: calc(1.5em * 3);
   }
 }
 </style>

@@ -1,16 +1,18 @@
 ﻿<template>
   <div class="game-page">
     <section class="game-hero">
-      <component v-if="ViewComponent" :is="ViewComponent" class="game-host" />
+      <div class="game-hero-inner">
+        <component v-if="ViewComponent" :is="ViewComponent" class="game-host" />
 
-      <div v-else class="card empty-state">
-        <div class="tag">/games/{{ slug }}</div>
-        <h3>Страница ещё не приручена</h3>
-        <p class="muted">
-          Мы пока не добавили игру для этого адреса. Вернись в общий список игр и выбери то, что уже готово.
-        </p>
-        <div class="cta-row" style="margin-top: 10px">
-          <NuxtLink class="btn secondary" to="/games">К списку игр</NuxtLink>
+        <div v-else class="card empty-state">
+          <div class="tag">/games/{{ slug }}</div>
+          <h3>Страница ещё не приручена</h3>
+          <p class="muted">
+            Мы пока не добавили игру для этого адреса. Вернись в общий список игр и выбери то, что уже готово.
+          </p>
+          <div class="cta-row" style="margin-top: 10px">
+            <NuxtLink class="btn secondary" to="/games">К списку игр</NuxtLink>
+          </div>
         </div>
       </div>
     </section>
@@ -60,9 +62,9 @@
           <div class="seo-details">
             <div class="seo-toggle">
               <button class="seo-btn" type="button" @click="showTodDetails = !showTodDetails">
-                {{ showTodDetails ? 'Скрыть подробности' : 'Показать подробнее' }}
+                {{ showTodDetails ? 'Я все понял, закрывай!' : 'Почитать правила' }}
               </button>
-              <a class="seo-link" href="#seo" @click.prevent="showTodDetails = true">Почитать правила</a>
+              
             </div>
 
             <div class="seo-accordion" v-show="showTodDetails">
@@ -256,12 +258,24 @@ const isNeverHaveIEver = computed(() => slug.value === 'never-have-i-ever')
 const isTrueOrFalse = computed(() => slug.value === 'true-or-false')
 const isFiveSeconds = computed(() => slug.value === '5-seconds')
 const showTodDetails = ref(false)
+
 </script>
 
 <style scoped>
 .game-page {
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 420px) {
+  .game-page {
+    overflow-x: hidden;
+  }
+
+  .game-hero {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 
 .game-hero {
@@ -272,9 +286,16 @@ const showTodDetails = ref(false)
   padding: clamp(18px, 4vw, 36px) clamp(12px, 4vw, 24px) clamp(28px, 4vw, 44px);
 }
 
-.game-host {
+.game-hero-inner {
   width: min(1100px, 100%);
-  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+.game-host {
+  width: 100%;
+  margin: 0;
 }
 
 .seo-section {

@@ -1,6 +1,7 @@
 ﻿<template>
   <section class="tof-shell" :class="{ 'tof-play': selectedCategory }">
     <div class="tof-content" v-if="!selectedCategory">
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <h1>Правда или ложь</h1>
       <p class="tof-sub">
         Проверь, где правда, а где вымысел. Выбирай тему и отвечай, а Волк сразу покажет результат.
@@ -17,9 +18,22 @@
           {{ c.label }}
         </button>
       </div>
+      <div class="tof-filters-mobile">
+        <button
+          v-for="c in previewCategories"
+          :key="c.id"
+          class="tof-chip"
+          type="button"
+          @click="handleCategorySelect(c.id)"
+        >
+          <span v-if="c.icon" class="tof-chip-icon">{{ c.icon }}</span>
+          {{ c.label }}
+        </button>
+      </div>
     </div>
 
     <div class="tof-content tof-game" v-else>
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <div class="tof-filters">
         <button
           v-for="c in categories"
@@ -31,6 +45,24 @@
           <span class="tof-chip-icon">{{ c.icon }}</span>
           {{ c.label }}
         </button>
+      </div>
+      <div class="tof-filters-mobile">
+        <button class="tof-chip tof-chip-primary" type="button" @click="toggleCategories">
+          <span v-if="selectedCategoryIcon" class="tof-chip-icon">{{ selectedCategoryIcon }}</span>
+          {{ selectedCategoryLabel }}
+        </button>
+        <div class="tof-filters-extra" :class="{ open: showCategories }">
+          <button
+            v-for="c in mobileCategories"
+            :key="c.id"
+            class="tof-chip"
+            type="button"
+            @click="handleCategorySelect(c.id)"
+          >
+            <span class="tof-chip-icon">{{ c.icon }}</span>
+            {{ c.label }}
+          </button>
+        </div>
       </div>
 
       <div class="tof-card">
@@ -57,11 +89,12 @@
         <button class="tof-next" @click="nextStatement">Дальше</button>
       </div>
     </div>
-    <SocialPopup :visible="showPopup" :payload="popupPayload" @close="showPopup = false" />
+    <SocialPopup :visible="showPopup" :payload="popupPayload" @close="handlePopupClose" />
   </section>
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue';
 import { computed, ref } from 'vue';
 import SocialPopup from '@/components/ui/SocialPopup.vue';
 
@@ -70,7 +103,7 @@ const categories = [
   { id: 'history', label: 'История', icon: '🏺' },
   { id: 'geo', label: 'География', icon: '🌍' },
   { id: 'pop', label: 'Поп-культура', icon: '🎬' },
-  { id: 'random', label: 'Случайное', icon: '🎲' }
+  { id: 'wolf', label: 'Волки', icon: '🐺' }
 ];
 
 const statements = [
@@ -85,6 +118,17 @@ const statements = [
   { text: 'Молния бьёт только в высотные здания.', answer: false, category: 'science' },
   { text: 'Самый плотный металл — осмий.', answer: true, category: 'science' },
   { text: 'У Луны нет плотной атмосферы.', answer: true, category: 'science' },
+  // Наука
+{ text: 'Человек использует меньше 20 процентов мозга', answer: false, category: 'science', explanation: 'Работают почти все зоны мозга, просто не одновременно' },
+{ text: 'Звук в вакууме не распространяется', answer: true, category: 'science' },
+{ text: 'Человек и банан имеют общий генетический код', answer: true, category: 'science', explanation: 'Речь о схожих базовых биологических механизмах' },
+{ text: 'Алмазы могут сгорать', answer: true, category: 'science', explanation: 'Алмаз это форма углерода' },
+{ text: 'Антибиотики убивают вирусы', answer: false, category: 'science' },
+{ text: 'У осьминогов три сердца', answer: true, category: 'science' },
+{ text: 'Люди светятся в темноте', answer: true, category: 'science', explanation: 'Очень слабо, из-за биохимических реакций' },
+{ text: 'Температура тела человека всегда 36.6', answer: false, category: 'science' },
+{ text: 'Кровь в венах синяя', answer: false, category: 'science' },
+{ text: 'Растения тоже дышат кислородом', answer: true, category: 'science' },
 
   // История
   { text: 'Колумб открыл Америку в 1492 году.', answer: true, category: 'history' },
@@ -97,6 +141,17 @@ const statements = [
   { text: 'Картофель в России продвигал Пётр I.', answer: true, category: 'history' },
   { text: 'Великие географические открытия начались в XV веке.', answer: true, category: 'history' },
   { text: 'Вторая мировая закончилась в 1918 году.', answer: false, category: 'history' },
+  // История
+{ text: 'Юлий Цезарь был императором Рима', answer: false, category: 'history', explanation: 'Он был диктатором, но не императором' },
+{ text: 'Берлинская стена пала в 1989 году', answer: true, category: 'history' },
+{ text: 'Клеопатра была египтянкой', answer: false, category: 'history', explanation: 'Она происходила из греческой династии' },
+{ text: 'Первая Олимпиада прошла в Древней Греции', answer: true, category: 'history' },
+{ text: 'Викинги носили рогатые шлемы', answer: false, category: 'history' },
+{ text: 'Печатный станок изобрёл Гутенберг', answer: true, category: 'history' },
+{ text: 'Троянская война описана в Илиаде', answer: true, category: 'history' },
+{ text: 'Чёрная смерть была формой чумы', answer: true, category: 'history' },
+{ text: 'Французская революция началась в XIX веке', answer: false, category: 'history' },
+{ text: 'Рим был основан в VIII веке до нашей эры', answer: true, category: 'history' },
 
   // География
   { text: 'Австралия находится в Южном полушарии.', answer: true, category: 'geo' },
@@ -108,31 +163,77 @@ const statements = [
   { text: 'В Антарктиде нет постоянных жителей.', answer: true, category: 'geo' },
   { text: 'В Африке нет вулканов.', answer: false, category: 'geo' },
   { text: 'Париж стоит на реке Сена.', answer: true, category: 'geo' },
-  { text: 'Тихий океан — самый большой океан.', answer: true, category: 'geo' },
+  { text: 'Тихий океан - самый большой океан.', answer: true, category: 'geo' },
+  // География
+{ text: 'Япония состоит более чем из тысячи островов', answer: true, category: 'geo' },
+{ text: 'Самая высокая гора Европы это Эльбрус', answer: true, category: 'geo' },
+{ text: 'Гренландия является страной', answer: false, category: 'geo' },
+{ text: 'В Исландии нет комаров', answer: true, category: 'geo' },
+{ text: 'Экватор проходит через Африку', answer: true, category: 'geo' },
+{ text: 'Мадагаскар находится рядом с Австралией', answer: false, category: 'geo' },
+{ text: 'Москва стоит на реке Москва', answer: true, category: 'geo' },
+{ text: 'В Южной Америке больше стран чем в Африке', answer: false, category: 'geo' },
+{ text: 'Антарктида официально не принадлежит ни одной стране', answer: true, category: 'geo' },
+{ text: 'Самое солёное море это Балтийское', answer: false, category: 'geo' },
 
   // Поп-культура
   { text: 'The Beatles — группа из Ливерпуля.', answer: true, category: 'pop' },
   { text: 'Гарри Поттер учился в Слизерине.', answer: false, category: 'pop' },
   { text: 'В сериале «Друзья» шесть главных героев.', answer: true, category: 'pop' },
   { text: 'Бэтмен защищает город Готэм.', answer: true, category: 'pop' },
+  { text: 'В «Игре престолов» есть дом Старков.', answer: true, category: 'pop' },
+  { text: 'Шерлок Холмс жил на Бейкер-стрит.', answer: true, category: 'pop' },
   { text: 'Первый iPhone вышел в 2007 году.', answer: true, category: 'pop' },
   { text: 'В «Властелине колец» есть дракон Смауг.', answer: true, category: 'pop' },
   { text: 'Marvel и DC — одно издательство.', answer: false, category: 'pop' },
   { text: 'Серсея Ланнистер — персонаж «Игры престолов».', answer: true, category: 'pop' },
   { text: 'Джокер — главный враг Супермена.', answer: false, category: 'pop' },
   { text: 'Аниме — это музыкальный жанр.', answer: false, category: 'pop' },
+  // Поп-культура
+{ text: 'Симпсоны выходят дольше чем существует интернет', answer: true, category: 'pop' },
+{ text: 'Железный человек является мутантом', answer: false, category: 'pop' },
+{ text: 'Фраза Я твой отец прозвучала в Звёздных войнах', answer: false, category: 'pop', explanation: 'Правильная фраза Нет, я твой отец' },
+{ text: 'Пикачу относится к электрическому типу', answer: true, category: 'pop' },
+{ text: 'Шрек это мультфильм студии Disney', answer: false, category: 'pop' },
+{ text: 'В Minecraft есть дракон', answer: true, category: 'pop' },
+{ text: 'Игра GTA V вышла раньше GTA IV', answer: false, category: 'pop' },
+{ text: 'Нео главный герой Матрицы', answer: true, category: 'pop' },
+{ text: 'TikTok старше YouTube', answer: false, category: 'pop' },
+{ text: 'Сериал Во все тяжкие про школьного учителя химии', answer: true, category: 'pop' },
 
-  // Случайное
-  { text: 'Пиццу придумали в Италии.', answer: true, category: 'random' },
-  { text: 'Кофе растёт на деревьях.', answer: true, category: 'random' },
-  { text: 'Акулы дышат воздухом на поверхности.', answer: false, category: 'random' },
-  { text: 'Радуга состоит из семи цветов.', answer: true, category: 'random' },
-  { text: 'Мёд практически не портится со временем.', answer: true, category: 'random' },
-  { text: 'Самолёт легче воздуха.', answer: false, category: 'random' },
-  { text: 'Зебры белые с чёрными полосами.', answer: true, category: 'random' },
-  { text: 'Лимон слаще апельсина.', answer: false, category: 'random' },
-  { text: 'Суши изобрели в Японии.', answer: true, category: 'random' },
-  { text: 'Кошки всегда приземляются на лапы.', answer: true, category: 'random' }
+  // Волки
+  { text: 'Волки живут стаями.', answer: true, category: 'wolf' },
+  { text: 'У волков одинаковые следы с домашними собаками.', answer: false, category: 'wolf' },
+  { text: 'Волки воют, чтобы общаться на расстоянии.', answer: true, category: 'wolf' },
+  { text: 'Волки питаются исключительно растениями.', answer: false, category: 'wolf' },
+  { text: 'Серая волчица может быть лидером стаи.', answer: true, category: 'wolf' },
+  // Волки
+{ text: 'Волки могут узнавать друг друга по вою', answer: true, category: 'wolf' },
+{ text: 'Альфа волк всегда самый сильный в стае', answer: false, category: 'wolf', explanation: 'Часто лидер это родитель, а не боец' },
+{ text: 'Волки улыбаются так же как собаки', answer: false, category: 'wolf' },
+{ text: 'Волки способны проходить десятки километров за ночь', answer: true, category: 'wolf' },
+{ text: 'Волк одиночка это норма для вида', answer: false, category: 'wolf' },
+
+{ text: 'Мемы про волков появились раньше TikTok', answer: true, category: 'wolf' },
+{ text: 'Фраза про волка и одиночество стала мемом интернета', answer: true, category: 'wolf' },
+{ text: 'Волк в мемах всегда счастлив и успешен', answer: false, category: 'wolf' },
+{ text: 'Картинки с волками часто используют для мотивации', answer: true, category: 'wolf' },
+{ text: 'Мемный волк обычно символ иронии', answer: true, category: 'wolf' },
+
+{ text: 'Нейронный волк это реальное животное', answer: false, category: 'wolf' },
+{ text: 'Нейронный волк может существовать только в цифровом виде', answer: true, category: 'wolf' },
+{ text: 'Нейронный волк знает ответы на все вопросы', answer: false, category: 'wolf' },
+{ text: 'Нейронный волк это образ, а не персонаж', answer: true, category: 'wolf' },
+{ text: 'Нейронный волк может ошибаться', answer: true, category: 'wolf' },
+
+{ text: 'Волк в культуре часто символизирует одиночество', answer: true, category: 'wolf' },
+{ text: 'Все волки опасны для человека', answer: false, category: 'wolf' },
+{ text: 'Волки избегают людей', answer: true, category: 'wolf' },
+{ text: 'Образ волка одинаков во всех культурах', answer: false, category: 'wolf' },
+{ text: 'Волк в мемах чаще образ мышления, а не зверь', answer: true, category: 'wolf' },
+
+
+
 ];
 
 const gameStarted = ref(false);
@@ -141,9 +242,11 @@ const currentStatement = ref(null);
 const userAnswer = ref(null);
 const showResult = ref(false);
 const usedIndices = ref({});
+const randomCategory = { id: 'random', label: 'Случайно' };
 const promptsSeen = ref(0);
 const showPopup = ref(false);
 const popupIndex = ref(0);
+const currentCategoryForStatement = ref(categories[0]?.id || '');
 
 const socials = [
   {
@@ -151,21 +254,14 @@ const socials = [
     text: 'Куча мемов, всё самое свежее тут',
     cta: 'Перейти в логово',
     link: 'https://t.me/neural_wise_wolf',
-    emoji: '📬'
-  },
-  {
-    title: 'Залетай в Instagram',
-    text: 'Самое первое и большое сообщество, много мемов с волками',
-    cta: 'Открыть Instagram',
-    link: 'https://instagram.com/neural_wise_wolf/',
-    emoji: '📸'
+    emoji: '✉️'
   },
   {
     title: 'TikTok Волка',
     text: 'Мемы, стримы и много волков',
     cta: 'Смотреть TikTok',
     link: 'https://www.tiktok.com/@neural_wolf',
-    emoji: '🎵'
+    emoji: '🎬'
   },
   {
     title: 'YouTube канал',
@@ -173,21 +269,70 @@ const socials = [
     cta: 'Открыть YouTube',
     link: 'https://www.youtube.com/@neural_wolf',
     emoji: '▶️'
+  },
+  {
+    title: 'Залетай в Instagram',
+    text: 'Самое первое и большое сообщество, много мемов с волками',
+    cta: 'Открыть Instagram',
+    link: 'https://instagram.com/neural_wise_wolf/',
+    emoji: '📸'
   }
 ];
 
 const popupPayload = computed(() => socials[popupIndex.value % socials.length]);
 
-const currentLabel = computed(() => {
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Правда или ложь' }
+];
+
+const mobileCategories = computed(() => {
+  if (!selectedCategory.value) return [randomCategory, ...categories];
+  return [randomCategory, ...categories].filter((c) => c.id !== selectedCategory.value);
+});
+const showCategories = ref(false);
+const previewCategories = computed(() => [randomCategory, ...categories]);
+
+const selectedCategoryLabel = computed(() => {
+  if (!selectedCategory.value || selectedCategory.value === randomCategory.id) return randomCategory.label;
   const c = categories.find((item) => item.id === selectedCategory.value);
   return c ? c.label : '';
 });
 
+const selectedCategoryIcon = computed(() => {
+  if (!selectedCategory.value || selectedCategory.value === randomCategory.id) return '';
+  const c = categories.find((item) => item.id === selectedCategory.value);
+  return c?.icon || '';
+});
+
+const currentLabel = computed(() => {
+  const c = categories.find((item) => item.id === currentCategoryForStatement.value);
+  return c ? c.label : '';
+});
+
+function pickCategoryForStatement() {
+  if (selectedCategory.value && selectedCategory.value !== randomCategory.id) return selectedCategory.value;
+  const idx = Math.floor(Math.random() * categories.length);
+  return categories[idx]?.id || categories[0]?.id || '';
+}
+
 function selectCategory(cat) {
   selectedCategory.value = cat;
   gameStarted.value = true;
-  usedIndices.value[cat] = new Set();
+  if (cat && cat !== randomCategory.id) {
+    usedIndices.value[cat] = new Set();
+  }
   nextStatement();
+}
+
+function handleCategorySelect(cat) {
+  selectCategory(cat);
+  showCategories.value = false;
+}
+
+function toggleCategories() {
+  showCategories.value = !showCategories.value;
 }
 
 function pickRandomIndex(list, key) {
@@ -202,18 +347,16 @@ function pickRandomIndex(list, key) {
 }
 
 function nextStatement() {
-  const pool = selectedCategory.value === 'random'
-    ? statements
-    : statements.filter((s) => s.category === selectedCategory.value);
-
-  const idx = pickRandomIndex(pool, selectedCategory.value || 'random');
+  const categoryForStatement = pickCategoryForStatement();
+  currentCategoryForStatement.value = categoryForStatement;
+  const pool = statements.filter((s) => s.category === categoryForStatement);
+  const idx = pickRandomIndex(pool, categoryForStatement || 'default');
   currentStatement.value = idx >= 0 ? pool[idx] : null;
   userAnswer.value = null;
   showResult.value = false;
 
   promptsSeen.value += 1;
   if (promptsSeen.value % 5 === 0) {
-    popupIndex.value += 1;
     showPopup.value = true;
   }
 }
@@ -221,6 +364,10 @@ function nextStatement() {
 function answer(value) {
   userAnswer.value = value;
   showResult.value = true;
+}
+function handlePopupClose() {
+  showPopup.value = false;
+  popupIndex.value = (popupIndex.value + 1) % socials.length;
 }
 </script>
 
@@ -252,14 +399,19 @@ function answer(value) {
 .tof-content:not(.tof-game) {
   max-width: 900px;
   margin: 0 auto;
+  padding-top: clamp(80px, 4vw, 120px);
+
+@media (max-width: 640px) {
+  padding-top: clamp(8px, 2vw, 16px);
+}
 }
 
 .tof-content.tof-game {
-  gap: clamp(18px, 3vw, 28px);
+  gap: clamp(14px, 2.6vw, 24px);
   justify-items: center;
   align-items: center;
-  min-height: 80vh;
-  padding: clamp(12px, 2vw, 20px) 0 clamp(16px, 3vw, 26px);
+  min-height: 70vh;
+  padding: clamp(8px, 1.6vw, 16px) 0 clamp(12px, 2.4vw, 20px);
   margin-top: 0;
   width: 100%;
 }
@@ -308,7 +460,65 @@ function answer(value) {
   gap: 8px;
   align-items: center;
   justify-content: center;
-  flex: 1 1 clamp(140px, 28%, 220px);
+  flex: 0 1 auto;
+  min-width: 160px;
+  max-width: 240px;
+}
+
+.tof-filters-mobile {
+  display: none;
+  width: min(520px, 100%);
+  margin: 0 auto;
+  gap: 10px;
+  justify-items: center;
+}
+
+.tof-chip-primary {
+  animation: random-pulse 5s ease-in-out infinite;
+}
+
+.tof-filters-extra {
+  display: grid;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+  justify-items: center;
+}
+
+.tof-filters-extra.open {
+  max-height: 420px;
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .tof-chip {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .tof-filters {
+    display: none;
+  }
+
+  .tof-filters-mobile {
+    display: grid;
+  }
+}
+
+@keyframes random-pulse {
+  0%,
+  88%,
+  100% {
+    transform: translateY(0);
+  }
+  92% {
+    transform: translateY(-2px);
+  }
+  96% {
+    transform: translateY(1px);
+  }
 }
 
 .tof-chip-active {

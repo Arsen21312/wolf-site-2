@@ -2,7 +2,7 @@
 <section class="wc-landing">
   <div class="wc-hero">
     <div class="wc-hero-content">
-      <p class="wc-pill">Новая игра</p>
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <h1 class="section-title wc-title">Волчий Контекст</h1>
       <p class="wc-subtitle section-lead">Угадай секретное слово по смысловой близости. Жми, чтобы начать случайную охоту.</p>
       <NuxtLink class="btn" to="/games/wolf-context/random">Случайное задание</NuxtLink>
@@ -12,6 +12,14 @@
 </template>
 
 <script setup lang="ts">
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Волчий Контекст' }
+]
+
 useHead({
   title: 'Волчий Контекст, угадай слово по смыслу',
   meta: [

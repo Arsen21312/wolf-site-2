@@ -1,6 +1,7 @@
 <template>
   <section class="tod-page">
     <div class="tod-container">
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <div v-if="!gameStarted" class="tod-intro">
         <h1 class="tod-title">Вопросы для компании</h1>
         <p class="tod-subtitle">Короткие вопросы, чтобы разогреть разговор: вдвоём или всей стаей.</p>
@@ -103,9 +104,16 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, ref } from 'vue'
 import SocialPopup from '@/components/ui/SocialPopup.vue'
 import { companyCategories } from '@/data/companyQuestions'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Вопросы для компании' }
+]
 
 useHead({
   title: 'Вопросы для компании, генератор вопросов онлайн',

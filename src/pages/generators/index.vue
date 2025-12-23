@@ -1,9 +1,6 @@
 ﻿<template>
   <section style="padding: 60px 0 24px">
-    <div class="pill">
-      <span>Генераторы</span>
-      <strong>Идеи и тексты</strong>
-    </div>
+    <Breadcrumbs :items="breadcrumbs" />
     <h1 class="section-title">Генераторы под разные задачи</h1>
     <TextType
       class="section-lead"
@@ -56,7 +53,13 @@
 </style>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import TextType from '@/components/ui/TextType.vue'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Генераторы' }
+]
 
 const generators = [
   {

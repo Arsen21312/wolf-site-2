@@ -3,10 +3,9 @@
     <NavBar />
 
     <section class="page-center gap-4">
-      <div class="px-3 py-1 rounded-full border border-white/10 bg-white/10 text-sm text-white/90 shadow-lg shadow-blue-500/10">
-        Инструмент · Финансы
-      </div>
-      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+      <Breadcrumbs class="center" :items="breadcrumbs" />
+      
+      <h1 class="sum-title text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
         Сумма прописью в тенге и рублях онлайн
       </h1>
       <p class="max-w-3xl text-lg text-slate-100">
@@ -188,8 +187,15 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, reactive, ref, watch } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Сумма прописью' }
+]
 
 const amountRaw = ref('')
 const currency = ref('RUB')
@@ -536,6 +542,11 @@ useHead(() => ({
 </script>
 
 <style scoped>
+.sum-title {
+  font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
+  font-weight: 800;
+}
+
 .converter-card {
   width: min(960px, 100%);
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));

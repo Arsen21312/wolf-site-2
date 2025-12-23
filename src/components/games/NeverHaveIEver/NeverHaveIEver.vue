@@ -2,6 +2,7 @@
   <section class="nhi-shell" :class="{ 'nhi-play': started }">
     <div class="nhi-content">
       <div v-if="!started" class="nhi-hero">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <h1>Я никогда не</h1>
         <p class="nhi-sub">
 Хочешь живую и смешную движуху для компании? Загляни в нашу онлайн-версию игры «Я никогда не» и устрой вечер, который точно запомнится.        </p>
@@ -12,6 +13,7 @@
       </div>
 
       <div v-else class="nhi-game">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <div class="nhi-filters">
           <button
             v-for="c in categories"
@@ -24,11 +26,29 @@
             {{ c.label }}
           </button>
         </div>
+        <div class="nhi-filters-mobile">
+          <button class="nhi-chip nhi-chip-primary" type="button" @click="toggleFilters">
+            {{ selectedCategoryLabel }}
+          </button>
+          <div class="nhi-filters-extra" :class="{ open: showFilters }">
+            <button
+              v-for="c in mobileCategories"
+              :key="c.id"
+              class="nhi-chip"
+              type="button"
+              :class="{ 'nhi-chip-active': activeCategory === c.id }"
+              @click="handleCategorySelect(c.id)"
+            >
+              <span v-if="c.icon" class="nhi-chip-icon">{{ c.icon }}</span>
+              {{ c.label }}
+            </button>
+          </div>
+        </div>
 
         <div class="nhi-card">
           <div class="nhi-label">{{ currentLabel }}</div>
           <div class="nhi-phrase">
-            <p v-if="!currentPhrase">????? ???????????</p>
+            <p v-if="!currentPhrase">Правда или действие</p>
             <p v-else>{{ currentPhrase }}</p>
           </div>
         </div>
@@ -37,19 +57,20 @@
       </div>
     </div>
 
-    <SocialPopup :visible="showPopup" :payload="popupPayload" @close="showPopup = false" />
+    <SocialPopup :visible="showPopup" :payload="popupPayload" @close="handlePopupClose" />
   </section>
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue';
 import { computed, ref } from 'vue';
 import SocialPopup from '@/components/ui/SocialPopup.vue';
 
 const categories = [
   { id: 'popular', label: 'Популярное', icon: '🥤' },
   { id: 'extreme', label: 'Экстрим', icon: '🔥' },
-  { id: 'family', label: 'Для семейных пар', icon: '💜' },
-  { id: 'nsfw', label: 'Непристойности и секс', icon: '🔞' }
+  { id: 'family', label: 'Для пар', icon: '💜' },
+  { id: 'nsfw', label: 'Пошлое', icon: '🔞' }
 ];
 
 const phrases = [
@@ -258,8 +279,11 @@ const phrases = [
 
 const started = ref(false);
 const activeCategory = ref('popular');
+const randomCategory = { id: 'random', label: 'Случайно' };
+const showFilters = ref(false);
 const usedIndices = ref({ popular: new Set(), extreme: new Set(), family: new Set(), nsfw: new Set() });
 const currentPhrase = ref('');
+const currentCategoryForPhrase = ref(activeCategory.value);
 const promptsSeen = ref(0);
 const showPopup = ref(false);
 const popupIndex = ref(0);
@@ -270,21 +294,14 @@ const socials = [
     text: 'Куча мемов, всё самое свежее тут',
     cta: 'Перейти в логово',
     link: 'https://t.me/neural_wise_wolf',
-    emoji: '📬'
-  },
-  {
-    title: 'Залетай в Instagram',
-    text: 'Самое первое и большое сообщество, много мемов с волками',
-    cta: 'Открыть Instagram',
-    link: 'https://instagram.com/neural_wise_wolf/',
-    emoji: '📸'
+    emoji: '✉️'
   },
   {
     title: 'TikTok Волка',
     text: 'Мемы, стримы и много волков',
     cta: 'Смотреть TikTok',
     link: 'https://www.tiktok.com/@neural_wolf',
-    emoji: '🎵'
+    emoji: '🎬'
   },
   {
     title: 'YouTube канал',
@@ -292,29 +309,60 @@ const socials = [
     cta: 'Открыть YouTube',
     link: 'https://www.youtube.com/@neural_wolf',
     emoji: '▶️'
+  },
+  {
+    title: 'Залетай в Instagram',
+    text: 'Самое первое и большое сообщество, много мемов с волками',
+    cta: 'Открыть Instagram',
+    link: 'https://instagram.com/neural_wise_wolf/',
+    emoji: '📸'
   }
 ];
 
 const popupPayload = computed(() => socials[popupIndex.value % socials.length]);
 
-const filteredPhrases = computed(() =>
-  phrases
-    .map((p, idx) => ({ ...p, idx }))
-    .filter((p) => p.category === activeCategory.value)
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Я никогда не' }
+];
+
+const mobileCategories = computed(() =>
+  [randomCategory, ...categories].filter((c) => c.id !== activeCategory.value)
 );
 
-const currentLabel = computed(() => {
+const selectedCategoryLabel = computed(() => {
+  if (activeCategory.value === randomCategory.id) return randomCategory.label;
   const cat = categories.find((c) => c.id === activeCategory.value);
-  return cat ? `${cat.label}` : '';
+  return cat ? cat.label : '';
 });
 
+const currentLabel = computed(() => {
+  const cat = categories.find((c) => c.id === currentCategoryForPhrase.value);
+  return cat ? cat.label : '';
+});
+
+function getPhrasesByCategory(categoryId) {
+  return phrases
+    .map((p, idx) => ({ ...p, idx }))
+    .filter((p) => p.category === categoryId);
+}
+
+function pickCategoryForPhrase() {
+  if (activeCategory.value !== randomCategory.id) return activeCategory.value;
+  const idx = Math.floor(Math.random() * categories.length);
+  return categories[idx]?.id || categories[0]?.id || 'popular';
+}
+
 function pickRandom() {
-  const list = filteredPhrases.value;
+  const categoryForPhrase = pickCategoryForPhrase();
+  currentCategoryForPhrase.value = categoryForPhrase;
+  const list = getPhrasesByCategory(categoryForPhrase);
   if (!list.length) {
     currentPhrase.value = '';
     return;
   }
-  const used = usedIndices.value[activeCategory.value];
+  const used = usedIndices.value[categoryForPhrase];
   const available = list.filter((item) => !used.has(item.idx));
   if (!available.length) {
     currentPhrase.value = '';
@@ -335,6 +383,15 @@ function setCategory(cat) {
   pickRandom();
 }
 
+function handleCategorySelect(cat) {
+  setCategory(cat);
+  showFilters.value = false;
+}
+
+function toggleFilters() {
+  showFilters.value = !showFilters.value;
+}
+
 function startGame() {
   started.value = true;
   pickRandom();
@@ -343,9 +400,12 @@ function startGame() {
 function handlePopup() {
   promptsSeen.value += 1;
   if (promptsSeen.value % 5 === 0) {
-    popupIndex.value += 1;
     showPopup.value = true;
   }
+}
+function handlePopupClose() {
+  showPopup.value = false;
+  popupIndex.value = (popupIndex.value + 1) % socials.length;
 }
 </script>
 
@@ -356,7 +416,7 @@ function handlePopup() {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: clamp(14px, 3vw, 28px);
+  padding: clamp(8px, 2.2vw, 18px);
   background: transparent;
   color: #e5e7eb;
   text-align: center;
@@ -397,10 +457,10 @@ function handlePopup() {
   justify-items: center;
   align-items: center;
   align-content: center;
-  padding: clamp(12px, 3vw, 26px) 0 clamp(10px, 3vw, 18px);
+  padding: clamp(6px, 2.2vw, 18px) 0 clamp(10px, 3vw, 18px);
   max-width: 900px;
   margin: 0 auto;
-  min-height: clamp(60vh, 78vw, 70vh);
+  min-height: clamp(56vh, 72vw, 66vh);
 }
 
 .nhi-sub {
@@ -458,11 +518,11 @@ function handlePopup() {
 
 .nhi-game {
   display: grid;
-  gap: clamp(18px, 3vw, 30px);
+  gap: clamp(14px, 2.6vw, 26px);
   justify-items: center;
   align-items: center;
-  min-height: 80vh;
-  padding: clamp(12px, 2vw, 22px) 0 clamp(16px, 3vw, 28px);
+  min-height: 70vh;
+  padding: clamp(6px, 1.2vw, 12px) 0 clamp(12px, 2.4vw, 22px);
   margin-top: 0;
   width: 100%;
 }
@@ -472,8 +532,18 @@ function handlePopup() {
   flex-wrap: wrap;
   gap: clamp(8px, 2vw, 14px);
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  margin-top: clamp(-6px, -0.6vw, -2px);
   width: 100%;
+  max-width: 900px;
+}
+
+.nhi-filters-mobile {
+  display: none;
+  width: min(520px, 100%);
+  margin: 0 auto;
+  gap: 10px;
+  justify-items: center;
 }
 
 .nhi-chip {
@@ -490,7 +560,34 @@ function handlePopup() {
   gap: 8px;
   align-items: center;
   justify-content: center;
-  flex: 1 1 clamp(140px, 28%, 220px);
+  flex: 0 1 auto;
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.nhi-chip-primary {
+  animation: nhi-pulse 5s ease-in-out infinite;
+}
+
+.nhi-filters-extra {
+  display: grid;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+  justify-items: center;
+}
+
+.nhi-filters-extra.open {
+  max-height: 420px;
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .nhi-chip {
+    flex: 0 1 200px;
+  }
 }
 
 .nhi-chip-active {
@@ -592,6 +689,14 @@ function handlePopup() {
     justify-content: center;
   }
 
+  .nhi-filters {
+    display: none;
+  }
+
+  .nhi-filters-mobile {
+    display: grid;
+  }
+
   .nhi-hero {
     gap: 16px;
     padding: 4px 0 8px;
@@ -627,6 +732,20 @@ function handlePopup() {
 
   .nhi-card {
     margin-top: 0;
+  }
+}
+
+@keyframes nhi-pulse {
+  0%,
+  88%,
+  100% {
+    transform: translateY(0);
+  }
+  92% {
+    transform: translateY(-2px);
+  }
+  96% {
+    transform: translateY(1px);
   }
 }
 </style>

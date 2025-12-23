@@ -2,6 +2,7 @@
   <section class="context-page">
     <div class="context-container">
       <div class="context-header">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <div class="context-topbar">
           <div class="context-chips">
             <button
@@ -113,6 +114,7 @@
 </template>
 
 <script setup lang="ts">
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { ref } from 'vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
 
@@ -138,6 +140,12 @@ const activeMode = ref<'random' | 'create' | 'party' | 'tasks'>('create')
 const isTasksOpen = ref(false)
 const isGenerating = ref(false)
 const createdGameId = ref<number | null>(null)
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Волчий Контекст' }
+]
 const playUrl = ref<string | null>(null)
 const sourceLabel = ref('')
 const targetWordId = ref<number | null>(null)

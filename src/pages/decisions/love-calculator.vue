@@ -4,7 +4,7 @@
 
     <div class="calc-hero">
       <section class="page-center gap-4">
-        <div class="pill-hero">Инструмент · Развлечения</div>
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <h1 class="hero-title">Калькулятор любви</h1>
         <p class="hero-sub">
           Узнайте, насколько вы подходите друг другу. Введите два имени и получите волчий вердикт в процентах.
@@ -109,8 +109,15 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Калькулятор любви' }
+]
 
 const name1 = ref('')
 const name2 = ref('')

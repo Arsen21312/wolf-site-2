@@ -1,5 +1,6 @@
 ﻿import { defineEventHandler, readBody, setResponseStatus } from 'h3'
 import { getContextEmbeddingsCache } from '~/server/utils/contextEmbeddings'
+import { getSupabaseAdminClient } from '~/server/utils/supabaseAdmin'
 
 type GuessBody = {
   gameId?: number | string
@@ -8,6 +9,7 @@ type GuessBody = {
   mode?: string
   hint?: boolean
   bestPosition?: number | string
+  bestGuessId?: number | string
   usedIds?: Array<number | string>
   usedLemmas?: string[]
 }
@@ -32,8 +34,36 @@ const NEIGHBOR_LIMIT = 1000
 const wordIndexCache = new Map<number, { byId: Map<number, ContextWord>; byLemma: Map<string, ContextWord> }>()
 
 function normalizeLemma(value: string): string {
-  return value.toLowerCase().replace(/ё/g, 'е').trim()
+  return value
+    .toLowerCase()
+    .replace(/\u0451/g, '\u0435')
+    .replace(/[^\u0430-\u044f]/gi, '')
+    .trim()
 }
+
+function isLoggableGuess(
+  lemma: string,
+  id: number,
+  similarity: number,
+  usedIds?: Array<number | string>,
+  usedLemmas?: string[]
+) {
+  const normalized = normalizeLemma(lemma)
+  if (normalized.length < 3) return false
+  if (/[a-z]/i.test(normalized)) return false
+  if (/\d/.test(normalized)) return false
+  if (/-/.test(normalized)) return false
+  if (!Number.isFinite(similarity) || similarity < 0.25) return false
+
+  const usedCount = Math.max(usedIds?.length ?? 0, usedLemmas?.length ?? 0)
+  if (usedCount < 2) return false
+
+  if (usedIds?.some((item) => Number(item) === id)) return false
+  if (usedLemmas?.some((item) => normalizeLemma(item) === normalized)) return false
+
+  return true
+}
+
 
 function toNumber(value: number | string | undefined | null): number | null {
   if (typeof value === 'number' && Number.isFinite(value)) return value
@@ -115,6 +145,71 @@ function cosineSimilarity(a: number[], b: number[]): number {
   }
   if (!na || !nb) return 0
   return dot / (Math.sqrt(na) * Math.sqrt(nb))
+}
+
+type ContextEdgeKind = 'target_guess' | 'best_guess'
+
+type EdgeUpdateInput = {
+  targetId: number
+  fromId: number | null
+  toId: number
+  kind: ContextEdgeKind
+  similarity: number
+}
+
+async function updateContextEdgeStats(supabase: ReturnType<typeof getSupabaseAdminClient>, payload: EdgeUpdateInput) {
+  const { targetId, fromId, toId, kind } = payload
+  const similarity = Number.isFinite(payload.similarity) ? payload.similarity : 0
+  let query = supabase
+    .from('context_edges')
+    .select('id, plays_count, avg_sim')
+    .eq('target_word_id', targetId)
+    .eq('to_word_id', toId)
+    .eq('kind', kind)
+
+  if (fromId === null) {
+    query = query.is('from_word_id', null)
+  } else {
+    query = query.eq('from_word_id', fromId)
+  }
+
+  const { data, error } = await query.maybeSingle()
+  if (error) {
+    console.error('CONTEXT EDGE LOAD ERROR', error)
+    return
+  }
+
+  const prevCount = Number.isFinite(data?.plays_count as number) ? Number(data?.plays_count) : 0
+  const prevAvg = Number.isFinite(data?.avg_sim as number) ? Number(data?.avg_sim) : 0
+  const playsCount = prevCount + 1
+  const avgSim = prevCount ? (prevAvg * prevCount + similarity) / playsCount : similarity
+  const now = new Date().toISOString()
+
+  if (data?.id) {
+    const { error: updateError } = await supabase
+      .from('context_edges')
+      .update({ plays_count: playsCount, avg_sim: avgSim, last_seen_at: now })
+      .eq('id', data.id)
+    if (updateError) {
+      console.error('CONTEXT EDGE UPDATE ERROR', updateError)
+    }
+    return
+  }
+
+  const { error: insertError } = await supabase
+    .from('context_edges')
+    .insert({
+      target_word_id: targetId,
+      from_word_id: fromId,
+      to_word_id: toId,
+      kind,
+      plays_count: playsCount,
+      avg_sim: avgSim,
+      last_seen_at: now
+    })
+  if (insertError) {
+    console.error('CONTEXT EDGE INSERT ERROR', insertError)
+  }
 }
 
 async function getContextIndex(gameId: number) {
@@ -271,10 +366,6 @@ async function getWordByLemma(gameId: number, lemma: string): Promise<ContextWor
   return index.byLemma.get(lemma) ?? null
 }
 
-async function getTotalActiveWords(gameId: number): Promise<number | null> {
-  const { cache } = await getContextIndex(gameId)
-  return cache.total
-}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -285,6 +376,7 @@ export default defineEventHandler(async (event) => {
       guess: rawGuess,
       hint,
       bestPosition,
+      bestGuessId: bestGuessIdRaw,
       mode,
       usedIds,
       usedLemmas
@@ -295,6 +387,7 @@ export default defineEventHandler(async (event) => {
     const isHint = mode === 'hint' || Boolean(hint)
     const guessInput = typeof rawGuess === 'string' ? rawGuess.trim() : ''
     const guess = !isHint && guessInput ? normalizeLemma(guessInput) : ''
+    const bestGuessId = toNumber(bestGuessIdRaw)
 
     if (!gameId || !targetId) {
       setResponseStatus(event, 400)
@@ -307,8 +400,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const targetWord = await getWordById(gameId, targetId)
-    const totalActiveWords = await getTotalActiveWords(gameId)
-
     if (!targetWord) {
       console.error('CONTEXT GUESS NO TARGET', { gameId, targetId })
       return { ok: false, exists: false, message: 'target_not_found' }
@@ -320,9 +411,56 @@ export default defineEventHandler(async (event) => {
       return { ok: false, exists: false, message: 'target_not_found' }
     }
 
+    let supabaseAdmin: ReturnType<typeof getSupabaseAdminClient> | null = null
+    try {
+      supabaseAdmin = getSupabaseAdminClient()
+    } catch (error) {
+      console.warn('CONTEXT EDGE CLIENT DISABLED', error)
+    }
+
+    const trackEdges = async (guessId: number, similarity: number) => {
+      if (!supabaseAdmin) return
+      const updates = [
+        updateContextEdgeStats(supabaseAdmin, {
+          targetId,
+          fromId: null,
+          toId: guessId,
+          kind: 'target_guess',
+          similarity
+        })
+      ]
+
+      if (Number.isFinite(bestGuessId)) {
+        updates.push(
+          updateContextEdgeStats(supabaseAdmin, {
+            targetId,
+            fromId: Number(bestGuessId),
+            toId: guessId,
+            kind: 'best_guess',
+            similarity
+          })
+        )
+      }
+
+      await Promise.all(updates)
+    }
     if (!isHint) {
       const guessWord = ranked.find((word) => word.lemmaLower === guess)
       if (!guessWord) {
+        if (supabaseAdmin && guessInput) {
+          const { data: inactiveWord, error: inactiveError } = await supabaseAdmin
+            .from('context_words')
+            .select('id, is_active')
+            .eq('game_id', gameId)
+            .ilike('Lemma', guessInput)
+            .limit(1)
+            .maybeSingle()
+
+          if (!inactiveError && inactiveWord && inactiveWord.is_active === false) {
+            return { ok: false, exists: false, message: 'слово отключено' }
+          }
+        }
+
         return { ok: false, exists: false, message: `Слова ${guessInput || 'это'} нет в волчьем словаре` }
       }
 
@@ -332,6 +470,10 @@ export default defineEventHandler(async (event) => {
       const zone = getZoneByPosition(position, total)
       const isWin = guessWord.id === target.id
       const similarity = Number.isFinite(guessWord.similarity) ? guessWord.similarity : 0
+
+      if (isLoggableGuess(guessWord.Lemma, guessWord.id, similarity, usedIds, usedLemmas)) {
+        await trackEdges(guessWord.id, similarity)
+      }
 
       return {
         ok: true,
@@ -407,6 +549,10 @@ export default defineEventHandler(async (event) => {
     const zone = getZoneByPosition(position, total)
     const isWin = hintWord.id === target.id
     const similarity = Number.isFinite(hintWord.similarity) ? hintWord.similarity : 0
+
+    if (isLoggableGuess(hintWord.Lemma, hintWord.id, similarity, usedIds, usedLemmas)) {
+      await trackEdges(hintWord.id, similarity)
+    }
 
     return {
       ok: true,

@@ -1,9 +1,6 @@
 ﻿<template>
   <section class="decisions-page">
-    <div class="pill">
-      <span>Инструменты</span>
-      <strong>Выбор без споров</strong>
-    </div>
+    <Breadcrumbs :items="breadcrumbs" />
     <h1 class="section-title">Быстрые решения, когда нужен нейтральный выбор</h1>
     <TextType
       class="section-lead"
@@ -44,7 +41,13 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import TextType from '@/components/ui/TextType.vue'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты' }
+]
 
 const tools = [
   {

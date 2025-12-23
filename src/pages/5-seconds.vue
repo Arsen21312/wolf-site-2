@@ -3,11 +3,11 @@
     <header class="fs-nav">
       <div class="fs-nav-left">
         <div class="fs-logo">?</div>
-        <span class="fs-brand">?????? ?? 5 ??????</span>
+        <span class="fs-brand">Отгадай за 5 секунд</span>
       </div>
       <div class="fs-nav-right">
-        <NuxtLink class="fs-link" to="/games">????</NuxtLink>
-        <NuxtLink class="fs-link" to="/about">? ?????</NuxtLink>
+        <NuxtLink class="fs-link" to="/games">Игры</NuxtLink>
+        <NuxtLink class="fs-link" to="/about">На главную</NuxtLink>
       </div>
     </header>
 

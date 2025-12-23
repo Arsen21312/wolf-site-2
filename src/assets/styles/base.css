@@ -304,6 +304,16 @@ a {
   }
 }
 
+@media (max-width: 420px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .layout-shell {
+    overflow-x: hidden;
+  }
+}
+
 .chip-row {
   display: flex;
   gap: 8px;

@@ -1,10 +1,7 @@
 <template>
   <main class="coin-page">
     <header class="coin-hero">
-      <div class="pill">
-        <span>Инструмент</span>
-        <strong>Монетка</strong>
-      </div>
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <h1>Бросок монеты</h1>
       <p class="lead">
         Орёл или решка? Подбрось монету онлайн, чтобы решить спор, выбрать вариант или просто проверить удачу.
@@ -113,9 +110,16 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { useRequestURL } from '#app'
 import { useHead, useSeoMeta } from '#imports'
 import { computed, reactive, ref } from 'vue'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Монетка' }
+]
 
 const result = ref(null)
 const isFlipping = ref(false)

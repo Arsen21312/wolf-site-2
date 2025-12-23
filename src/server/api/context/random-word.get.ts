@@ -1,5 +1,5 @@
 import { defineEventHandler, getQuery, setResponseStatus } from 'h3'
-import { getContextEmbeddingsCache } from '~/server/utils/contextEmbeddings'
+import { getContextWordsCache } from '~/server/utils/contextWords'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     return { ok: false, error: 'gameId must be a positive integer' }
   }
 
-  const cache = await getContextEmbeddingsCache(gameId)
+  const cache = await getContextWordsCache(gameId)
   const words = cache.words
 
   if (!words.length) {

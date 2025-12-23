@@ -1,32 +1,17 @@
 import { defineEventHandler, readBody, setResponseStatus } from 'h3'
 import { getSupabaseAdminClient } from '~/server/utils/supabaseAdmin'
-import { getContextEmbeddingsCache } from '~/server/utils/contextEmbeddings'
+import { applyAdminRules, applyStatsBonus, mergeEdgeData } from '~/server/utils/contextEdges'
+import { getAutoNeighbors } from '~/server/utils/contextNeighbors'
 
 type DefineBody = {
   lemma?: string
+  useStats?: boolean
 }
 
 const NEIGHBOR_LIMIT = 300
-const EMBEDDING_DIM = 384
 
 function normalizeLemma(value: string) {
   return value.trim().toLowerCase().replace(/ё/g, 'е')
-}
-
-function cosineSimilarity(a: number[], b: number[]): number {
-  let dot = 0
-  let na = 0
-  let nb = 0
-  const len = Math.min(a.length, b.length)
-  for (let i = 0; i < len; i += 1) {
-    const x = a[i] ?? 0
-    const y = b[i] ?? 0
-    dot += x * y
-    na += x * x
-    nb += y * y
-  }
-  if (!na || !nb) return 0
-  return dot / (Math.sqrt(na) * Math.sqrt(nb))
 }
 
 
@@ -34,6 +19,7 @@ export default defineEventHandler(async (event) => {
   const body = (await readBody(event)) as DefineBody
   const lemmaRaw = typeof body?.lemma === 'string' ? body.lemma : ''
   const lemma = normalizeLemma(lemmaRaw)
+  const useStats = Boolean(body?.useStats)
 
   if (!lemma) {
     setResponseStatus(event, 400)
@@ -96,51 +82,35 @@ export default defineEventHandler(async (event) => {
     targetLemma = inserted.Lemma
   }
 
-  const cache = await getContextEmbeddingsCache(1)
-  const targetEmbedding = cache.embeddingsById.get(targetId)
-
-  if (!targetEmbedding || targetEmbedding.length !== EMBEDDING_DIM) {
+  const auto = await getAutoNeighbors(1, targetId, NEIGHBOR_LIMIT)
+  if (!auto.ok) {
     setResponseStatus(event, 500)
-    return { ok: false, message: 'embeddings_unavailable' }
+    return { ok: false, message: auto.message }
   }
 
-  const embeddingsMap = cache.embeddingsById
-  const candidates = cache.wordsWithEmbeddings
+  let edges = []
+  const { data: edgeRows, error: edgeError } = await supabase
+    .from('context_edges')
+    .select('to_word_id, admin_action, admin_rank, plays_count, avg_sim')
+    .eq('target_word_id', targetId)
+    .eq('kind', 'target_guess')
+    .is('from_word_id', null)
 
-  if (candidates.length < 100) {
-    setResponseStatus(event, 500)
-    return { ok: false, message: 'embeddings_unavailable' }
+  if (edgeError) {
+    console.error(edgeError)
+  } else {
+    edges = edgeRows || []
   }
 
-  const scored = candidates.map((word) => {
-    const embedding = embeddingsMap.get(word.id) ?? []
-    const similarity = cosineSimilarity(targetEmbedding as number[], embedding)
-    return {
-      id: word.id,
-      lemma: word.Lemma,
-      rank: word.R,
-      similarity
-    }
-  })
-
-  scored.sort((a, b) => b.similarity - a.similarity)
-  const top = scored.slice(0, NEIGHBOR_LIMIT)
-
-  const neighbors = top.map((entry, index) => {
-    const heatScore = (entry.similarity + 1) / 2
-    return {
-      id: entry.id,
-      lemma: entry.lemma,
-      rank: index + 1,
-      similarity: entry.similarity,
-      distance: 1 - entry.similarity,
-      heatScore
-    }
-  })
+  let neighbors = mergeEdgeData(auto.neighbors, edges)
+  neighbors = applyAdminRules(neighbors, NEIGHBOR_LIMIT)
+  if (useStats) {
+    neighbors = applyStatsBonus(neighbors, NEIGHBOR_LIMIT)
+  }
 
   return {
     target: { id: targetId, lemma: targetLemma },
     neighbors,
-    source: 'embeddings'
+    source: auto.source
   }
 })

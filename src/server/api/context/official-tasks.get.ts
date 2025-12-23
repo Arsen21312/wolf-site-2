@@ -1,6 +1,6 @@
 import { defineEventHandler } from 'h3'
 import { contextOfficialTasks } from '~/data/contextOfficialTasks'
-import { getContextEmbeddingsCache } from '~/server/utils/contextEmbeddings'
+import { getContextWordsCache } from '~/server/utils/contextWords'
 
 type ContextOfficialTaskApi = {
   slug: string
@@ -12,7 +12,7 @@ type ContextOfficialTaskApi = {
 }
 
 export default defineEventHandler(async () => {
-  const cache = await getContextEmbeddingsCache(1)
+  const cache = await getContextWordsCache(1)
   const lemmaMap = new Map<string, { id: number; R: number | null }>()
   for (const word of cache.words) {
     const key = word.Lemma.toLowerCase().replace(/ё/g, 'е')

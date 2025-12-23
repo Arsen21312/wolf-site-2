@@ -2,6 +2,7 @@
   <section class="tod-page">
     <div class="tod-container">
       <div v-if="showIntro" class="tod-intro">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <h1 class="tod-title">Правда или действие</h1>
         <p class="tod-subtitle">
           Классическая игра для вечеринок, свиданий и долгих разговоров. Нейронный Волк задаёт вопросы за вас.
@@ -11,6 +12,7 @@
       </div>
 
       <div v-else class="tod-game">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <div class="tod-modes">
           <button
             v-for="m in modes"
@@ -21,6 +23,23 @@
           >
             {{ m.label }}
           </button>
+        </div>
+        <div class="tod-modes-mobile">
+          <button class="tod-chip tod-chip-primary" type="button" @click="toggleModes">
+            {{ selectedModeLabel }}
+          </button>
+          <div class="tod-modes-extra" :class="{ open: showModes }">
+            <button
+              v-for="m in mobileModes"
+              :key="m.id"
+              class="tod-chip"
+              type="button"
+              :class="{ 'tod-chip-active': mode === m.id }"
+              @click="handleModeSelect(m.id)"
+            >
+              {{ m.label }}
+            </button>
+          </div>
         </div>
 
         <div class="tod-card">
@@ -46,18 +65,28 @@
         </div>
       </div>
     </div>
-    <SocialPopup :visible="showPopup" :payload="popupPayload" @close="showPopup = false" />
+    <SocialPopup :visible="showPopup" :payload="popupPayload" @close="handlePopupClose" />
   </section>
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue';
 import { computed, ref } from 'vue';
 import SocialPopup from '@/components/ui/SocialPopup.vue';
 import { modes, questions } from './questions';
 
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Правда или действие' }
+];
+
 const showIntro = ref(true);
-const mode = ref('classic');
+const mode = ref('random');
 const currentType = ref('truth');
+const showModes = ref(false);
+const randomMode = { id: 'random', label: 'Случайно' };
+const mobileModes = computed(() => [randomMode, ...modes].filter((item) => item.id !== mode.value));
 const currentQuestion = ref('');
 const currentHint = ref('');
 const isAnimating = ref(false);
@@ -65,6 +94,7 @@ const lastIndex = ref({ truth: -1, dare: -1 });
 const questionsSeen = ref(0);
 const showPopup = ref(false);
 const popupIndex = ref(0);
+const currentModeForQuestion = ref(modes[0]?.id || 'classic');
 
 const hints = {
   truth: [
@@ -85,21 +115,14 @@ const socials = [
     text: 'Куча мемов, всё самое свежее тут',
     cta: 'Перейти в логово',
     link: 'https://t.me/neural_wise_wolf',
-    emoji: '📬'
-  },
-  {
-    title: 'Залетай в Instagram',
-    text: 'Самое первое и большое сообщество, много мемов с волками',
-    cta: 'Открыть Instagram',
-    link: 'https://instagram.com/neural_wise_wolf/',
-    emoji: '📸'
+    emoji: '✉️'
   },
   {
     title: 'TikTok Волка',
     text: 'Мемы, стримы и много волков',
     cta: 'Смотреть TikTok',
     link: 'https://www.tiktok.com/@neural_wolf',
-    emoji: '🎵'
+    emoji: '🎬'
   },
   {
     title: 'YouTube канал',
@@ -107,12 +130,25 @@ const socials = [
     cta: 'Открыть YouTube',
     link: 'https://www.youtube.com/@neural_wolf',
     emoji: '▶️'
+  },
+  {
+    title: 'Залетай в Instagram',
+    text: 'Самое первое и большое сообщество, много мемов с волками',
+    cta: 'Открыть Instagram',
+    link: 'https://instagram.com/neural_wise_wolf/',
+    emoji: '📸'
   }
 ];
 
 const popupPayload = computed(() => socials[popupIndex.value % socials.length]);
 
 const currentModeLabel = computed(() => {
+  const m = modes.find((item) => item.id === currentModeForQuestion.value);
+  return m ? m.label : currentModeForQuestion.value;
+});
+
+const selectedModeLabel = computed(() => {
+  if (mode.value === randomMode.id) return randomMode.label;
   const m = modes.find((item) => item.id === mode.value);
   return m ? m.label : mode.value;
 });
@@ -140,9 +176,17 @@ function pickHint() {
   currentHint.value = getRandomItem(pool, currentType.value);
 }
 
+function pickModeForQuestion() {
+  if (mode.value !== randomMode.id) return mode.value;
+  const idx = Math.floor(Math.random() * modes.length);
+  return modes[idx]?.id || modes[0]?.id || 'classic';
+}
+
 function ask(type) {
   currentType.value = type;
-  const pool = questions[mode.value][type] || [];
+  const effectiveMode = pickModeForQuestion();
+  currentModeForQuestion.value = effectiveMode;
+  const pool = questions[effectiveMode]?.[type] || [];
   currentQuestion.value = getRandomItem(pool, type);
   pickHint();
   resetAnimation();
@@ -162,6 +206,16 @@ function askRandom() {
   ask(type);
 }
 
+function handleModeSelect(nextMode) {
+  mode.value = nextMode;
+  showModes.value = false;
+  askRandom();
+}
+
+function toggleModes() {
+  showModes.value = !showModes.value;
+}
+
 function startGame() {
   showIntro.value = false;
   askRandom();
@@ -169,9 +223,13 @@ function startGame() {
 function triggerPopup() {
   questionsSeen.value += 1;
   if (questionsSeen.value % 5 === 0) {
-    popupIndex.value += 1;
     showPopup.value = true;
   }
+}
+
+function handlePopupClose() {
+  showPopup.value = false;
+  popupIndex.value = (popupIndex.value + 1) % socials.length;
 }
 </script>
 
@@ -182,7 +240,7 @@ function triggerPopup() {
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  padding: clamp(8px, 2.5vw, 20px);
+  padding: clamp(8px, 2.2vw, 18px);
   background: transparent;
   color: #e5e7eb;
   text-align: center;
@@ -196,12 +254,13 @@ function triggerPopup() {
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: clamp(12px, 2.6vw, 26px) clamp(10px, 2.6vw, 22px);
+  padding: clamp(16px, 3vw, 28px) clamp(12px, 3vw, 24px) clamp(14px, 3vw, 26px);
   box-shadow: none;
   display: grid;
   justify-items: center;
   gap: clamp(12px, 3vw, 22px);
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .tod-intro {
@@ -211,10 +270,10 @@ function triggerPopup() {
   justify-items: center;
   align-items: center;
   align-content: center;
-  padding: clamp(6px, 2vw, 14px) 0 clamp(8px, 2.2vw, 16px);
+  padding: clamp(2px, 1.4vw, 10px) 0 clamp(8px, 2.2vw, 16px);
   max-width: 900px;
   margin: 0 auto;
-  min-height: clamp(68vh, 88vw, 78vh);
+  min-height: clamp(62vh, 82vw, 74vh);
 }
 
 .tod-title {
@@ -278,11 +337,11 @@ function triggerPopup() {
 
 .tod-game {
   display: grid;
-  gap: clamp(18px, 3vw, 32px);
+  gap: clamp(14px, 2.6vw, 26px);
   justify-items: center;
   align-items: center;
-  min-height: 80vh;
-  padding: clamp(10px, 2vw, 18px) 0 clamp(14px, 3vw, 24px);
+  min-height: 70vh;
+  padding: clamp(6px, 1.6vw, 14px) 0 clamp(10px, 2.4vw, 20px);
   margin-top: 0;
   width: 100%;
 }
@@ -294,6 +353,7 @@ function triggerPopup() {
   justify-content: center;
   margin-bottom: 8px;
   width: 100%;
+  max-width: 900px;
 }
 
 .tod-chip {
@@ -310,8 +370,44 @@ function triggerPopup() {
   justify-content: center;
   align-items: center;
   gap: 8px;
-  flex: 1 1 clamp(140px, 28%, 220px);
+  flex: 0 1 auto;
+  min-width: 160px;
+  max-width: 220px;
 }
+
+.tod-modes-mobile {
+  display: none;
+  width: min(520px, 100%);
+  margin: 0 auto;
+  gap: 10px;
+  justify-items: center;
+}
+
+.tod-chip-primary {
+  animation: tod-pulse 5s ease-in-out infinite;
+}
+
+.tod-modes-extra {
+  display: grid;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+  justify-items: center;
+}
+
+.tod-modes-extra.open {
+  max-height: 420px;
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .tod-chip {
+    flex: 0 1 200px;
+  }
+}
+
 
 .tod-chip-active {
   background: linear-gradient(120deg, rgba(56, 189, 248, 0.25), rgba(168, 85, 247, 0.25));
@@ -481,6 +577,60 @@ function triggerPopup() {
 
   .tod-card {
     margin-top: 0;
+  }
+
+  .tod-modes {
+    display: none;
+  }
+
+  .tod-modes-mobile {
+    display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .tod-page {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow-x: clip;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .tod-container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .tod-chip {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tod-page,
+  .tod-container,
+  .tod-modes,
+  .tod-card {
+    max-width: 100%;
+  }
+
+  .tod-card {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@keyframes tod-pulse {
+  0%,
+  88%,
+  100% {
+    transform: translateY(0);
+  }
+  92% {
+    transform: translateY(-2px);
+  }
+  96% {
+    transform: translateY(1px);
   }
 }
 </style>

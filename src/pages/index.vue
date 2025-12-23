@@ -183,4 +183,11 @@ import PixelTransition from '@/components/ui/PixelTransition.vue'
   color: var(--accent);
   font-weight: 800;
 }
+
+@media (max-width: 640px) {
+  .section-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 </style>

@@ -1,6 +1,7 @@
 <template>
   <section class="tod-page">
     <div class="tod-container">
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <div v-if="!started" class="tod-intro">
         <h1 class="tod-title">Никнейм или волчье имя</h1>
         <p class="tod-subtitle">Введи имя или слово — сгенерим несколько вариантов ников без кринжа.</p>
@@ -108,8 +109,15 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { ref } from 'vue'
 import { nickParts } from '@/data/nicknames'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Никнеймы' }
+]
 
 const started = ref(false)
 const base = ref('')

@@ -1,10 +1,7 @@
 <template>
   <div class="rand-page">
     <section class="rand-hero">
-      <div class="pill">
-        <span>Инструмент</span>
-        <strong>Колесо решений</strong>
-      </div>
+      <Breadcrumbs class="center" :items="breadcrumbs" />
       <h1>Рандомайзер</h1>
       <p class="lead">
         Когда идей много, а выбрать сложно. Колесо решений сделает это за вас: случайное число, слово из списка или простой
@@ -155,8 +152,15 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, reactive, ref } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Рандомайзер' }
+]
 
 const modes = [
   { id: 'number', label: 'Число' },

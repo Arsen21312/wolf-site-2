@@ -3,7 +3,7 @@
     <section id="top" class="micro-stage">
       <div class="tod-container">
         <div v-if="!gameStarted" class="tod-intro">
-          <div class="pill-hero">Инструмент · Микро действие</div>
+          <Breadcrumbs class="center" :items="breadcrumbs" />
           <h1 class="tod-title">Микро действие, чтобы сдвинуться с места</h1>
           <p class="tod-subtitle">
             1–5 минут на лёгкое действие. Без мотивационной воды: выбери категорию, получи задачу и сделай маленький шаг.
@@ -153,6 +153,7 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, ref } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
 import SocialPopup from '@/components/ui/SocialPopup.vue'

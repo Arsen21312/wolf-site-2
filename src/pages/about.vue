@@ -1,9 +1,6 @@
 <template>
   <section class="about-page">
-    <div class="pill">
-      <span>Делается силами одного волка</span>
-      <strong>О проекте</strong>
-    </div>
+    <Breadcrumbs :items="breadcrumbs" />
 
     <div class="about-grid">
       <div class="about-main">
@@ -177,8 +174,15 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useHead } from '#imports'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'О проекте' }
+]
+
 
 useHead({
   title: 'О проекте — Нейронный Волк',

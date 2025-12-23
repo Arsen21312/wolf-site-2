@@ -3,10 +3,7 @@
     <section id="top" class="wolf-stage">
       <div class="wolf-container">
         <div v-if="showIntro" class="wolf-intro">
-          <div class="pill">
-            <span>Мотиватор</span>
-            <strong>Цитаты волка</strong>
-          </div>
+          <Breadcrumbs class="center" :items="breadcrumbs" />
           <h1 class="wolf-title">Короткие строки про смелость, риск и движение</h1>
           <p class="wolf-subtitle">
             Без мотивационной воды. Жми — и получай дерзкий один-лайнер, который напоминает: движение важнее сомнений.
@@ -155,10 +152,17 @@
 </template>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, ref } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
 import SocialPopup from '@/components/ui/SocialPopup.vue'
 import { wolfCategories, wolfQuotes } from '@/data/wolfQuotes'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Генераторы', to: '/generators' },
+  { label: 'Цитаты волка' }
+]
 
 definePageMeta({
   alias: ['/generators/wolf-quotes/']

@@ -1,8 +1,6 @@
 ﻿<template>
   <section style="padding: 60px 0 24px">
-    <div class="pill">
-      <strong>Игры</strong>
-    </div>
+    <Breadcrumbs class="center" :items="breadcrumbs" />
     <h1 class="section-title">Выбирай игру</h1>
     <TextType
       class="section-lead"
@@ -53,7 +51,13 @@
 </style>
 
 <script setup>
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import TextType from '@/components/ui/TextType.vue'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры' }
+]
 
 const games = [
   {
@@ -89,9 +93,18 @@ const games = [
     duration: '5-15 минут'
   },
   {
+    slug: 'crocodile',
+    title: 'Крокодил',
+    description: 'Генератор слов и фраз с фильтрами сложности и живой статистикой.',
+    tag: 'слова / объясняй',
+    mood: 'командно',
+    duration: '10-20 минут',
+    to: '/games/crocodile'
+  },
+  {
     slug: 'coin',
     title: 'Ответь за 5 секунд',
-    description: 'Дай три ответа за 5 секунд — таймер поджимает, смех гарантирован.',
+    description: 'Дай три ответа за 5 секунд - таймер поджимает, смех гарантирован.',
     tag: 'таймер / хаос',
     mood: 'динамично',
     duration: '1-5 минут',

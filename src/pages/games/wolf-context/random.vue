@@ -2,44 +2,15 @@
   <section class="wc-shell">
     <div class="wc-container">
       <div class="wc-head">
+        <Breadcrumbs class="center" :items="breadcrumbs" />
         <div class="wc-topbar">
           <div class="wc-chips">
-            <button
-              type="button"
-              class="wc-chip"
-              :class="{ active: activeMode === 'random' }"
-              @click="setMode('random')"
-            >
-              Случайная
-            </button>
-            <button
-              type="button"
-              class="wc-chip"
-              :class="{ active: activeMode === 'tasks' }"
-              @click="setMode('tasks')"
-            >
-              Задания
-            </button>
-            <button
-              type="button"
-              class="wc-chip"
-              :class="{ active: activeMode === 'create' }"
-              @click="setMode('create')"
-            >
-              Загадай слово
-            </button>
-            <button
-              type="button"
-              class="wc-chip"
-              :class="{ active: activeMode === 'party' }"
-              @click="setMode('party')"
-            >
-              Вечеринка
-            </button>
+            <!-- TODO: временно скрыто до готовности режимов -->
+            <!-- TODO: временно скрыто до готовности режимов -->
           </div>
           <button class="wc-howto" type="button" @click="isHowToOpen = true">Как играть</button>
         </div>
-        <h1 class="section-title wc-title">Волчий Контекст</h1>
+        <h1 class="section-title wc-title">Контекст</h1>
         <p class="wc-status-line">Попыток: {{ attemptsCount }} · Подсказок: {{ hintsCount }}</p>
       </div>
 
@@ -160,10 +131,17 @@
 </template>
 
 <script setup lang="ts">
+import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
 import { contextOfficialTasks } from '~/data/contextOfficialTasks'
+
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Игры', to: '/games' },
+  { label: 'Волчий Контекст' }
+]
 
 type Guess = {
   id: number
@@ -266,6 +244,15 @@ const bestPosition = computed(() => {
   if (!positions.length) return Number.POSITIVE_INFINITY
   return Math.min(...positions)
 })
+
+function getBestGuessId() {
+  if (!guesses.value.length) return null
+  let best = guesses.value[0]
+  for (const item of guesses.value) {
+    if (item.position < best.position) best = item
+  }
+  return best.id
+}
 
 const attemptsSorted = computed(() => {
   const sorted = [...guesses.value].sort((a, b) => {
@@ -417,7 +404,10 @@ function submitGuess() {
     gameId: targetGameId.value ?? 1,
     targetId: targetId.value,
     guess,
-    mode: 'guess'
+    bestGuessId: getBestGuessId(),
+    mode: 'guess',
+    usedIds: guesses.value.map((item) => item.id),
+    usedLemmas: guesses.value.map((item) => item.lemma)
   }
 
   isGuessing.value = true
@@ -498,6 +488,7 @@ function giveHint() {
     targetId: targetId.value,
     hint: true,
     bestPosition: best,
+    bestGuessId: getBestGuessId(),
     mode: 'hint',
     usedIds: guesses.value.map((item) => item.id),
     usedLemmas: guesses.value.map((item) => item.lemma)
