@@ -1,44 +1,44 @@
-﻿<template>
+﻿﻿﻿<template>
   <section class="wc-shell">
     <div class="wc-container">
-      <div class="wc-head">
-        <Breadcrumbs class="center" :items="breadcrumbs" />
-        <div class="wc-topbar">
-          <div class="wc-chips">
-            <!-- TODO: временно скрыто до готовности режимов -->
-            <!-- TODO: временно скрыто до готовности режимов -->
-          </div>
-          <button class="wc-howto" type="button" @click="isHowToOpen = true">Как играть</button>
-        </div>
-        <h1 class="section-title wc-title">Контекст</h1>
-        <p class="wc-status-line">Попыток: {{ attemptsCount }} · Подсказок: {{ hintsCount }}</p>
-      </div>
+      <ContextGameHeader
+        :breadcrumbs="breadcrumbs"
+        :attempts="attemptsCount"
+        :hints="hintsCount"
+        @how-to="openHowTo"
+        @tasks="openTasks"
+        @party="goParty"
+        @create="goCreate"
+        @reset="resetCache"
+      />
 
       <div class="wc-form">
         <div class="wc-input-row">
           <input
             id="guess-input"
+            ref="guessInputRef"
             v-model="guessInput"
             class="wc-input"
             type="text"
             placeholder="Пиши ассоциацию"
             @keyup.enter="submitGuess"
-            :disabled="isWon"
+            :disabled="isWon || isAmbientLoading || isTargetPreparing"
           />
           <button
             class="wc-send"
             type="button"
             @click="submitGuess"
             aria-label="Проверить"
-            :disabled="isWon || isGuessing || isHinting"
+            :disabled="isWon || isGuessing || isHinting || isAmbientLoading || isTargetPreparing"
           >
-            <span class="wc-arrow">&gt;</span>
+            <span v-if="isGuessing" class="wc-spinner"></span>
+            <span v-else class="wc-arrow">&gt;</span>
           </button>
           <button
             class="wc-btn ghost"
             type="button"
             @click="giveHint"
-            :disabled="!canGiveHint || isGuessing || isHinting"
+            :disabled="!canGiveHint || isGuessing || isHinting || isAmbientLoading || isTargetPreparing"
           >
             Подсказка
           </button>
@@ -46,33 +46,15 @@
         <button v-if="isWon" class="wc-btn primary" type="button" @click="loadRandomGame">Новая игра</button>
       </div>
 
-      <div class="wc-history-current">
-        <div
-          v-if="panelState.type !== 'guess'"
-          :class="['wc-row', 'wc-row-status', panelState.type === 'error' ? 'wc-row-status-error' : '']"
-        >
-          <div class="wc-row-content wc-row-status-content">
-            <span class="wc-status-text">
-              <span v-if="panelState.type === 'loading'" class="wc-spinner"></span>
-              {{ panelState.text }}
-            </span>
-          </div>
-        </div>
-        <div v-else :class="['wc-row', lastGuess?.isHint ? 'wc-row-hint' : 'wc-row-current']">
-          <div
-            class="wc-row-fill"
-            :style="{ width: `${5 + 95 * (lastGuess?.heatScore ?? 0)}%`, background: getZoneColor(lastGuess?.zone || 'ice') }"
-          ></div>
-          <div class="wc-row-content">
-            <span class="wc-word">
-              {{ lastGuess?.lemma }}
-              <span v-if="lastGuess?.isHint" class="wc-hint-pill">подсказка</span>
-              <span v-else class="wc-hint-pill wc-current-pill">текущий ход</span>
-            </span>
-            <span class="wc-rank">{{ lastGuess?.position }}</span>
-          </div>
-        </div>
-      </div>
+<ContextGuessList
+        :items="attemptsSorted"
+        :status="listStatus"
+        :current-text="currentRowDisplay"
+        :current-type="currentRowDisplayType"
+        :current-rank="currentRowRank"
+        :current-is-hint="currentRowIsHint"
+        empty-text="История пока пуста"
+      />
 
       <div v-if="showRules" class="wc-rules">
         <h2 class="wc-rules-title">Как играть в Волчий контекст</h2>
@@ -104,26 +86,6 @@
         </div>
       </div>
 
-      <div class="wc-history">
-        <ul v-if="attemptsSorted.length" class="wc-history-list">
-          <li v-for="item in attemptsSorted" :key="`${item.id}-${item.position}-${item.createdAt}`" class="wc-history-item">
-            <div :class="['wc-row', item.isHint ? 'wc-row-hint' : '']">
-              <div
-                class="wc-row-fill"
-                :style="{ width: `${5 + 95 * (item.heatScore ?? 0)}%`, background: getZoneColor(item.zone) }"
-              ></div>
-              <div class="wc-row-content">
-                <span class="wc-word">
-                  {{ item.lemma }}
-                  <span v-if="item.isHint" class="wc-hint-pill">подсказка</span>
-                </span>
-                <span class="wc-rank">{{ item.position }}</span>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <p v-else class="wc-muted">История пока пуста</p>
-      </div>
     </div>
     <ContextHowToModal v-model="isHowToOpen" />
     <ContextTasksModal v-model="isTasksOpen" />
@@ -131,11 +93,12 @@
 </template>
 
 <script setup lang="ts">
-import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import ContextGameHeader from '~/components/context/ContextGameHeader.vue'
+import ContextGuessList from '~/components/context/ContextGuessList.vue'
 import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
-import { contextOfficialTasks } from '~/data/contextOfficialTasks'
+import { officialGames } from '~/data/wolf-context/officialGames'
 
 const breadcrumbs = [
   { label: 'Главная', to: '/' },
@@ -150,44 +113,10 @@ type Guess = {
   total: number
   similarity: number
   heatScore: number
-  zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire'
+  zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire' | 'finish'
   isHint: boolean
   createdAt: number
 }
-
-type RandomWordResponse = {
-  ok: boolean
-  word?: { lemma?: string; gameId?: number; id?: number; rank?: number } & Record<string, unknown>
-  error?: string
-}
-
-type GuessResponse =
-  | {
-      ok: false
-      exists: false
-      message: string
-    }
-  | {
-      ok: true
-      exists: true
-      isHint?: boolean
-      position: number
-      total: number
-      percentile: number
-      zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire'
-      isWin?: boolean
-      target: { id: number; lemma: string; rank: number | null }
-      guess: {
-        id: number
-        lemma: string
-        rank: number | null
-        position: number
-        total: number
-        similarity: number
-        heatScore: number
-        zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire'
-      }
-    }
 
 useHead({
   title: 'Волчий Контекст — игра на ассоциации',
@@ -207,36 +136,72 @@ useHead({
 })
 
 const guessInput = ref('')
-const targetId = ref<number | null>(null)
-const targetGameId = ref<number | null>(null)
+const guessInputRef = ref<HTMLInputElement | null>(null)
+const currentRowText = ref('')
+const currentRowType = ref<'guess' | 'error' | 'info'>('info')
+const currentRowRank = ref<number | null>(null)
+const currentRowIsHint = ref(false)
+const targetIndex = ref<number | null>(null)
 const targetLemma = ref<string | null>(null)
-const targetRank = ref<number | null>(null)
 const guesses = ref<Guess[]>([])
-const lastGuess = ref<Guess | null>(null)
 const reactionMessage = ref('Готов к охоте')
 const errorMessage = ref('')
+const workerError = ref('')
+const workerRef = ref<Worker | null>(null)
+const ambientTotal = ref<number | null>(null)
+const ambientDim = ref<number | null>(null)
+const ambientStage = ref('')
+const ambientSource = ref<'cache' | 'network' | ''>('')
+const isAmbientLoading = ref(false)
+const isTargetPreparing = ref(false)
 const isWon = ref(false)
 const isGuessing = ref(false)
 const isHinting = ref(false)
-const activeMode = ref<'random' | 'create' | 'party' | 'tasks'>('random')
 const isHowToOpen = ref(false)
 const isTasksOpen = ref(false)
+const isCreateEnabled = true
+const winMessage = ref('')
 
-const panelState = computed(() => {
+const winMessages = [
+  'Красава, слово угадано, ты в топ 1',
+  'Ауф, добыча взята, это номер 1',
+  'Попадание в яблочко, слово найдено',
+  'Ты на вершине списка, слово угадано',
+  'Изи катка, секретное слово твоё'
+]
+
+const listStatus = computed(() => {
+  if (isAmbientLoading.value || isTargetPreparing.value) {
+    if (ambientStage.value) {
+      const sourceLabel = ambientSource.value === 'cache' ? 'кеш' : 'сеть'
+      return { type: 'loading' as const, text: `Загружаю ${ambientStage.value} (${sourceLabel})...` }
+    }
+    return { type: 'loading' as const, text: 'Загружаю контекст...' }
+  }
   if (isGuessing.value || isHinting.value) {
     return { type: 'loading' as const, text: 'Думаю...' }
   }
   if (errorMessage.value) {
     return { type: 'error' as const, text: errorMessage.value }
   }
-  if (lastGuess.value) {
-    return { type: 'guess' as const, text: '' }
-  }
-  return { type: 'info' as const, text: reactionMessage.value }
+  return null
 })
+
 
 const attemptsCount = computed(() => guesses.value.filter((a) => !a.isHint).length)
 const hintsCount = computed(() => guesses.value.filter((a) => a.isHint).length)
+const hasAnyGuess = computed(() => guesses.value.length > 0)
+const currentRowDisplay = computed(() => {
+  if (currentRowText.value) return currentRowText.value
+  if (!hasAnyGuess.value) return 'Готов к охоте'
+  return ''
+})
+
+const currentRowDisplayType = computed<'guess' | 'error' | 'info'>(() => {
+  if (currentRowText.value) return currentRowType.value
+  if (!hasAnyGuess.value) return 'info'
+  return 'guess'
+})
 const showRules = computed(() => !guesses.value.length && !guessInput.value.trim() && !isGuessing.value && !isHinting.value)
 
 const bestPosition = computed(() => {
@@ -244,15 +209,6 @@ const bestPosition = computed(() => {
   if (!positions.length) return Number.POSITIVE_INFINITY
   return Math.min(...positions)
 })
-
-function getBestGuessId() {
-  if (!guesses.value.length) return null
-  let best = guesses.value[0]
-  for (const item of guesses.value) {
-    if (item.position < best.position) best = item
-  }
-  return best.id
-}
 
 const attemptsSorted = computed(() => {
   const sorted = [...guesses.value].sort((a, b) => {
@@ -262,23 +218,9 @@ const attemptsSorted = computed(() => {
   return sorted
 })
 
-function getZoneColor(zone: Guess['zone']) {
-  switch (zone) {
-    case 'fire':
-      return 'linear-gradient(90deg, #fb923c, #facc15)'
-    case 'hot':
-      return '#fb923c'
-    case 'warm':
-      return '#f59e0b'
-    case 'cold':
-      return '#3b82f6'
-    default:
-      return '#1f2937'
-  }
-}
-
 const canGiveHint = computed(() => {
-  if (!targetId.value || !targetGameId.value) return false
+  if (targetIndex.value === null) return false
+  if (isAmbientLoading.value || isTargetPreparing.value) return false
   if (isWon.value) return false
   return true
 })
@@ -286,8 +228,8 @@ const canGiveHint = computed(() => {
 function normalizeWord(value: string): string {
   return value
     .toLowerCase()
-    .replace(/ё/g, 'е')
-    .replace(/\s+/g, ' ')
+    .replace(/\u0451/g, '\u0435')
+    .replace(/[^\u0430-\u044f]/gi, '')
     .trim()
 }
 
@@ -298,7 +240,15 @@ function zoneFromHeat(heatScore: number) {
   return 'hot'
 }
 
-function reactionForZone(zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire') {
+const FINISH_RANK = 299
+
+function zoneFromRank(heatScore: number, position: number) {
+  if (Number.isFinite(position) && position <= FINISH_RANK) return 'finish'
+  return zoneFromHeat(heatScore)
+}
+
+function reactionForZone(zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire' | 'finish') {
+  if (zone === 'finish') return 'Ты уже у финиша'
   if (zone === 'fire') return 'Огонь, ты совсем рядом'
   if (zone === 'hot') return 'Горячо, почти нашел'
   if (zone === 'warm') return 'Тепло, уже ближе'
@@ -306,151 +256,225 @@ function reactionForZone(zone: 'ice' | 'cold' | 'warm' | 'hot' | 'fire') {
   return 'Ты далеко от цели'
 }
 
-function setMode(mode: 'random' | 'create' | 'party' | 'tasks') {
-  activeMode.value = mode
-  if (mode === 'create') {
-    navigateTo('/context/create')
-    return
-  }
-  if (mode === 'party') {
-    navigateTo('/context/party')
-    return
-  }
-  if (mode === 'tasks') {
-    isTasksOpen.value = true
-  }
-}
-
 async function loadRandomGame() {
-  await loadGameFromApi('/api/context/random-word?gameId=1')
+  try {
+    await ensureAmbientLoaded()
+    const response = await callWorker<WorkerPickResponse>({ type: 'pickRandom' })
+    if (!response.ok) {
+      errorMessage.value = 'Не удалось загрузить словарь'
+      return
+    }
+    await applyTarget(response)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-async function loadGameFromApi(url: string) {
+function openHowTo() {
+  isHowToOpen.value = true
+}
+
+function openTasks() {
+  isTasksOpen.value = true
+}
+
+function goParty() {
+  navigateTo('/games/wolf-context/party')
+}
+
+function goCreate() {
+  if (isCreateEnabled) {
+    navigateTo('/games/wolf-context/create')
+    return
+  }
+  errorMessage.value = 'Режим в разработке'
+}
+
+async function resetCache() {
+  if (!process.client || !('indexedDB' in window)) return
+  await new Promise<void>((resolve) => {
+    const request = indexedDB.deleteDatabase('wolf-context')
+    request.onsuccess = () => resolve()
+    request.onerror = () => resolve()
+    request.onblocked = () => resolve()
+  })
+  window.location.reload()
+}
+
+async function applyTarget(response: WorkerPickResponseOk) {
   try {
-    const response = await $fetch<RandomWordResponse>(url)
-    if (!response?.ok) {
-      throw new Error(response?.error || 'Failed to load a random word')
-    }
-    const lemma = typeof response.word?.lemma === 'string' ? response.word.lemma : ''
-    if (!lemma) {
-      throw new Error('Supabase word has no Lemma')
-    }
-    const rawId = response.word?.id
-    const rawGameId = response.word?.gameId
-    const rawRank = response.word?.rank
-    const resolvedId = typeof rawId === 'number' ? rawId : Number(rawId)
-    const resolvedGameId = typeof rawGameId === 'number' ? rawGameId : Number(rawGameId)
-    const resolvedRank = typeof rawRank === 'number' ? rawRank : Number(rawRank)
-
-    if (!Number.isFinite(resolvedId) || !Number.isFinite(resolvedGameId)) {
-      throw new Error('Supabase word has invalid ids')
-    }
-
-    targetId.value = resolvedId
-    targetGameId.value = resolvedGameId
-    targetLemma.value = lemma
-    targetRank.value = Number.isFinite(resolvedRank) ? resolvedRank : null
+    targetIndex.value = response.index
+    targetLemma.value = response.lemma
     guesses.value = []
-    lastGuess.value = null
     reactionMessage.value = 'Готов к охоте'
     errorMessage.value = ''
     guessInput.value = ''
+    currentRowText.value = ''
+    currentRowType.value = 'info'
+    winMessage.value = ''
     isWon.value = false
+    await prepareTarget(response.index)
   } catch (e) {
-    console.error('Не удалось получить слово из Supabase', e)
-    errorMessage.value = 'Не удалось получить слово из Supabase'
+    console.error('Не удалось подготовить слово', e)
+    errorMessage.value = 'Не удалось подготовить слово'
   }
 }
 
-function resolveOfficialTask(official: string) {
-  const numeric = Number(official)
-  if (Number.isFinite(numeric) && numeric > 0 && numeric <= contextOfficialTasks.length) {
-    return contextOfficialTasks[numeric - 1]
-  }
-  return contextOfficialTasks.find((item) => item.slug === official)
+function resolveOfficialGame(id: number) {
+  return officialGames.find((item) => item.id === id) ?? null
 }
 
-async function loadOfficialGame(official: string) {
-  const task = resolveOfficialTask(official)
+async function loadOfficialGame(id: number) {
+  const task = resolveOfficialGame(id)
   if (!task) {
-    console.warn('Unknown official task', official)
+    errorMessage.value = 'Официальная игра не найдена'
     await loadRandomGame()
     return
   }
-  const url = `/api/context/random-word?gameId=1&lemma=${encodeURIComponent(task.lemma)}`
-  await loadGameFromApi(url)
+  try {
+    await loadTargetByLemma(task.target)
+  } catch (error) {
+    console.error(error)
+    errorMessage.value = 'Не удалось загрузить официальную игру'
+    await loadRandomGame()
+  }
 }
 
-function submitGuess() {
-  if (!targetId.value || !targetGameId.value || isWon.value) {
-    if (!targetId.value || !targetGameId.value) {
-      errorMessage.value = 'Подожди, игра загружается'
+async function loadUserGame(id: number) {
+  try {
+    const response = await $fetch<{ ok: boolean; game?: { targetWord?: string } }>(`/api/context/game?id=${id}`)
+    if (!response.ok || !response.game?.targetWord) {
+      errorMessage.value = 'Пользовательская игра не найдена'
+      await loadRandomGame()
+      return
     }
+    await loadTargetByLemma(response.game.targetWord)
+  } catch (error) {
+    console.error(error)
+    errorMessage.value = 'Не удалось загрузить игру'
+    await loadRandomGame()
+  }
+}
+
+async function loadTargetByIndex(index: number) {
+  try {
+    await ensureAmbientLoaded()
+    const response = await callWorker<WorkerPickResponse>({ type: 'pickByIndex', index })
+    if (!response.ok) {
+      await loadRandomGame()
+      return
+    }
+    await applyTarget(response)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function loadTargetByLemma(lemma: string) {
+  try {
+    await ensureAmbientLoaded()
+    const response = await callWorker<WorkerPickResponse>({ type: 'pickByLemma', lemma })
+    if (!response.ok) {
+      await loadRandomGame()
+      return
+    }
+    await applyTarget(response)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function submitGuess() {
+  if (isGuessing.value || isHinting.value) return
+  if (targetIndex.value === null || isWon.value || isAmbientLoading.value || isTargetPreparing.value) {
+    errorMessage.value = ''
+    currentRowText.value = 'Подожди, игра загружается'
+    currentRowType.value = 'info'
+    currentRowRank.value = null
+    currentRowIsHint.value = false
+    guessInput.value = ''
+    focusInput()
     return
   }
-  const guess = normalizeWord(guessInput.value)
-  if (!guess) return
-
+  const rawInput = guessInput.value
+  const guess = normalizeWord(rawInput)
   guessInput.value = ''
   errorMessage.value = ''
-
-  const alreadyUsed = guesses.value.some((item) => item.lemma.toLowerCase() === guess)
-  if (alreadyUsed) {
-    errorMessage.value = `Слово "${guess}" уже было введено`
+  if (!guess || guess.length < 3) {
+    currentRowText.value = `слово "${rawInput.trim() || 'это'}" не в волчьем словаре`
+    currentRowType.value = 'error'
+    currentRowRank.value = null
+    currentRowIsHint.value = false
+    focusInput()
     return
   }
 
-  const payload = {
-    gameId: targetGameId.value ?? 1,
-    targetId: targetId.value,
-    guess,
-    bestGuessId: getBestGuessId(),
-    mode: 'guess',
-    usedIds: guesses.value.map((item) => item.id),
-    usedLemmas: guesses.value.map((item) => item.lemma)
+  const alreadyUsed = guesses.value.some((item) => normalizeWord(item.lemma) === guess)
+  if (alreadyUsed) {
+    currentRowText.value = `слово "${guess}" уже было введено`
+    currentRowType.value = 'error'
+    currentRowRank.value = null
+    currentRowIsHint.value = false
+    focusInput()
+    return
   }
 
+  currentRowText.value = guess
+  currentRowType.value = 'guess'
+  currentRowRank.value = null
+  currentRowIsHint.value = false
   isGuessing.value = true
-  $fetch<GuessResponse>('/api/context/guess', {
-    method: 'POST',
-    body: payload
-  })
-    .then((response) => {
-      if (!response.ok) {
-        errorMessage.value = 'message' in response ? response.message : 'Не удалось проверить слово'
+  try {
+    const response = await callWorker<WorkerGuessResponse>({ type: 'guess', lemma: guess })
+    if (!response.ok) {
+      if (response.message === 'word_not_found') {
+        currentRowText.value = `слово "${guess}" не в волчьем словаре`
+        currentRowType.value = 'error'
+        currentRowRank.value = null
+        currentRowIsHint.value = false
         return
       }
+      currentRowText.value = 'Не удалось проверить слово'
+      currentRowType.value = 'error'
+      currentRowRank.value = null
+      currentRowIsHint.value = false
+      return
+    }
 
-      if (response.ok && response.exists) {
-        const heatScore = Number.isFinite(response.guess.heatScore) ? response.guess.heatScore : 0
-        const zone = zoneFromHeat(heatScore)
-        const reaction = reactionForZone(zone)
-        addAttempt({
-          id: response.guess.id,
-          lemma: response.guess.lemma,
-          position: response.guess.position,
-          total: response.total,
-          similarity: response.guess.similarity,
-          heatScore,
-          zone,
-          isHint: Boolean(response.isHint)
-        })
-        reactionMessage.value = reaction
-        errorMessage.value = ''
-        const win = response.isWin === true
-        if (win) isWon.value = true
-        return
-      }
-
-      errorMessage.value = 'Не удалось проверить слово'
+    const position = response.position
+    const total = response.total
+    const percentile = total > 1 ? 1 - (position - 1) / (total - 1) : 1
+    const heatScore = Math.max(0, Math.min(1, percentile))
+    const zone = zoneFromRank(heatScore, response.position)
+    const reaction = reactionForZone(zone)
+      addAttempt({
+        id: response.index,
+        lemma: response.lemma,
+        position,
+      total,
+      similarity: response.similarity,
+      heatScore,
+      zone,
+      isHint: false
     })
-    .catch((error) => {
-      console.error(error)
-      errorMessage.value = 'Не удалось проверить слово'
-    })
-    .finally(() => {
-      isGuessing.value = false
-    })
+    currentRowRank.value = position
+    currentRowIsHint.value = false
+    reactionMessage.value = reaction
+    errorMessage.value = ''
+    if (response.isWin) {
+      isWon.value = true
+      currentRowText.value = pickWinMessage()
+      currentRowType.value = 'info'
+      currentRowIsHint.value = false
+    }
+  } catch (error) {
+    console.error(error)
+    currentRowText.value = 'Не удалось проверить слово'
+    currentRowType.value = 'error'
+  } finally {
+    isGuessing.value = false
+    focusInput()
+  }
 }
 
 function addAttempt(payload: {
@@ -475,66 +499,75 @@ function addAttempt(payload: {
     createdAt: Date.now()
   }
   guesses.value.push(guessItem)
-  lastGuess.value = guessItem
 }
 
-function giveHint() {
-  if (!targetId.value || !targetGameId.value || isWon.value) return
+function pickWinMessage() {
+  if (winMessage.value) return winMessage.value
+  const index = Math.floor(Math.random() * winMessages.length)
+  const text = winMessages[index] || winMessages[0]
+  winMessage.value = text
+  return text
+}
+
+async function giveHint() {
+  if (targetIndex.value === null || isWon.value || isAmbientLoading.value || isTargetPreparing.value) return
 
   const best = Number.isFinite(bestPosition.value) ? bestPosition.value : null
 
-  const payload = {
-    gameId: targetGameId.value ?? 1,
-    targetId: targetId.value,
-    hint: true,
-    bestPosition: best,
-    bestGuessId: getBestGuessId(),
-    mode: 'hint',
-    usedIds: guesses.value.map((item) => item.id),
-    usedLemmas: guesses.value.map((item) => item.lemma)
-  }
-
   isHinting.value = true
-  $fetch<GuessResponse>('/api/context/guess', {
-    method: 'POST',
-    body: payload
-  })
-    .then((response) => {
-      if (response.ok && response.exists) {
-        const heatScore = Number.isFinite(response.guess.heatScore) ? response.guess.heatScore : 0
-        const zone = zoneFromHeat(heatScore)
-        const reaction = reactionForZone(zone)
-        addAttempt({
-          id: response.guess.id,
-          lemma: response.guess.lemma,
-          position: response.guess.position,
-          total: response.total,
-          similarity: response.guess.similarity,
-          heatScore,
-          zone,
-          isHint: true
-        })
-        reactionMessage.value = reaction
-        errorMessage.value = ''
-        const win = response.isWin === true
-        if (win) isWon.value = true
+  try {
+    const response = await callWorker<WorkerHintResponse>({
+      type: 'hint',
+      bestPosition: best,
+      usedIndices: guesses.value.map((item) => item.id),
+      usedLemmas: guesses.value.map((item) => item.lemma)
+    })
+
+    if (!response.ok) {
+      if (response.message === 'already_best') {
+        errorMessage.value = 'Ты уже на вершине списка, дальше подсказок нет'
+        currentRowIsHint.value = false
         return
       }
-
-      if (!response.ok) {
-        errorMessage.value = 'message' in response ? response.message : 'Не удалось получить подсказку'
-        return
-      }
-
       errorMessage.value = 'Не удалось получить подсказку'
-    })
-    .catch((error) => {
-      console.error(error)
-      errorMessage.value = 'Не удалось получить подсказку'
-    })
-    .finally(() => {
-      isHinting.value = false
-    })
+      currentRowIsHint.value = false
+      return
+    }
+
+    const position = response.position
+    const total = response.total
+    const percentile = total > 1 ? 1 - (position - 1) / (total - 1) : 1
+    const heatScore = Math.max(0, Math.min(1, percentile))
+    const zone = zoneFromRank(heatScore, response.position)
+    const reaction = reactionForZone(zone)
+    addAttempt({
+      id: response.index,
+      lemma: response.lemma,
+      position,
+      total,
+      similarity: response.similarity,
+      heatScore,
+      zone,
+        isHint: true
+      })
+      currentRowText.value = response.lemma
+      currentRowType.value = 'guess'
+      currentRowRank.value = position
+      currentRowIsHint.value = true
+      reactionMessage.value = reaction
+    errorMessage.value = ''
+    if (response.isWin) {
+      isWon.value = true
+      currentRowText.value = pickWinMessage()
+      currentRowType.value = 'info'
+    }
+  } catch (error) {
+    console.error(error)
+    errorMessage.value = 'Не удалось получить подсказку'
+  } finally {
+    isHinting.value = false
+    focusInput()
+  }
 }
 
 onMounted(() => {
@@ -545,39 +578,44 @@ const lastRouteKey = ref('')
 
 function buildRouteKey(route: ReturnType<typeof useRoute>) {
   const target = typeof route.query.targetId === 'string' ? route.query.targetId : ''
-  const game = typeof route.query.gameId === 'string' ? route.query.gameId : ''
-  const official = typeof route.query.official === 'string' ? route.query.official : ''
-  return `${target}|${game}|${official}`
+  const targetLemma = typeof route.query.target === 'string' ? route.query.target : ''
+  const mode = typeof route.query.mode === 'string' ? route.query.mode : ''
+  const officialId = typeof route.query.id === 'string' ? route.query.id : ''
+  return `${target}|${targetLemma}|${mode}|${officialId}`
 }
 
-function initFromRoute() {
+async function initFromRoute() {
   const route = useRoute()
   const routeKey = buildRouteKey(route)
   if (routeKey === lastRouteKey.value) return
   lastRouteKey.value = routeKey
 
   const queryTargetId = Number(route.query.targetId)
-  const queryGameId = Number(route.query.gameId ?? 1)
-  const officialSlug = typeof route.query.official === 'string' ? route.query.official : ''
+  const targetLemma = typeof route.query.target === 'string' ? route.query.target.trim() : ''
+  const mode = typeof route.query.mode === 'string' ? route.query.mode : ''
+  const rawModeId = typeof route.query.id === 'string' ? Number(route.query.id) : NaN
 
   if (Number.isFinite(queryTargetId)) {
-    targetId.value = queryTargetId
-    targetGameId.value = Number.isFinite(queryGameId) ? queryGameId : 1
-    guesses.value = []
-    lastGuess.value = null
-    reactionMessage.value = 'Готов к охоте'
-    errorMessage.value = ''
-    guessInput.value = ''
-    isWon.value = false
+    await loadTargetByIndex(queryTargetId)
     return
   }
 
-  if (officialSlug) {
-    loadOfficialGame(officialSlug)
+  if (mode === 'official' && Number.isFinite(rawModeId)) {
+    await loadOfficialGame(rawModeId)
     return
   }
 
-  loadRandomGame()
+  if (mode === 'user' && Number.isFinite(rawModeId)) {
+    await loadUserGame(rawModeId)
+    return
+  }
+
+  if (import.meta.dev && targetLemma) {
+    await loadTargetByLemma(targetLemma)
+    return
+  }
+
+  await loadRandomGame()
 }
 
 watch(
@@ -586,6 +624,128 @@ watch(
     initFromRoute()
   }
 )
+
+const pendingRequests = new Map<number, { resolve: (value: any) => void; reject: (error: unknown) => void }>()
+let requestId = 0
+let ambientInitPromise: Promise<void> | null = null
+
+type WorkerErrorResponse = { ok: false; message: string }
+type WorkerInitResponse = { ok: true; count: number; dim: number } | WorkerErrorResponse
+type WorkerPickResponseOk = { ok: true; index: number; lemma: string; total: number }
+type WorkerPickResponse = WorkerPickResponseOk | WorkerErrorResponse
+type WorkerGuessResponse =
+  | { ok: true; index: number; lemma: string; position: number; similarity: number; total: number; isWin: boolean }
+  | WorkerErrorResponse
+type WorkerHintResponse = WorkerGuessResponse
+
+function getWorker() {
+  if (workerError.value) {
+    throw new Error(workerError.value)
+  }
+  if (workerRef.value) return workerRef.value
+  const worker = new Worker(new URL('../../../workers/contextAmbient.worker.ts', import.meta.url), { type: 'module' })
+  worker.onmessage = (event) => {
+    const { requestId: id, ...payload } = event.data ?? {}
+    if (payload?.type === 'progress') {
+      ambientStage.value = payload.stage || ''
+      ambientSource.value = payload.source || ''
+      return
+    }
+    const pending = pendingRequests.get(id)
+    if (!pending) return
+    pending.resolve(payload)
+    pendingRequests.delete(id)
+  }
+  worker.onerror = (event) => {
+    console.error('Context worker error', event)
+    workerError.value = 'Ошибка воркера контекста'
+    errorMessage.value = 'ambient не загрузился'
+    for (const pending of pendingRequests.values()) {
+      pending.reject(new Error(workerError.value))
+    }
+    pendingRequests.clear()
+  }
+  workerRef.value = worker
+  return worker
+}
+
+function callWorker<T>(payload: Record<string, unknown>): Promise<T> {
+  const worker = getWorker()
+  const id = requestId += 1
+  return new Promise((resolve, reject) => {
+    pendingRequests.set(id, { resolve, reject })
+    worker.postMessage({ requestId: id, ...payload })
+  })
+}
+
+async function ensureAmbientLoaded() {
+  if (ambientInitPromise) return ambientInitPromise
+  isAmbientLoading.value = true
+  ambientStage.value = ''
+  ambientSource.value = ''
+  ambientInitPromise = (async () => {
+    const response = await callWorker<WorkerInitResponse>({ type: 'init', baseUrl: '/ambient' })
+    if (!response.ok) {
+      throw new Error(response.message || 'Ambient init failed')
+    }
+    ambientTotal.value = response.count
+    ambientDim.value = response.dim
+  })()
+    .catch((error) => {
+      ambientInitPromise = null
+      console.error(error)
+      errorMessage.value = 'ambient не загрузился'
+      throw error
+    })
+    .finally(() => {
+      isAmbientLoading.value = false
+      ambientStage.value = ''
+      ambientSource.value = ''
+    })
+  return ambientInitPromise
+}
+
+async function prepareTarget(index: number) {
+  isTargetPreparing.value = true
+  try {
+    const response = await callWorker<WorkerInitResponse>({ type: 'prepareTarget', targetIndex: index })
+    if (!response.ok) {
+      throw new Error(response.message || 'Failed to build ranks')
+    }
+    ambientTotal.value = response.count
+    ambientDim.value = response.dim
+  } catch (error) {
+    console.error(error)
+    errorMessage.value = 'ambient не загрузился'
+    throw error
+  } finally {
+    isTargetPreparing.value = false
+  }
+}
+
+onBeforeUnmount(() => {
+  if (!workerRef.value) return
+  workerRef.value.terminate()
+  workerRef.value = null
+  for (const pending of pendingRequests.values()) {
+    pending.reject(new Error('Worker terminated'))
+  }
+  pendingRequests.clear()
+})
+
+function focusInput() {
+  nextTick(() => {
+    const el = guessInputRef.value
+    if (!el) return
+    el.focus()
+    const length = el.value.length
+    try {
+      el.setSelectionRange(length, length)
+    } catch {
+      // no-op
+    }
+  })
+}
 </script>
 
 <style scoped>
@@ -605,6 +765,83 @@ watch(
   display: grid;
   gap: 6px;
   text-align: center;
+}
+
+.wc-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+}
+
+.wc-menu {
+  position: relative;
+  top: 8px;
+}
+
+.wc-menu-btn {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.5);
+  color: #e2e8f0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.wc-menu-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.8);
+}
+
+.wc-menu-dropdown {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  min-width: 220px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.6);
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+  z-index: 20;
+}
+
+.wc-menu-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: #e2e8f0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.wc-menu-item:hover {
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.wc-menu-item.danger:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: #fecaca;
+}
+
+.wc-menu-divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.2);
+  margin: 4px 2px;
 }
 
 .wc-topbar {
@@ -932,6 +1169,10 @@ watch(
   background: rgba(255, 255, 255, 0.06);
   color: #e5e7eb;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wc-ready {
+  justify-self: center;
 }
 
 .wc-btn:disabled,

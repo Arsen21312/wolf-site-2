@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from('context_games')
-    .select('id, target_word_id, type')
+    .select('id, target_word, type')
     .eq('id', gameId)
     .maybeSingle()
 
@@ -23,8 +23,9 @@ export default defineEventHandler(async (event) => {
     return { ok: false, message: 'game_not_found' }
   }
 
-  const targetWordId = Number((data as { target_word_id?: number | string }).target_word_id)
-  if (!Number.isFinite(targetWordId)) {
+  const row = data as { target_word?: string | null }
+  const targetWord = typeof row.target_word === 'string' ? row.target_word.trim() : ''
+  if (!targetWord) {
     setResponseStatus(event, 404)
     return { ok: false, message: 'target_not_found' }
   }
@@ -33,7 +34,7 @@ export default defineEventHandler(async (event) => {
     ok: true,
     game: {
       id: data.id,
-      targetWordId
+      targetWord
     }
   }
 })

@@ -212,7 +212,8 @@ const showNext = async () => {
     triggerPopup()
   } catch (error) {
     console.error(error)
-    feedback.value = 'Ошибка при получении задания.'
+    const message = error?.data?.error || error?.message || 'Ошибка при получении задания.'
+    feedback.value = message
   } finally {
     loading.value = false
   }

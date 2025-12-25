@@ -1,40 +1,25 @@
 <template>
   <section class="context-page">
     <div class="context-container">
-      <h1 class="context-title">Игра #{{ gameId }}</h1>
-      <p class="context-note">Подключаем игру, подожди...</p>
+      <h1 class="context-title">Contexto #{{ gameId }}</h1>
+      <p class="context-note">Mode is being reworked after moving to local ambient.</p>
       <p v-if="errorMessage" class="context-error">{{ errorMessage }}</p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 const route = useRoute()
 const gameId = Number(route.params.id)
 const errorMessage = ref('')
 
-onMounted(async () => {
-  if (!Number.isFinite(gameId)) {
-    errorMessage.value = 'Некорректный id игры'
-    return
-  }
-
-  try {
-    const response = await $fetch<{ ok: boolean; game?: { targetWordId: number } }>(
-      `/api/context/game?id=${gameId}`
-    )
-    if (!response.ok || !response.game?.targetWordId) {
-      errorMessage.value = 'Игра не найдена'
-      return
-    }
-    navigateTo(`/games/wolf-context/random?targetId=${response.game.targetWordId}&gameId=1`)
-  } catch (error) {
-    console.error(error)
-    errorMessage.value = 'Не удалось загрузить игру'
-  }
-})
+if (!Number.isFinite(gameId)) {
+  errorMessage.value = 'Invalid game id'
+} else {
+  errorMessage.value = 'Contexto rooms are temporarily disabled'
+}
 </script>
 
 <style scoped>

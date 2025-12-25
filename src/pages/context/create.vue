@@ -65,13 +65,14 @@
           <button
             class="context-btn"
             type="button"
-            :disabled="!targetWord.trim() || isGenerating"
+            :disabled="!targetWord.trim() || isGenerating || isDeprecated"
             @click="generateNeighbors"
           >
             Посчитать соседей
           </button>
         </div>
         <p v-if="isGenerating" class="context-note">Считаю соседей...</p>
+        <p v-else-if="isDeprecated" class="context-note">Режим в разработке после перехода на локальный ambient.</p>
       </div>
 
       <div class="context-card">
@@ -80,7 +81,7 @@
           <button
             class="context-btn ghost"
             type="button"
-            :disabled="!neighbors.length || isGenerating"
+            :disabled="!neighbors.length || isGenerating || isDeprecated"
             @click="createGame"
           >
             Создать игру
@@ -127,18 +128,13 @@ type NeighborItem = {
   heatScore: number
 }
 
-type DefineResponse = {
-  target: { id: number; lemma: string }
-  neighbors: NeighborItem[]
-  source: 'neighbors' | 'embeddings'
-}
-
 const targetWord = ref('')
 const statusMessage = ref('')
 const neighbors = ref<NeighborItem[]>([])
 const activeMode = ref<'random' | 'create' | 'party' | 'tasks'>('create')
 const isTasksOpen = ref(false)
 const isGenerating = ref(false)
+const isDeprecated = ref(true)
 const createdGameId = ref<number | null>(null)
 
 const breadcrumbs = [
@@ -151,6 +147,10 @@ const sourceLabel = ref('')
 const targetWordId = ref<number | null>(null)
 
 async function generateNeighbors() {
+  if (isDeprecated.value) {
+    statusMessage.value = 'Режим пока недоступен'
+    return
+  }
   const word = targetWord.value.trim()
   if (!word) return
   statusMessage.value = ''
@@ -161,13 +161,7 @@ async function generateNeighbors() {
   isGenerating.value = true
 
   try {
-    const response = await $fetch<DefineResponse>('/api/context/define', {
-      method: 'POST',
-      body: { lemma: word }
-    })
-    neighbors.value = response.neighbors ?? []
-    targetWordId.value = response.target?.id ?? null
-    sourceLabel.value = response.source === 'embeddings' ? 'Игра по новому слову, мы только что посчитали соседей' : ''
+    statusMessage.value = 'Режим пока недоступен'
   } catch (error) {
     console.error(error)
     statusMessage.value = 'Не удалось посчитать соседей'
@@ -177,30 +171,12 @@ async function generateNeighbors() {
 }
 
 function createGame() {
+  if (isDeprecated.value) {
+    statusMessage.value = 'Режим пока недоступен'
+    return
+  }
   if (!neighbors.value.length || !targetWordId.value) return
-  $fetch<{ ok: boolean; id?: number; playUrl?: string; exists?: boolean; message?: string }>('/api/context/create-game', {
-    method: 'POST',
-    body: { wordId: targetWordId.value }
-  })
-    .then((response) => {
-      if (!response.ok && response.exists && response.id && response.playUrl) {
-        createdGameId.value = response.id
-        playUrl.value = response.playUrl
-        statusMessage.value = 'Такая игра уже есть. Ссылка ниже.'
-        return
-      }
-      if (response.ok && response.id && response.playUrl) {
-        createdGameId.value = response.id
-        playUrl.value = response.playUrl
-        statusMessage.value = 'Игра создана, скоро подключим комнаты'
-        return
-      }
-      statusMessage.value = response.message || 'Не удалось создать игру'
-    })
-    .catch((error) => {
-      console.error(error)
-      statusMessage.value = 'Не удалось создать игру'
-    })
+  statusMessage.value = 'Режим пока недоступен'
 }
 
 async function copyLink() {

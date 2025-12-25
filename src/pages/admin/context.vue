@@ -18,6 +18,7 @@
       </div>
 
       <div v-else class="admin-body">
+        <p v-if="isDeprecated" class="error">Context admin is disabled after switching to local ambient.</p>
         <div class="filters">
           <div class="field">
             <label>Целевое слово</label>
@@ -112,6 +113,7 @@ const dragIndex = ref<number | null>(null)
 const loading = ref(false)
 const error = ref('')
 const successMessage = ref('')
+const isDeprecated = ref(true)
 
 const loadToken = () => {
   if (!process.client) return
@@ -131,6 +133,10 @@ const logout = () => {
 }
 
 const fetchNeighbors = async () => {
+  if (isDeprecated.value) {
+    error.value = 'Context admin is disabled after switching to local ambient.'
+    return
+  }
   if (!token.value || !targetInput.value.trim()) return
   loading.value = true
   error.value = ''
@@ -157,6 +163,10 @@ const fetchNeighbors = async () => {
 }
 
 const applyAction = async (item: NeighborItem, action: 'ban' | 'pin' | 'set_rank', rank?: number) => {
+  if (isDeprecated.value) {
+    error.value = 'Context admin is disabled after switching to local ambient.'
+    return
+  }
   if (!token.value || !target.value) return
   loading.value = true
   error.value = ''
@@ -195,6 +205,10 @@ const applyManualRank = (item: NeighborItem) => {
 }
 
 const applyGlobalBan = async (item: NeighborItem) => {
+  if (isDeprecated.value) {
+    error.value = 'Context admin is disabled after switching to local ambient.'
+    return
+  }
   if (!token.value) return
   const confirmed = window.confirm(`Удалить слово "${item.lemma}" глобально?`)
   if (!confirmed) return

@@ -4,38 +4,37 @@
       <div class="context-modal-backdrop" @click="close"></div>
       <div class="context-modal-card" role="dialog" aria-modal="true">
         <div class="context-modal-header">
-          <h2>Как играть в волчий контекст</h2>
+          <h2>Как играть в Волчий контекст</h2>
           <button class="context-modal-close" type="button" @click="close">×</button>
         </div>
         <div class="context-modal-body">
           <div class="context-modal-block">
             <h3>Цель</h3>
             <p>
-              Есть секретное слово. Оно находится в начале большого списка. Твоя задача — добраться до него через
-              ассоциации.
+              Есть секретное слово — оно номер 1 в списке. Твоя задача — добраться до него, угадывая ассоциации.
             </p>
           </div>
           <div class="context-modal-block">
-            <h3>Пример</h3>
+            <h3>Правила</h3>
             <p>
-              Если ответ «кот», то «кошка» будет ближе, чем «собака». Чем меньше номер, тем ближе ты к цели.
+              Пиши любые русские слова. Чем меньше номер, тем ближе слово к ответу. Попыток сколько угодно.
+            </p>
+          </div>
+          <div class="context-modal-block">
+            <h3>Горячо/холодно</h3>
+            <p>
+              Это игра «горячо/холодно» для слов: если ответ «кот», то «кошка» ближе, чем «собака».
             </p>
           </div>
           <div class="context-modal-block">
             <h3>Подсказки</h3>
             <p>
-              Кнопка «Подсказка» двигает тебя ближе по списку. Можно нажимать столько раз, сколько нужно.
-            </p>
-          </div>
-          <div class="context-modal-block">
-            <h3>Цвет полосы</h3>
-            <p>
-              Цвет и длина полосы показывают, насколько ты близок. Холодные цвета — далеко, теплые — почти у цели.
+              Подсказка даёт слово, которое лучше твоего текущего результата. Пользуйся, если застрял.
             </p>
           </div>
         </div>
         <div class="context-modal-actions">
-          <button class="context-modal-cta" type="button" @click="close">Понятно, играть</button>
+          <button class="context-modal-cta" type="button" @click="close">Понятно, играем</button>
         </div>
       </div>
     </div>

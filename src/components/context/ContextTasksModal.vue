@@ -17,51 +17,52 @@
           >
             Официальные
           </button>
-          <button
-            type="button"
-            class="context-tab"
-            :class="{ active: activeTab === 'rooms' }"
-            @click="setTab('rooms')"
-          >
+          <button type="button" class="context-tab" :class="{ active: activeTab === 'rooms' }" @click="setTab('rooms')">
             Комнаты
           </button>
-          <button
-            type="button"
-            class="context-tab"
-            :class="{ active: activeTab === 'user' }"
-            @click="setTab('user')"
-          >
+          <button type="button" class="context-tab" :class="{ active: activeTab === 'user' }" @click="setTab('user')">
             Пользовательские
           </button>
         </div>
 
         <div class="context-modal-body">
           <div v-if="activeTab === 'official'" class="context-list">
-            <div v-if="officialLoading" class="context-list-empty">Загружаю список...</div>
+            <div v-if="officialLoading" class="context-list-empty">Загрузка...</div>
             <div v-else-if="officialError" class="context-list-empty">{{ officialError }}</div>
             <button
               v-else
-              v-for="(item, index) in officialTasks"
-              :key="item.slug"
-              class="context-list-item"
+              v-for="item in officialTasks"
+              :key="item.id"
+              :class="['context-list-item', selectedOfficialId === item.id ? 'context-list-item-active' : '']"
               type="button"
-              @click="selectOfficial(index + 1)"
+              @click="selectOfficial(item.id)"
             >
-              <div class="context-list-title">Игра {{ index + 1 }}</div>
-              <div class="context-list-desc">{{ item.description }}</div>
+              <div class="context-list-title">{{ item.title }}</div>
+              <div class="context-list-desc">{{ item.hint }}</div>
             </button>
           </div>
 
           <div v-else-if="activeTab === 'rooms'" class="context-list">
-            <div v-for="room in gamesRooms" :key="room.id" class="context-list-card">
-              <div class="context-list-title">{{ room.name }}</div>
-              <div class="context-list-meta">{{ room.players }} игроков</div>
-            </div>
+            <div v-if="roomsLoading" class="context-list-empty">Загрузка...</div>
+            <div v-else-if="roomsError" class="context-list-empty">{{ roomsError }}</div>
+            <button
+              v-else
+              v-for="room in rooms"
+              :key="room.id"
+              class="context-list-item"
+              type="button"
+              @click="selectRoom(room.id)"
+            >
+              <div class="context-list-title">Комната {{ room.host_name || 'без имени' }}</div>
+              <div class="context-list-desc">Активна: {{ formatRoomTime(room.last_active_at) }}</div>
+            </button>
           </div>
 
           <div v-else class="context-list">
-            <div v-if="userLoading" class="context-list-empty">Загружаю список...</div>
-            <div v-else-if="gamesUser.length === 0" class="context-list-empty">Пока нет пользовательских игр</div>
+            <div v-if="userLoading" class="context-list-empty">Загрузка...</div>
+            <div v-else-if="gamesUser.length === 0" class="context-list-empty">
+              Пользовательских игр пока нет.
+            </div>
             <button
               v-else
               v-for="item in gamesUser"
@@ -70,7 +71,8 @@
               type="button"
               @click="selectUser(item.id)"
             >
-              {{ item.title }}
+              <div class="context-list-title">{{ item.title }}</div>
+              <div v-if="item.createdByName" class="context-list-desc">Автор: {{ item.createdByName }}</div>
             </button>
           </div>
         </div>
@@ -80,32 +82,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-
-type OfficialTaskApi = {
-  slug: string
-  title: string
-  description: string
-  lemma: string
-  wordId: number
-  position: number | null
-}
+import { computed, ref, watch } from 'vue'
+import { officialGames } from '~/data/wolf-context/officialGames'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
+const route = useRoute()
 
 const activeTab = ref<'official' | 'rooms' | 'user'>('official')
-const officialTasks = ref<OfficialTaskApi[]>([])
+const officialTasks = ref(officialGames)
 const officialLoading = ref(false)
 const officialError = ref('')
+const roomsLoading = ref(false)
+const roomsError = ref('')
+const rooms = ref<Array<{ id: string; host_name: string | null; last_active_at: string | null }>>([])
 const userLoading = ref(false)
 
-const gamesRooms = [
-  { id: '0d25cd3f', name: 'Комната 0d25cd3f', players: 0 },
-  { id: 'a23f9b1c', name: 'Комната a23f9b1c', players: 3 }
-]
+const gamesUser = ref<Array<{ id: number; title: string; createdByName?: string | null }>>([])
 
-const gamesUser = ref<Array<{ id: number; title: string }>>([])
+const selectedOfficialId = computed(() => {
+  const mode = typeof route.query.mode === 'string' ? route.query.mode : ''
+  const rawId = typeof route.query.id === 'string' ? Number(route.query.id) : NaN
+  if (mode !== 'official') return null
+  return Number.isFinite(rawId) ? rawId : null
+})
 
 function close() {
   emit('update:modelValue', false)
@@ -119,6 +119,9 @@ function setTab(tab: 'official' | 'rooms' | 'user') {
   if (tab === 'user') {
     loadUserGames()
   }
+  if (tab === 'rooms') {
+    loadRooms()
+  }
 }
 
 async function loadOfficialTasks() {
@@ -126,14 +129,13 @@ async function loadOfficialTasks() {
   officialLoading.value = true
   officialError.value = ''
   try {
-    const response = await $fetch<{ tasks?: OfficialTaskApi[] }>('/api/context/official-tasks')
-    officialTasks.value = response?.tasks ?? []
+    officialTasks.value = officialGames
     if (!officialTasks.value.length) {
-      officialError.value = 'Пока нет доступных заданий'
+      officialError.value = 'Список пока пуст'
     }
   } catch (error) {
     console.error(error)
-    officialError.value = 'Не удалось загрузить задания'
+    officialError.value = 'Не удалось загрузить список'
   } finally {
     officialLoading.value = false
   }
@@ -143,11 +145,13 @@ async function loadUserGames() {
   if (userLoading.value) return
   userLoading.value = true
   try {
-    const response = await $fetch<{ ok: boolean; games?: Array<{ id: number; title: string }> }>(
+    const response = await $fetch<{ ok: boolean; games?: Array<{ id: number; title: string; createdByName?: string | null }> }>(
       '/api/context/user-games'
     )
     if (response?.ok && response.games) {
       gamesUser.value = response.games
+    } else {
+      gamesUser.value = []
     }
   } catch (error) {
     console.error(error)
@@ -156,13 +160,41 @@ async function loadUserGames() {
   }
 }
 
+async function loadRooms() {
+  if (roomsLoading.value) return
+  roomsLoading.value = true
+  roomsError.value = ''
+  try {
+    const response = await $fetch<{ ok: boolean; rooms?: Array<{ id: string; host_name: string | null; last_active_at: string | null }> }>(
+      '/api/party/public-rooms'
+    )
+    if (response?.ok && response.rooms) {
+      rooms.value = response.rooms
+    } else {
+      rooms.value = []
+      roomsError.value = 'Комнаты не найдены'
+    }
+  } catch (error) {
+    console.error(error)
+    roomsError.value = 'Комнаты не найдены'
+  } finally {
+    roomsLoading.value = false
+  }
+}
+
 function selectOfficial(code: number) {
   close()
-  navigateTo(`/games/wolf-context/random?official=${code}`)
+  navigateTo(`/games/wolf-context/random?mode=official&id=${code}`)
 }
 
 function selectUser(id: number) {
-  navigateTo(`/context/play/${id}`)
+  close()
+  navigateTo(`/games/wolf-context/random?mode=user&id=${id}`)
+}
+
+function selectRoom(id: string) {
+  close()
+  navigateTo(`/games/wolf-context/room/${id}`)
 }
 
 watch(
@@ -171,11 +203,21 @@ watch(
     if (open && activeTab.value === 'official') {
       loadOfficialTasks()
     }
+    if (open && activeTab.value === 'rooms') {
+      loadRooms()
+    }
     if (open && activeTab.value === 'user') {
       loadUserGames()
     }
   }
 )
+
+function formatRoomTime(value: string | null) {
+  if (!value) return 'Нет данных'
+  const date = new Date(value)
+  if (!Number.isFinite(date.getTime())) return 'Нет данных'
+  return date.toLocaleString()
+}
 </script>
 
 <style scoped>
@@ -279,20 +321,13 @@ watch(
   gap: 6px;
 }
 
-.context-list-card {
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.4);
-  padding: 12px 14px;
-  border-radius: 12px;
+.context-list-item-active {
+  border-color: rgba(34, 197, 94, 0.8);
+  background: rgba(34, 197, 94, 0.1);
 }
 
 .context-list-title {
   font-weight: 800;
-}
-
-.context-list-meta {
-  color: #94a3b8;
-  font-size: 13px;
 }
 
 .context-list-desc {

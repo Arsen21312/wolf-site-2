@@ -1,17 +1,31 @@
 import { config as loadEnv } from 'dotenv'
+import { resolve } from 'path'
 
 loadEnv({ path: '.env' })
 loadEnv({ path: '.env.local', override: true })
 
+const publicDir = resolve(process.cwd(), 'public')
+
 export default defineNuxtConfig({
   srcDir: 'src',
+  dir: {
+    public: publicDir
+  },
   devtools: { enabled: true },
   runtimeConfig: {
     supabaseUrl: process.env.SUPABASE_URL,
-    supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+    supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+    }
   },
   css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css'],
+  vite: {
+    publicDir
+  },
   nitro: {
+    publicAssets: [{ dir: publicDir, baseURL: '/' }],
     routeRules: {
       '/tools/truth-or-dare-generator.html': {
         redirect: { to: '/games/truth-or-dare', statusCode: 301 }
@@ -244,6 +258,7 @@ export default defineNuxtConfig({
     }
   },
   app: {
+    baseURL: '/',
     head: {
       link: [],
       meta: [

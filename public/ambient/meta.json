@@ -1,0 +1,8 @@
+{
+  "count": 29930,
+  "dim": 384,
+  "version": "29930x384",
+  "dtype": "float16",
+  "model": "ai-forever/sbert_large_nlu_ru",
+  "pca_dim": 384
+}

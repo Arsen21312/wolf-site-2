@@ -2,66 +2,55 @@ import { defineEventHandler, readBody, setResponseStatus } from 'h3'
 import { getSupabaseAdminClient } from '~/server/utils/supabaseAdmin'
 
 type CreateGameBody = {
-  wordId?: number | string
+  targetWord?: string
+  createdByName?: string
 }
 
 type CreateGameResponse =
   | { ok: true; id: number; playUrl: string }
-  | { ok: false; exists: true; id: number; playUrl: string }
   | { ok: false; message: string }
+
+function buildSlug() {
+  return `user-${Date.now()}`
+}
 
 export default defineEventHandler(async (event) => {
   const body = (await readBody(event)) as CreateGameBody
-  const wordId = body?.wordId ? Number(body.wordId) : null
+  const targetWord = typeof body?.targetWord === 'string' ? body.targetWord.trim() : ''
+  const createdByName = typeof body?.createdByName === 'string' ? body.createdByName.trim() : ''
 
-  if (!wordId || !Number.isFinite(wordId)) {
+  if (!targetWord) {
     setResponseStatus(event, 400)
-    return { ok: false, message: 'wordId is required' } satisfies CreateGameResponse
+    return { ok: false, message: 'targetWord is required' } satisfies CreateGameResponse
   }
 
   const supabase = getSupabaseAdminClient()
-
-  const { data: word, error: wordError } = await supabase
-    .from('context_words')
-    .select('id, "Lemma", is_active')
-    .eq('id', wordId)
-    .eq('is_active', true)
-    .maybeSingle()
-
-  if (wordError || !word) {
-    setResponseStatus(event, 400)
-    return { ok: false, message: 'word_not_found' } satisfies CreateGameResponse
+  const slug = buildSlug()
+  const title = 'Игра'
+  const payload = {
+    type: 'user',
+    slug,
+    title,
+    target_word: targetWord,
+    is_public: true,
+    created_by_name: createdByName || null
   }
 
-  const { data: existingGame, error: existingError } = await supabase
-    .from('context_games')
-    .select('id')
-    .eq('type', 'user')
-    .eq('target_word_id', wordId)
-    .order('id', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  let game
+  let gameError
+  const insert = await supabase.from('context_games').insert(payload).select('id').single()
+  game = insert.data
+  gameError = insert.error
 
-  if (existingError) {
-    console.error(existingError)
+  if (gameError && /target_word|created_by_name|is_public|column/i.test(gameError.message)) {
+    const fallbackInsert = await supabase
+      .from('context_games')
+      .insert({ type: 'user', slug, title })
+      .select('id')
+      .single()
+    game = fallbackInsert.data
+    gameError = fallbackInsert.error
   }
-
-  if (existingGame?.id) {
-    return {
-      ok: false,
-      exists: true,
-      id: Number(existingGame.id),
-      playUrl: `/context/play/${existingGame.id}`
-    } satisfies CreateGameResponse
-  }
-
-  const slug = `user-${wordId}-${Date.now()}`
-  const title = `Игра #${wordId}`
-  const { data: game, error: gameError } = await supabase
-    .from('context_games')
-    .insert({ type: 'user', slug, target_word_id: wordId, title })
-    .select('id')
-    .single()
 
   if (gameError) {
     console.error(gameError)
@@ -75,5 +64,18 @@ export default defineEventHandler(async (event) => {
     return { ok: false, message: 'Failed to resolve game id' } satisfies CreateGameResponse
   }
 
-  return { ok: true, id: gameId, playUrl: `/context/play/${gameId}` } satisfies CreateGameResponse
+  const updatedTitle = `Игра #${gameId}`
+  const { error: updateError } = await supabase
+    .from('context_games')
+    .update({ title: updatedTitle })
+    .eq('id', gameId)
+  if (updateError) {
+    console.warn('Failed to update context game title', updateError)
+  }
+
+  return {
+    ok: true,
+    id: gameId,
+    playUrl: `/games/wolf-context/random?mode=user&id=${gameId}`
+  } satisfies CreateGameResponse
 })

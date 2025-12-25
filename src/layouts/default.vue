@@ -27,3 +27,13 @@ useHead({
   ]
 })
 </script>
+
+<style scoped>
+.layout-shell {
+  overflow-x: hidden;
+}
+
+.main-content {
+  overflow-x: hidden;
+}
+</style>
