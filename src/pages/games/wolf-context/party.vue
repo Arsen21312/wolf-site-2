@@ -5,8 +5,11 @@
         :breadcrumbs="breadcrumbs"
         title="Вечеринка"
         :show-counts="false"
+        :show-menu="!(isHowToOpen || isTasksOpen)"
+        :show-random="true"
         @how-to="openHowTo"
         @tasks="openTasks"
+        @random="goRandom"
         @party="goParty"
         @create="goCreate"
         @reset="resetCache"
@@ -237,6 +240,10 @@ function openTasks() {
 
 function goParty() {
   navigateTo('/games/wolf-context/party')
+}
+
+function goRandom() {
+  navigateTo('/games/wolf-context/random')
 }
 
 function goCreate() {

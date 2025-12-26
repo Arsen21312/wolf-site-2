@@ -5,46 +5,27 @@
         :breadcrumbs="breadcrumbs"
         :attempts="attemptsCount"
         :hints="hintsCount"
+        :show-menu="!(isHowToOpen || isTasksOpen)"
+        :show-random="showRandomMenu"
         @how-to="openHowTo"
         @tasks="openTasks"
+        @random="goRandom"
         @party="goParty"
         @create="goCreate"
         @reset="resetCache"
       />
-
-      <div class="wc-form">
-        <div class="wc-input-row">
-          <input
-            id="guess-input"
-            ref="guessInputRef"
-            v-model="guessInput"
-            class="wc-input"
-            type="text"
-            placeholder="Пиши ассоциацию"
-            @keyup.enter="submitGuess"
-            :disabled="isWon || isAmbientLoading || isTargetPreparing"
-          />
-          <button
-            class="wc-send"
-            type="button"
-            @click="submitGuess"
-            aria-label="Проверить"
-            :disabled="isWon || isGuessing || isHinting || isAmbientLoading || isTargetPreparing"
-          >
-            <span v-if="isGuessing" class="wc-spinner"></span>
-            <span v-else class="wc-arrow">&gt;</span>
-          </button>
-          <button
-            class="wc-btn ghost"
-            type="button"
-            @click="giveHint"
-            :disabled="!canGiveHint || isGuessing || isHinting || isAmbientLoading || isTargetPreparing"
-          >
-            Подсказка
-          </button>
-        </div>
-        <button v-if="isWon" class="wc-btn primary" type="button" @click="loadRandomGame">Новая игра</button>
-      </div>
+      <ContextControlRow
+        ref="controlRowRef"
+        v-model="guessInput"
+        :disabled-input="isWon || isAmbientLoading || isTargetPreparing"
+        :disabled-submit="isWon || isGuessing || isHinting || isAmbientLoading || isTargetPreparing"
+        :disabled-hint="!canGiveHint || isGuessing || isHinting"
+        :is-sending="isGuessing"
+        :show-new-game="isWon"
+        @submit="submitGuess"
+        @hint="giveHint"
+        @new-game="loadRandomGame"
+      />
 
 <ContextGuessList
         :items="attemptsSorted"
@@ -95,6 +76,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import ContextGameHeader from '~/components/context/ContextGameHeader.vue'
+import ContextControlRow from '~/components/context/ContextControlRow.vue'
 import ContextGuessList from '~/components/context/ContextGuessList.vue'
 import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
@@ -118,6 +100,17 @@ type Guess = {
   createdAt: number
 }
 
+const COMPLETED_STORAGE_KEY = 'wolf_context_completed_v1'
+
+type GameProgressEntry = {
+  startedAt?: number
+  completedAt?: number
+  updatedAt?: number
+  guesses?: Guess[]
+  winMessage?: string
+}
+type GameProgressRecord = Record<string, GameProgressEntry>
+
 useHead({
   title: 'Волчий Контекст — игра на ассоциации',
   meta: [
@@ -135,8 +128,9 @@ useHead({
   ]
 })
 
+const route = useRoute()
 const guessInput = ref('')
-const guessInputRef = ref<HTMLInputElement | null>(null)
+const controlRowRef = ref<InstanceType<typeof ContextControlRow> | null>(null)
 const currentRowText = ref('')
 const currentRowType = ref<'guess' | 'error' | 'info'>('info')
 const currentRowRank = ref<number | null>(null)
@@ -161,6 +155,7 @@ const isHowToOpen = ref(false)
 const isTasksOpen = ref(false)
 const isCreateEnabled = true
 const winMessage = ref('')
+const hasUserSubmittedGuess = ref(false)
 
 const winMessages = [
   'Красава, слово угадано, ты в топ 1',
@@ -190,6 +185,10 @@ const listStatus = computed(() => {
 
 const attemptsCount = computed(() => guesses.value.filter((a) => !a.isHint).length)
 const hintsCount = computed(() => guesses.value.filter((a) => a.isHint).length)
+const showRandomMenu = computed(() => {
+  const mode = typeof route.query.mode === 'string' ? route.query.mode : ''
+  return mode === 'official' || mode === 'user'
+})
 const hasAnyGuess = computed(() => guesses.value.length > 0)
 const currentRowDisplay = computed(() => {
   if (currentRowText.value) return currentRowText.value
@@ -202,7 +201,7 @@ const currentRowDisplayType = computed<'guess' | 'error' | 'info'>(() => {
   if (!hasAnyGuess.value) return 'info'
   return 'guess'
 })
-const showRules = computed(() => !guesses.value.length && !guessInput.value.trim() && !isGuessing.value && !isHinting.value)
+const showRules = computed(() => !hasUserSubmittedGuess.value && !isGuessing.value && !isHinting.value)
 
 const bestPosition = computed(() => {
   const positions = guesses.value.map((a) => a.position).filter((n) => Number.isFinite(n))
@@ -224,6 +223,92 @@ const canGiveHint = computed(() => {
   if (isWon.value) return false
   return true
 })
+
+function getCurrentGameKey(currentRoute: ReturnType<typeof useRoute>) {
+  const mode = typeof currentRoute.query.mode === 'string' ? currentRoute.query.mode : ''
+  const rawId = typeof currentRoute.query.id === 'string' ? currentRoute.query.id.trim() : ''
+  if (mode === 'official' && rawId) return `official:${rawId}`
+  if (mode === 'user' && rawId) return `user:${rawId}`
+  return null
+}
+
+function readCompletedStorage(): GameProgressRecord {
+  if (!process.client) return {}
+  try {
+    const raw = localStorage.getItem(COMPLETED_STORAGE_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return {}
+    return parsed as GameProgressRecord
+  } catch {
+    return {}
+  }
+}
+
+function writeCompletedStorage(payload: GameProgressRecord) {
+  if (!process.client) return
+  localStorage.setItem(COMPLETED_STORAGE_KEY, JSON.stringify(payload))
+}
+
+function saveCurrentProgress() {
+  const key = getCurrentGameKey(route)
+  if (!key) return
+  if (!guesses.value.length) return
+  const next = readCompletedStorage()
+  const existing = next[key]
+  if (existing?.completedAt) return
+  const now = Date.now()
+  next[key] = {
+    ...existing,
+    startedAt: existing?.startedAt ?? now,
+    updatedAt: now,
+    guesses: guesses.value
+  }
+  writeCompletedStorage(next)
+}
+
+function markCurrentGameCompleted(message?: string) {
+  const key = getCurrentGameKey(route)
+  if (!key) return
+  const next = readCompletedStorage()
+  if (next[key]?.completedAt) return
+  const now = Date.now()
+  next[key] = {
+    ...next[key],
+    startedAt: next[key]?.startedAt ?? now,
+    completedAt: now,
+    updatedAt: now,
+    guesses: guesses.value,
+    winMessage: message || ''
+  }
+  writeCompletedStorage(next)
+}
+
+function applyStoredProgress() {
+  const key = getCurrentGameKey(route)
+  if (!key) return
+  const completed = readCompletedStorage()
+  const entry = completed[key]
+  if (Array.isArray(entry.guesses)) {
+    guesses.value = entry.guesses
+    if (entry.guesses.length) {
+      hasUserSubmittedGuess.value = true
+    }
+  }
+  if (!entry?.completedAt) {
+    return
+  }
+  isWon.value = true
+  if (entry.winMessage) {
+    winMessage.value = entry.winMessage
+    currentRowText.value = entry.winMessage
+  } else {
+    currentRowText.value = 'Игра пройдена'
+  }
+  currentRowType.value = 'info'
+  currentRowRank.value = 1
+  currentRowIsHint.value = false
+}
 
 function normalizeWord(value: string): string {
   return value
@@ -278,6 +363,10 @@ function openTasks() {
   isTasksOpen.value = true
 }
 
+function goRandom() {
+  navigateTo('/games/wolf-context/random')
+}
+
 function goParty() {
   navigateTo('/games/wolf-context/party')
 }
@@ -313,6 +402,7 @@ async function applyTarget(response: WorkerPickResponseOk) {
     currentRowType.value = 'info'
     winMessage.value = ''
     isWon.value = false
+    hasUserSubmittedGuess.value = false
     await prepareTarget(response.index)
   } catch (e) {
     console.error('Не удалось подготовить слово', e)
@@ -397,6 +487,9 @@ async function submitGuess() {
     return
   }
   const rawInput = guessInput.value
+  if (rawInput.trim()) {
+    hasUserSubmittedGuess.value = true
+  }
   const guess = normalizeWord(rawInput)
   guessInput.value = ''
   errorMessage.value = ''
@@ -462,8 +555,10 @@ async function submitGuess() {
     reactionMessage.value = reaction
     errorMessage.value = ''
     if (response.isWin) {
+      const winMessage = pickWinMessage()
       isWon.value = true
-      currentRowText.value = pickWinMessage()
+      currentRowText.value = winMessage
+      markCurrentGameCompleted(winMessage)
       currentRowType.value = 'info'
       currentRowIsHint.value = false
     }
@@ -499,6 +594,7 @@ function addAttempt(payload: {
     createdAt: Date.now()
   }
   guesses.value.push(guessItem)
+  saveCurrentProgress()
 }
 
 function pickWinMessage() {
@@ -512,6 +608,7 @@ function pickWinMessage() {
 async function giveHint() {
   if (targetIndex.value === null || isWon.value || isAmbientLoading.value || isTargetPreparing.value) return
 
+  hasUserSubmittedGuess.value = true
   const best = Number.isFinite(bestPosition.value) ? bestPosition.value : null
 
   isHinting.value = true
@@ -557,8 +654,10 @@ async function giveHint() {
       reactionMessage.value = reaction
     errorMessage.value = ''
     if (response.isWin) {
+      const winMessage = pickWinMessage()
       isWon.value = true
-      currentRowText.value = pickWinMessage()
+      currentRowText.value = winMessage
+      markCurrentGameCompleted(winMessage)
       currentRowType.value = 'info'
     }
   } catch (error) {
@@ -585,7 +684,6 @@ function buildRouteKey(route: ReturnType<typeof useRoute>) {
 }
 
 async function initFromRoute() {
-  const route = useRoute()
   const routeKey = buildRouteKey(route)
   if (routeKey === lastRouteKey.value) return
   lastRouteKey.value = routeKey
@@ -602,11 +700,13 @@ async function initFromRoute() {
 
   if (mode === 'official' && Number.isFinite(rawModeId)) {
     await loadOfficialGame(rawModeId)
+    applyStoredProgress()
     return
   }
 
   if (mode === 'user' && Number.isFinite(rawModeId)) {
     await loadUserGame(rawModeId)
+    applyStoredProgress()
     return
   }
 
@@ -735,15 +835,7 @@ onBeforeUnmount(() => {
 
 function focusInput() {
   nextTick(() => {
-    const el = guessInputRef.value
-    if (!el) return
-    el.focus()
-    const length = el.value.length
-    try {
-      el.setSelectionRange(length, length)
-    } catch {
-      // no-op
-    }
+    controlRowRef.value?.focusInput()
   })
 }
 </script>
@@ -934,14 +1026,7 @@ function focusInput() {
   margin: 4px 0;
 }
 
-.wc-form {
-  display: grid;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 14px;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
+
 
 .wc-label {
   font-weight: 800;
@@ -949,47 +1034,15 @@ function focusInput() {
   text-transform: lowercase;
 }
 
-.wc-input-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 8px;
-  align-items: center;
-}
 
-.wc-input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(15, 23, 42, 0.8);
-  color: #e5e7eb;
-  font-size: 14px;
-}
 
-.wc-send {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.08);
-  color: #e5e7eb;
-  font-weight: 900;
-  cursor: pointer;
-}
 
-.wc-arrow {
-  display: block;
-  font-size: 16px;
-}
 
-.wc-spinner {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  border: 2px solid rgba(226, 232, 240, 0.25);
-  border-top-color: #e2e8f0;
-  animation: wc-spin 0.9s linear infinite;
-}
+
+
+
+
+
 
 @keyframes wc-spin {
   to {

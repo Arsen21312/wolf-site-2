@@ -2,6 +2,7 @@
   <div class="wc-head">
     <Breadcrumbs v-if="breadcrumbs?.length" class="center" :items="breadcrumbs" />
     <div class="wc-title-row">
+      <span class="wc-title-spacer" aria-hidden="true"></span>
       <h1 class="section-title wc-title">{{ title }}</h1>
       <div v-if="showMenu" ref="menuRef" class="wc-menu" :class="{ 'wc-menu-open': isMenuOpen }">
         <button
@@ -35,6 +36,15 @@
             @click="emitAction('tasks')"
           >
             {{ labels.tasks }}
+          </button>
+          <button
+            v-if="showRandom"
+            class="wc-menu-item"
+            type="button"
+            role="menuitem"
+            @click="emitAction('random')"
+          >
+            {{ labels.random }}
           </button>
           <div v-if="showParty || showCreate || showCopyLink" class="wc-menu-divider"></div>
           <button
@@ -94,6 +104,7 @@ const labels = {
   menuAria: 'Открыть меню',
   howTo: 'Как играть',
   tasks: 'Задания',
+  random: 'Рандомная игра',
   party: 'Вечеринка',
   create: 'Загадать слово',
   copy: 'Скопировать ссылку',
@@ -112,19 +123,21 @@ const props = withDefaults(
     showMenu?: boolean
     showHowTo?: boolean
     showTasks?: boolean
+    showRandom?: boolean
     showParty?: boolean
     showCreate?: boolean
     showCopyLink?: boolean
     showReset?: boolean
   }>(),
   {
-    title: 'Контекст',
+    title: 'Волчий Контекст',
     attempts: 0,
     hints: 0,
     showCounts: true,
     showMenu: true,
     showHowTo: true,
     showTasks: true,
+    showRandom: false,
     showParty: true,
     showCreate: true,
     showCopyLink: false,
@@ -135,6 +148,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'howTo'): void
   (e: 'tasks'): void
+  (e: 'random'): void
   (e: 'party'): void
   (e: 'create'): void
   (e: 'copyLink'): void
@@ -152,7 +166,7 @@ function closeMenu() {
   isMenuOpen.value = false
 }
 
-function emitAction(action: 'howTo' | 'tasks' | 'party' | 'create' | 'copyLink' | 'reset') {
+function emitAction(action: 'howTo' | 'tasks' | 'random' | 'party' | 'create' | 'copyLink' | 'reset') {
   closeMenu()
   emit(action)
 }
@@ -198,9 +212,9 @@ const { breadcrumbs } = toRefs(props)
 }
 
 .wc-title-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
   gap: 12px;
   position: relative;
   width: 100%;
@@ -208,7 +222,14 @@ const { breadcrumbs } = toRefs(props)
   min-width: 0;
 }
 
+.wc-title-spacer {
+  width: 100%;
+  height: 1px;
+}
+
 .wc-title {
+  grid-column: 2;
+  justify-self: center;
   font-size: clamp(52px, 10vw, 80px);
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -216,6 +237,7 @@ const { breadcrumbs } = toRefs(props)
   max-width: 100%;
   min-width: 0;
   overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .wc-status-line {
@@ -224,12 +246,14 @@ const { breadcrumbs } = toRefs(props)
 }
 
 .wc-menu {
+  grid-column: 3;
   position: relative;
+  z-index: 2000;
 }
 
 .wc-menu-btn {
   border: 1px solid rgba(148, 163, 184, 0.4);
-  background: rgba(15, 23, 42, 0.5);
+  background: #0f172a;
   color: #e2e8f0;
   width: 34px;
   height: 34px;
@@ -283,14 +307,14 @@ const { breadcrumbs } = toRefs(props)
   top: 42px;
   right: 0;
   min-width: 220px;
-  background: rgba(15, 23, 42, 0.95);
+  background: #0f172a;
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.6);
   padding: 8px;
   display: grid;
   gap: 4px;
-  z-index: 20;
+  z-index: 2001;
   opacity: 0;
   transform: translateY(-8px) scale(0.98);
   pointer-events: none;
@@ -340,18 +364,19 @@ const { breadcrumbs } = toRefs(props)
 
   .wc-title {
     width: 100%;
-    text-align: center;
-    padding-right: 44px;
-    font-size: clamp(36px, 9vw, 54px);
-    line-height: 1.05;
-    white-space: normal;
+    font-size: clamp(26px, 6.5vw, 38px);
+    line-height: 1.1;
+    white-space: nowrap;
   }
 
   .wc-menu {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    justify-self: end;
+  }
+
+  .wc-menu-dropdown {
+    position: fixed;
+    top: 64px;
+    right: 16px;
   }
 
   .wc-menu-btn {

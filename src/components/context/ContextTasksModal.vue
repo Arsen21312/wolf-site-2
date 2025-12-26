@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <Teleport to="body">
     <div v-if="modelValue" class="context-modal">
       <div class="context-modal-backdrop" @click="close"></div>
@@ -37,7 +37,16 @@
               type="button"
               @click="selectOfficial(item.id)"
             >
-              <div class="context-list-title">{{ item.title }}</div>
+              <div class="context-list-title-row">
+                <div class="context-list-title">{{ item.title }}</div>
+                <span v-if="isCompleted(`official:${item.id}`)" class="context-list-badge">Пройдено ✓</span>
+                <span
+                  v-else-if="isStarted(`official:${item.id}`)"
+                  class="context-list-badge context-list-badge-started"
+                >
+                  Начатая
+                </span>
+              </div>
               <div class="context-list-desc">{{ item.hint }}</div>
             </button>
           </div>
@@ -71,7 +80,16 @@
               type="button"
               @click="selectUser(item.id)"
             >
-              <div class="context-list-title">{{ item.title }}</div>
+              <div class="context-list-title-row">
+                <div class="context-list-title">{{ item.title }}</div>
+                <span v-if="isCompleted(getUserGameKey(item))" class="context-list-badge">Пройдено ✓</span>
+                <span
+                  v-else-if="isStarted(getUserGameKey(item))"
+                  class="context-list-badge context-list-badge-started"
+                >
+                  Начатая
+                </span>
+              </div>
               <div v-if="item.createdByName" class="context-list-desc">Автор: {{ item.createdByName }}</div>
             </button>
           </div>
@@ -89,6 +107,17 @@ const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 const route = useRoute()
 
+const COMPLETED_STORAGE_KEY = 'wolf_context_completed_v1'
+
+type GameProgressEntry = {
+  startedAt?: number
+  completedAt?: number
+  updatedAt?: number
+  guesses?: unknown
+  winMessage?: string
+}
+type GameProgressRecord = Record<string, GameProgressEntry>
+
 const activeTab = ref<'official' | 'rooms' | 'user'>('official')
 const officialTasks = ref(officialGames)
 const officialLoading = ref(false)
@@ -98,7 +127,8 @@ const roomsError = ref('')
 const rooms = ref<Array<{ id: string; host_name: string | null; last_active_at: string | null }>>([])
 const userLoading = ref(false)
 
-const gamesUser = ref<Array<{ id: number; title: string; createdByName?: string | null }>>([])
+const gamesUser = ref<Array<{ id: number; title: string; createdByName?: string | null; slug?: string | null }>>([])
+const completedMap = ref<GameProgressRecord>({})
 
 const selectedOfficialId = computed(() => {
   const mode = typeof route.query.mode === 'string' ? route.query.mode : ''
@@ -113,6 +143,7 @@ function close() {
 
 function setTab(tab: 'official' | 'rooms' | 'user') {
   activeTab.value = tab
+  loadCompletedMap()
   if (tab === 'official') {
     loadOfficialTasks()
   }
@@ -145,7 +176,7 @@ async function loadUserGames() {
   if (userLoading.value) return
   userLoading.value = true
   try {
-    const response = await $fetch<{ ok: boolean; games?: Array<{ id: number; title: string; createdByName?: string | null }> }>(
+    const response = await $fetch<{ ok: boolean; games?: Array<{ id: number; title: string; createdByName?: string | null; slug?: string | null }> }>(
       '/api/context/user-games'
     )
     if (response?.ok && response.games) {
@@ -197,9 +228,40 @@ function selectRoom(id: string) {
   navigateTo(`/games/wolf-context/room/${id}`)
 }
 
+function loadCompletedMap() {
+  if (!process.client) return
+  try {
+    const raw = localStorage.getItem(COMPLETED_STORAGE_KEY)
+    completedMap.value = raw ? (JSON.parse(raw) as GameProgressRecord) : {}
+  } catch (error) {
+    console.error(error)
+    completedMap.value = {}
+  }
+}
+
+function getUserGameKey(item: { id: number; slug?: string | null }) {
+  const slug = typeof item.slug === 'string' ? item.slug.trim() : ''
+  return slug ? `user:${slug}` : `user:${item.id}`
+}
+
+function isCompleted(key: string) {
+  return Boolean(completedMap.value[key]?.completedAt)
+}
+
+function isStarted(key: string) {
+  const entry = completedMap.value[key]
+  if (!entry) return false
+  if (entry.completedAt) return false
+  if (entry.startedAt) return true
+  return Array.isArray(entry.guesses) && entry.guesses.length > 0
+}
+
 watch(
   () => props.modelValue,
   (open) => {
+    if (open) {
+      loadCompletedMap()
+    }
     if (open && activeTab.value === 'official') {
       loadOfficialTasks()
     }
@@ -224,7 +286,7 @@ function formatRoomTime(value: string | null) {
 .context-modal {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 3000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,7 +302,7 @@ function formatRoomTime(value: string | null) {
 
 .context-modal-card {
   position: relative;
-  z-index: 1;
+  z-index: 3001;
   width: min(760px, 92vw);
   max-height: 80vh;
   overflow: auto;
@@ -328,6 +390,31 @@ function formatRoomTime(value: string | null) {
 
 .context-list-title {
   font-weight: 800;
+}
+
+.context-list-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.context-list-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.7);
+  border-radius: 999px;
+  padding: 2px 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.context-list-badge-started {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.7);
+  background: rgba(245, 158, 11, 0.12);
 }
 
 .context-list-desc {

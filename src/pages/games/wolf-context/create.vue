@@ -1,30 +1,42 @@
-<template>
+﻿<template>
   <section class="wc-shell">
     <div class="wc-container">
       <ContextGameHeader
         :breadcrumbs="breadcrumbs"
         title="Загадать слово"
         :show-counts="false"
+        :show-menu="!(isHowToOpen || isTasksOpen)"
+        :show-random="true"
         @how-to="openHowTo"
         @tasks="openTasks"
+        @random="goRandom"
         @party="goParty"
         @create="goCreate"
         @reset="resetCache"
       />
-
-
       <div class="wc-card wc-card-info">
         <h2>Как загадать слово?</h2>
         <p>
-          Вы можете загадать своё слово и создать отдельную игру. Введите слово в поле ниже и нажмите кнопку со стрелкой. Нейросеть подберёт список близких слов, чтобы проверить, подходит ли загадка.
+          Введи слово и нажми кнопку проверки. Если слово есть в словаре, появится список ближайших слов.
         </p>
         <p>
-          Если результат вас устраивает, нажмите «Создать игру». Игра появится в списке пользовательских заданий. Скопируйте ссылку и отправьте друзьям.
+          Когда список готов, кнопка "Создать игру" станет активной. После создания можно копировать ссылку и отправлять друзьям.
         </p>
       </div>
-
-      <div class="wc-form">
-        <label class="wc-label" for="target-word">Слово</label>
+      <div class="wc-card wc-actions">
+        <button class="wc-btn primary" type="button" :disabled="!canCreateGame" @click="createGame">
+          Создать игру
+        </button>
+        <button
+          class="wc-btn ghost"
+          type="button"
+          :disabled="!canCopyLink"
+          :class="{ 'wc-btn-copied': copyFeedback }"
+          @click="copyLink"
+        >
+          {{ copyButtonLabel }}
+        </button>
+        <p v-if="createdGameId" class="wc-status-note">Создана игра #{{ createdGameId }}</p>
         <div class="wc-input-row">
           <input
             id="target-word"
@@ -35,47 +47,24 @@
             :disabled="isChecking"
             @keyup.enter="checkWord"
           />
-          <button class="wc-btn ghost" type="button" :disabled="!targetWord.trim() || isChecking" @click="checkWord">
-            Проверить
-          </button>
+          <button class="wc-btn ghost" type="button" :disabled="!canCheckWord" @click="checkWord">&gt;</button>
         </div>
-        <label class="wc-label" for="creator-name">Ник (опционально)</label>
-        <input
-          id="creator-name"
-          v-model="creatorName"
-          class="wc-input"
-          type="text"
-          placeholder="Как тебя представить?"
-          :disabled="isChecking || isCreating"
-        />
         <p v-if="statusMessage" class="wc-status-note">{{ statusMessage }}</p>
       </div>
 
-      <div class="wc-card">
-        <div class="wc-card-header">
-          <h2>Топ 300 ближайших слов</h2>
-          <button
-            class="wc-btn primary"
-            type="button"
-            :disabled="!neighbors.length || isCreating"
-            @click="createGame"
-          >
-            Создать игру
-          </button>
-        </div>
-        <button class="wc-btn ghost" type="button" :disabled="!playUrl" @click="copyLink">Скопировать ссылку</button>
-        <p v-if="createdGameId" class="wc-status-note">Игра создана: #{{ createdGameId }}</p>
-
-        <ContextGuessList :items="neighborItems" empty-text="Сначала проверь слово" />
-      </div>
+      <ContextGuessList :items="neighborItems" empty-text="Сначала проверь слово" />
     </div>
     <ContextHowToModal v-model="isHowToOpen" />
     <ContextTasksModal v-model="isTasksOpen" />
   </section>
 </template>
 
+
+
+
+
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import ContextGameHeader from '~/components/context/ContextGameHeader.vue'
 import ContextGuessList from '~/components/context/ContextGuessList.vue'
 import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
@@ -84,7 +73,7 @@ import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
 const breadcrumbs = [
   { label: 'Главная', to: '/' },
   { label: 'Игры', to: '/games' },
-  { label: 'Волчий Контекст', to: '/games/wolf-context/random' },
+  { label: 'Волчий контекст', to: '/games/wolf-context/random' },
   { label: 'Загадать слово' }
 ]
 
@@ -98,7 +87,6 @@ type NeighborItem = {
 }
 
 const targetWord = ref('')
-const creatorName = ref('')
 const neighbors = ref<NeighborItem[]>([])
 const isChecking = ref(false)
 const isCreating = ref(false)
@@ -107,6 +95,9 @@ const createdGameId = ref<number | null>(null)
 const playUrl = ref<string | null>(null)
 const isHowToOpen = ref(false)
 const isTasksOpen = ref(false)
+const lastCheckedWord = ref('')
+const copyFeedback = ref(false)
+const copyFeedbackTimer = ref<number | null>(null)
 
 const neighborItems = computed(() =>
   neighbors.value.map((item) => ({
@@ -117,6 +108,15 @@ const neighborItems = computed(() =>
     zone: item.zone,
     isHint: false
   }))
+)
+
+const canCreateGame = computed(
+  () => neighbors.value.length > 0 && !isCreating.value && !isChecking.value && !createdGameId.value
+)
+const canCopyLink = computed(() => !!playUrl.value)
+const canCheckWord = computed(() => !!targetWord.value.trim() && !isChecking.value)
+const copyButtonLabel = computed(() =>
+  copyFeedback.value ? 'Ссылка скопирована, но можешь еще раз нажать' : 'Скопировать ссылку'
 )
 
 const workerRef = ref<Worker | null>(null)
@@ -180,6 +180,7 @@ async function checkWord() {
   neighbors.value = []
   createdGameId.value = null
   playUrl.value = null
+  lastCheckedWord.value = word
   try {
     await ensureAmbientLoaded()
     const pick = await callWorker<WorkerPickResponse>({ type: 'pickByLemma', lemma: word })
@@ -205,11 +206,25 @@ async function checkWord() {
     })
   } catch (error) {
     console.error(error)
-    statusMessage.value = 'Не удалось проверить слово'
+    statusMessage.value = 'Не удалось создать игру'
   } finally {
     isChecking.value = false
   }
 }
+
+
+
+watch(
+  () => targetWord.value,
+  (value) => {
+    const trimmed = value.trim()
+    if (trimmed && trimmed === lastCheckedWord.value) return
+    neighbors.value = []
+    createdGameId.value = null
+    playUrl.value = null
+    statusMessage.value = ''
+  }
+)
 
 async function createGame() {
   if (!neighbors.value.length) return
@@ -222,20 +237,16 @@ async function createGame() {
       '/api/context/create-game',
       {
         method: 'POST',
-        body: { targetWord: word, createdByName: creatorName.value.trim() }
+        body: { targetWord: word, createdByName: '' }
       }
     )
     if (!response.ok || !response.id || !response.playUrl) {
-      statusMessage.value = response.message || 'Не удалось создать игру'
+      statusMessage.value = 'Не удалось создать игру'
       return
     }
     createdGameId.value = response.id
     playUrl.value = response.playUrl
-    await copyLink()
-    statusMessage.value = 'Игра создана, копирую ссылку...'
-    setTimeout(() => {
-      navigateTo(`/games/wolf-context/random?mode=user&id=${response.id}`)
-    }, 800)
+    statusMessage.value = ''
   } catch (error) {
     console.error(error)
     statusMessage.value = 'Не удалось создать игру'
@@ -244,10 +255,21 @@ async function createGame() {
   }
 }
 
+
+
+
 async function copyLink() {
   if (!playUrl.value || !process.client) return
   const url = `${window.location.origin}${playUrl.value}`
   await navigator.clipboard.writeText(url)
+  copyFeedback.value = true
+  if (copyFeedbackTimer.value !== null) {
+    window.clearTimeout(copyFeedbackTimer.value)
+  }
+  copyFeedbackTimer.value = window.setTimeout(() => {
+    copyFeedback.value = false
+    copyFeedbackTimer.value = null
+  }, 2200)
 }
 
 const FINISH_RANK = 299
@@ -274,6 +296,10 @@ function openTasks() {
 
 function goParty() {
   navigateTo('/games/wolf-context/party')
+}
+
+function goRandom() {
+  navigateTo('/games/wolf-context/random')
 }
 
 function goCreate() {
@@ -315,23 +341,6 @@ onBeforeUnmount(() => {
   gap: 16px;
 }
 
-.wc-form {
-  display: grid;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 14px;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.wc-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #94a3b8;
-  font-weight: 700;
-}
-
 .wc-input-row {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -371,6 +380,12 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.wc-btn.ghost.wc-btn-copied {
+  border-color: rgba(34, 197, 94, 0.85);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25);
+  color: #bbf7d0;
+}
+
 .wc-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -384,6 +399,10 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(148, 163, 184, 0.12);
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
   padding: 16px;
+}
+
+.wc-actions .wc-btn {
+  width: 100%;
 }
 
 .wc-card-info {
@@ -401,14 +420,6 @@ onBeforeUnmount(() => {
   color: #cbd5e1;
   font-size: 14px;
   line-height: 1.5;
-}
-
-.wc-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
 .wc-status-note {

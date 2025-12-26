@@ -7,74 +7,31 @@
         title="Комната"
         :attempts="attemptsCount"
         :hints="hintsCount"
+        :show-menu="!(isHowToOpen || isTasksOpen)"
         @how-to="openHowTo"
         @tasks="openTasks"
         @party="goParty"
         @create="goCreate"
         @reset="resetCache"
       />
+      <ContextControlRow
+        ref="controlRowRef"
+        v-if="isRoomReady"
+        v-model="guessInput"
+        :disabled-input="isInputDisabled"
+        :disabled-submit="isSubmitDisabled"
+        :disabled-hint="!canGiveHint"
+        :is-sending="isGuessing"
+        :show-new-game="isWon"
+        :new-game-disabled="isNewRoundLoading"
+        @submit="submitGuess"
+        @hint="giveHint"
+        @new-game="startNewRound"
+      />
 
-      <div class="wc-room-card">
-        <div class="wc-room-row">
-          <div>
-            <p class="wc-room-label">Комната</p>
-            <p class="wc-room-value">#{{ roomId }}</p>
-          </div>
-          <button class="wc-btn ghost" type="button" @click="copyRoomLink">Скопировать ссылку</button>
-        </div>
-        <div class="wc-room-row">
-          <div>
-            <p class="wc-room-label">Игрок</p>
-            <p class="wc-room-value">{{ playerName || 'Не задано' }}</p>
-          </div>
-          <button class="wc-btn ghost" type="button" @click="openNameModal">Сменить имя</button>
-        </div>
-        <p v-if="roomStatusMessage" class="wc-room-note">{{ roomStatusMessage }}</p>
-      </div>
-
-      <div class="wc-form">
-        <div class="wc-input-row">
-          <input
-            id="guess-input"
-            ref="guessInputRef"
-            v-model="guessInput"
-            class="wc-input"
-            type="text"
-            placeholder="Пиши ассоциацию"
-            :disabled="isInputDisabled"
-            @keyup.enter="submitGuess"
-          />
-          <button
-            class="wc-send"
-            type="button"
-            aria-label="Проверить"
-            :disabled="isSubmitDisabled"
-            @click="submitGuess"
-          >
-            <span v-if="isGuessing" class="wc-spinner"></span>
-            <span v-else class="wc-arrow">&gt;</span>
-          </button>
-          <button
-            class="wc-btn ghost"
-            type="button"
-            :disabled="!canGiveHint"
-            @click="giveHint"
-          >
-            Подсказка
-          </button>
-        </div>
-        <button
-          v-if="isWon"
-          class="wc-btn primary"
-          type="button"
-          :disabled="isNewRoundLoading"
-          @click="startNewRound"
-        >
-          Новый раунд
-        </button>
-      </div>
 
       <ContextGuessList
+        v-if="isRoomReady"
         :items="attemptsSorted"
         :status="listStatus"
         :current-text="currentRowDisplay"
@@ -86,7 +43,7 @@
         show-player
       />
 
-      <div v-if="showRules" class="wc-rules">
+      <div v-if="isRoomReady && showRules" class="wc-rules">
         <h2 class="wc-rules-title">Как играть в Волчий контекст</h2>
         <div class="wc-rules-list">
           <div class="wc-rules-item">
@@ -148,6 +105,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import ContextGameHeader from '~/components/context/ContextGameHeader.vue'
+import ContextControlRow from '~/components/context/ContextControlRow.vue'
 import ContextGuessList from '~/components/context/ContextGuessList.vue'
 import ContextHowToModal from '~/components/context/ContextHowToModal.vue'
 import ContextTasksModal from '~/components/context/ContextTasksModal.vue'
@@ -215,13 +173,12 @@ const route = useRoute()
 const roomId = computed(() => (typeof route.params.id === 'string' ? route.params.id : String(route.params.id ?? '')))
 
 const room = ref<RoomResponse | null>(null)
-const roomStatusMessage = ref('')
 const errorMessage = ref('')
 const isRoomLoading = ref(false)
 const isGuessesLoading = ref(false)
 
 const guessInput = ref('')
-const guessInputRef = ref<HTMLInputElement | null>(null)
+const controlRowRef = ref<InstanceType<typeof ContextControlRow> | null>(null)
 const currentRowText = ref('')
 const currentRowType = ref<'guess' | 'error' | 'info'>('info')
 const currentRowRank = ref<number | null>(null)
@@ -248,7 +205,6 @@ const isNameModalOpen = ref(false)
 const nameInput = ref('')
 const playerName = ref('')
 
-const LOCAL_NAME_KEY = 'wolf-context-player-name'
 const FINISH_RANK = 299
 
 const winMessages = [
@@ -295,6 +251,7 @@ const currentRowDisplayType = computed<'guess' | 'error' | 'info'>(() => {
 const showRules = computed(
   () => !guesses.value.length && !guessInput.value.trim() && !isGuessing.value && !isHinting.value
 )
+const isRoomReady = computed(() => !!playerName.value)
 
 const bestPosition = computed(() => {
   const positions = guesses.value.map((a) => a.position).filter((n) => Number.isFinite(n))
@@ -493,7 +450,6 @@ async function loadRoom() {
     return
   }
   isRoomLoading.value = true
-  roomStatusMessage.value = ''
   errorMessage.value = ''
   try {
     const response = await $fetch<{ ok: boolean; room?: RoomResponse; message?: string }>(`/api/party/room?id=${id}`)
@@ -882,7 +838,7 @@ function goCreate() {
 }
 
 function openNameModal() {
-  nameInput.value = playerName.value
+  nameInput.value = playerName.value || ''
   isNameModalOpen.value = true
   nextTick(() => {
     const el = document.querySelector<HTMLInputElement>('.wc-modal-card input')
@@ -895,21 +851,9 @@ function confirmName() {
   if (!name) return
   playerName.value = name
   isNameModalOpen.value = false
-  if (process.client) {
-    localStorage.setItem(LOCAL_NAME_KEY, name)
-  }
   focusInput()
 }
 
-async function copyRoomLink() {
-  if (!process.client) return
-  const url = `${window.location.origin}/games/wolf-context/room/${roomId.value}`
-  await navigator.clipboard.writeText(url)
-  roomStatusMessage.value = 'Ссылка скопирована'
-  setTimeout(() => {
-    roomStatusMessage.value = ''
-  }, 1500)
-}
 
 async function resetCache() {
   if (!process.client || !('indexedDB' in window)) return
@@ -924,15 +868,7 @@ async function resetCache() {
 
 function focusInput() {
   nextTick(() => {
-    const el = guessInputRef.value
-    if (!el) return
-    el.focus()
-    const length = el.value.length
-    try {
-      el.setSelectionRange(length, length)
-    } catch {
-      // no-op
-    }
+    controlRowRef.value?.focusInput()
   })
 }
 
@@ -944,15 +880,7 @@ async function initRoom() {
 }
 
 onMounted(() => {
-  if (process.client) {
-    const storedName = localStorage.getItem(LOCAL_NAME_KEY) || ''
-    if (storedName) {
-      playerName.value = storedName
-      nameInput.value = storedName
-    } else {
-      isNameModalOpen.value = true
-    }
-  }
+  isNameModalOpen.value = true
   initRoom()
 })
 
@@ -993,59 +921,14 @@ onBeforeUnmount(() => {
   gap: 14px;
 }
 
-.wc-room-card {
-  display: grid;
-  gap: 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
-  padding: 16px;
-}
 
-.wc-room-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
 
-.wc-room-label {
-  margin: 0;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  font-weight: 700;
-}
 
-.wc-room-value {
-  margin: 4px 0 0;
-  font-size: 16px;
-  font-weight: 800;
-}
 
-.wc-room-note {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 13px;
-}
 
-.wc-form {
-  display: grid;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 14px;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
 
-.wc-input-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 8px;
-  align-items: center;
-}
+
+
 
 .wc-input {
   width: 100%;
@@ -1057,30 +940,11 @@ onBeforeUnmount(() => {
   font-size: 14px;
 }
 
-.wc-send {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.08);
-  color: #e5e7eb;
-  font-weight: 900;
-  cursor: pointer;
-}
 
-.wc-arrow {
-  display: block;
-  font-size: 16px;
-}
 
-.wc-spinner {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  border: 2px solid rgba(226, 232, 240, 0.25);
-  border-top-color: #e2e8f0;
-  animation: wc-spin 0.9s linear infinite;
-}
+
+
+
 
 @keyframes wc-spin {
   to {

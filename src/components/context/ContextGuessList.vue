@@ -132,12 +132,12 @@ function getZoneColor(zone: GuessItem['zone']) {
 <style scoped>
 .wc-history {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .wc-history-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -188,7 +188,7 @@ function getZoneColor(zone: GuessItem['zone']) {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   color: #e5e7eb;
   font-weight: 700;
 }

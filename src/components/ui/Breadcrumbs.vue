@@ -131,14 +131,10 @@ const displayItems = computed(() => {
   .breadcrumbs {
     padding: 6px 8px;
     font-size: 11px;
-    width: 100%;
-    justify-content: center;
   }
 
   .breadcrumbs-list {
     gap: 6px;
-    width: 100%;
-    justify-content: center;
   }
 
   .breadcrumb-link,

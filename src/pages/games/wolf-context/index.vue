@@ -59,6 +59,8 @@ useHead({
   display: grid;
   gap: 10px;
   max-width: 760px;
+  margin: 0 auto;
+  justify-items: center;
 }
 
 .wc-title {
@@ -92,6 +94,7 @@ useHead({
   max-width: 640px;
   font-size: clamp(18px, 2vw, 22px);
   font-weight: 600;
+  text-align: center;
 }
 
 .btn {
