@@ -5,6 +5,8 @@
 
     <main class="container main-content">
       <slot />
+      <YandexRtbBlock />
+      <YandexRtbFloorAd />
     </main>
 
     <MainFooter />
@@ -14,6 +16,8 @@
 <script setup lang="ts">
 import MainHeader from '@/components/navigation/MainHeader.vue'
 import MainFooter from '@/components/navigation/MainFooter.vue'
+import YandexRtbBlock from '@/components/ads/YandexRtbBlock.vue'
+import YandexRtbFloorAd from '@/components/ads/YandexRtbFloorAd.vue'
 import GlobalSnow from '@/components/ui/GlobalSnow.vue'
 import faviconUrl from '~/assets/images/wolf-favicon.png'
 
