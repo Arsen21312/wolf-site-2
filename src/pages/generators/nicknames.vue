@@ -115,7 +115,7 @@ import { nickParts } from '@/data/nicknames'
 
 const breadcrumbs = [
   { label: 'Главная', to: '/' },
-  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Генераторы', to: '/generators' },
   { label: 'Никнеймы' }
 ]
 

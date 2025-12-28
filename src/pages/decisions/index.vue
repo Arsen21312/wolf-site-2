@@ -82,6 +82,22 @@ const tools = [
     mood: 'Любовь',
     speed: '30 секунд',
     slug: '/decisions/love-calculator'
+  },
+  {
+    title: 'Реверс текста',
+    tag: 'Текст',
+    description: 'Переверни текст полностью, по словам или по строкам. Бесплатно, без регистрации.',
+    mood: 'Работает в браузере',
+    speed: '1 клик',
+    slug: '/decisions/text-reverser'
+  },
+  {
+    title: 'Счетчик текста',
+    tag: 'Статистика',
+    description: 'Символы, слова, строки, абзацы, предложения и время чтения в одном окне.',
+    mood: 'SEO магнит',
+    speed: 'Мгновенно',
+    slug: '/decisions/text-counter'
   }
 ]
 </script>

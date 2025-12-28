@@ -63,6 +63,22 @@ const breadcrumbs = [
 
 const generators = [
   {
+    title: 'Волчий рыбий текст',
+    tag: 'текст / макеты',
+    description: 'Абзацы, предложения или слова про волков - для лендингов, постов и интерфейсов.',
+    mood: 'контент',
+    scope: '1 клик',
+    link: '/generators/wolf-lorem'
+  },
+  {
+    title: 'Удаление лишних пробелов',
+    tag: 'текст / чистка',
+    description: 'Чистит текст от лишних пробелов, табов и пустых строк - полезно для копирайта и кода.',
+    mood: 'аккуратно',
+    scope: '1 клик',
+    link: '/generators/remove-spaces'
+  },
+  {
     title: 'Цитаты волка',
     tag: 'цитаты / мотивация',
     description: 'Дерзкие короткие цитаты про смелость и движение для сторис и чатов.',
@@ -76,7 +92,7 @@ const generators = [
     description: 'Случайные действия на 1–5 минут, чтобы сдвинуться с места и поймать движение.',
     mood: 'движение',
     scope: '1–5 минут',
-    link: '/decisions/micro-actions'
+    link: '/generators/micro-actions'
   },
   {
     title: 'Вопросы для компании',
@@ -84,15 +100,23 @@ const generators = [
     description: 'Колода вопросов для круга: без неловких пауз, с теплыми и смешными темами.',
     mood: 'живое общение',
     scope: '2–6 человек',
-    link: '/decisions/company-questions'
+    link: '/generators/company-questions'
   },
   {
     title: 'Генератор никнеймов',
     tag: 'ник / интернет',
-    description: 'Автоникнеймы для игр, чатов и соцсетей — быстро и без заминок.',
+    description: 'Автоникнеймы для игр, чатов и соцсетей - быстро и без заминок.',
     mood: 'быстро',
     scope: 'любые темы',
-    link: '/decisions/nicknames'
+    link: '/generators/nicknames'
+  },
+  {
+    title: 'Генератор лабиринтов',
+    tag: 'можно залипнуть',
+    description: 'Создавай лабиринты разных размеров и сложности, смотри решение и скачивай PNG.',
+    mood: 'визуализация',
+    scope: 'мгновенно',
+    link: '/generators/maze-generator'
   }
 ]
 </script>

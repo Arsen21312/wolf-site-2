@@ -1,7 +1,5 @@
 ﻿<template>
   <div class="decisions-page flex flex-col gap-10 pb-16">
-    <NavBar />
-
     <section class="page-center gap-4">
       <Breadcrumbs class="center" :items="breadcrumbs" />
       

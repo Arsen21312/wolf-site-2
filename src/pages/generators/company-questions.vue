@@ -111,7 +111,7 @@ import { companyCategories } from '@/data/companyQuestions'
 
 const breadcrumbs = [
   { label: 'Главная', to: '/' },
-  { label: 'Инструменты', to: '/decisions' },
+  { label: 'Генераторы', to: '/generators' },
   { label: 'Вопросы для компании' }
 ]
 

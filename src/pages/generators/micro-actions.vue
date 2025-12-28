@@ -14,6 +14,7 @@
         </div>
 
         <div v-else class="tod-game">
+          <Breadcrumbs class="center" :items="breadcrumbs" />
           <div class="tod-modes">
             <button
               v-for="cat in categories"
@@ -159,6 +160,12 @@ import { useHead, useRequestURL, useSeoMeta } from '#imports'
 import SocialPopup from '@/components/ui/SocialPopup.vue'
 import { microCategories } from '@/data/microActions'
 
+const breadcrumbs = [
+  { label: 'Главная', to: '/' },
+  { label: 'Генераторы', to: '/generators' },
+  { label: 'Микро действие' }
+]
+
 const categories = microCategories
 const gameStarted = ref(false)
 const activeCategory = ref(categories[0].id)
@@ -286,7 +293,7 @@ function toggleFaq(idx) {
 }
 
 const requestUrl = useRequestURL()
-const canonicalUrl = computed(() => `${requestUrl.origin}/decisions/micro-actions`)
+const canonicalUrl = computed(() => `${requestUrl.origin}/generators/micro-actions`)
 const metaDescription =
   'Микро действия на 1–5 минут, чтобы сдвинуться с места. Выбирай категорию, получай задание, отмечай “сделал” и лови движение без мотивационной воды.'
 
@@ -313,7 +320,7 @@ const structuredData = computed(() => ({
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Главная', item: `${requestUrl.origin}/` },
-        { '@type': 'ListItem', position: 2, name: 'Решения', item: `${requestUrl.origin}/decisions` },
+        { '@type': 'ListItem', position: 2, name: 'Генераторы', item: `${requestUrl.origin}/generators` },
         { '@type': 'ListItem', position: 3, name: 'Микро действие', item: canonicalUrl.value }
       ]
     }
@@ -569,9 +576,11 @@ useHead(() => ({
   gap: clamp(12px, 2vw, 20px);
   position: relative;
   overflow: hidden;
-  max-width: min(900px, 100%);
+  width: min(960px, 100%);
+  max-width: min(960px, 100%);
   margin: 0 auto;
-  min-height: clamp(200px, 40vh, 320px);
+  min-height: 320px;
+  height: clamp(260px, 38vh, 340px);
 }
 
 .tod-card::after {

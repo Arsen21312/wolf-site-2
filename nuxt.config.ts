@@ -76,7 +76,7 @@ export default defineNuxtConfig({
         redirect: { to: '/', statusCode: 301 }
       },
       '/tools/maze-generator.html': {
-        redirect: { to: '/', statusCode: 301 }
+        redirect: { to: '/tools/maze-generator', statusCode: 301 }
       },
       '/tools/decimal-to-fraction': {
         redirect: { to: '/', statusCode: 301 }
@@ -190,7 +190,7 @@ export default defineNuxtConfig({
         redirect: { to: '/', statusCode: 301 }
       },
       '/tools/text-reverser.html': {
-        redirect: { to: '/', statusCode: 301 }
+        redirect: { to: '/decisions/text-reverser', statusCode: 301 }
       },
       '/tools/ascii-art-generator.html': {
         redirect: { to: '/', statusCode: 301 }

@@ -1,7 +1,5 @@
 <template>
   <div class="decisions-page flex flex-col gap-10 pb-16">
-    <NavBar />
-
     <div class="calc-hero">
       <section class="page-center gap-4">
         <Breadcrumbs class="center" :items="breadcrumbs" />
@@ -40,9 +38,7 @@
       </section>
     </div>
 
-    <div ref="seoTrigger" class="seo-trigger" aria-hidden="true" />
-
-    <div class="seo-lazy" :class="{ 'seo-visible': seoVisible }">
+    <div class="seo-lazy seo-visible">
       <section class="max-w-6xl mx-auto w-full flex flex-col gap-4">
         <h2 class="text-2xl font-bold text-white text-center section-title">Почему это удобно</h2>
         <div class="feature-grid">
@@ -110,7 +106,7 @@
 
 <script setup>
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
 
 const breadcrumbs = [
@@ -126,12 +122,6 @@ const message = ref('')
 const hasResult = ref(false)
 const error = ref('')
 const openFaq = ref(null)
-const seoVisible = ref(false)
-const seoTrigger = ref(null)
-let seoObserver = null
-const handleUserIntent = () => {
-  revealSeo()
-}
 
 const generateDisabled = computed(() => !name1.value.trim() || !name2.value.trim())
 
@@ -224,51 +214,6 @@ function getMessage(pct) {
   if (pct >= 30) return 'Интересная комбинация, возможно это испытание судьбы'
   return 'Пока не идеально, но всё можно изменить'
 }
-
-const revealSeo = () => {
-  if (seoVisible.value) return
-  seoVisible.value = true
-  if (seoObserver) {
-    seoObserver.disconnect()
-    seoObserver = null
-  }
-  window.removeEventListener('scroll', handleScroll)
-  window.removeEventListener('wheel', handleUserIntent)
-  window.removeEventListener('touchstart', handleUserIntent)
-}
-
-const handleScroll = () => {
-  if (window.scrollY > 20) {
-    revealSeo()
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
-  window.addEventListener('wheel', handleUserIntent, { passive: true })
-  window.addEventListener('touchstart', handleUserIntent, { passive: true })
-
-  if (seoTrigger.value && 'IntersectionObserver' in window) {
-    seoObserver = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          revealSeo()
-        }
-      },
-      { rootMargin: '0px 0px -40% 0px' }
-    )
-    seoObserver.observe(seoTrigger.value)
-  }
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll)
-  window.removeEventListener('wheel', handleUserIntent)
-  window.removeEventListener('touchstart', handleUserIntent)
-  if (seoObserver) {
-    seoObserver.disconnect()
-  }
-})
 
 const requestUrl = useRequestURL()
 const canonicalUrl = computed(() => `${requestUrl.origin}/decisions/love-calculator`)
@@ -501,6 +446,7 @@ useHead(() => ({
 .info-panel {
   display: grid;
   gap: 16px;
+  margin-top: 32px;
 }
 
 .info-grid {
@@ -637,11 +583,6 @@ useHead(() => ({
   text-align: center;
 }
 
-.seo-trigger {
-  width: 100%;
-  height: 1px;
-}
-
 .seo-lazy {
   opacity: 0;
   max-height: 0;
@@ -661,6 +602,23 @@ useHead(() => ({
     min-height: auto;
     transform: none;
     padding-top: 24px;
+  }
+
+  .seo-lazy {
+    margin-top: 24px;
+  }
+
+  .info-panel {
+    margin-top: 24px;
+  }
+
+  .faq-toggle {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .faq-toggle span:first-child {
+    text-align: left;
   }
 }
 </style>

@@ -104,6 +104,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { createClient, type RealtimeChannel, type SupabaseClient } from '@supabase/supabase-js'
 import ContextGameHeader from '~/components/context/ContextGameHeader.vue'
 import ContextControlRow from '~/components/context/ContextControlRow.vue'
 import ContextGuessList from '~/components/context/ContextGuessList.vue'
@@ -171,6 +172,7 @@ useHead({
 
 const route = useRoute()
 const roomId = computed(() => (typeof route.params.id === 'string' ? route.params.id : String(route.params.id ?? '')))
+const runtimeConfig = useRuntimeConfig()
 
 const room = ref<RoomResponse | null>(null)
 const errorMessage = ref('')
@@ -304,6 +306,10 @@ const pendingRequests = new Map<number, { resolve: (value: any) => void; reject:
 let requestId = 0
 let ambientInitPromise: Promise<void> | null = null
 const workerRef = ref<Worker | null>(null)
+let supabaseClient: SupabaseClient | null = null
+let supabaseChannel: RealtimeChannel | null = null
+let refreshTimer: ReturnType<typeof setTimeout> | null = null
+const REFRESH_THROTTLE_MS = 400
 
 function getWorker() {
   if (workerRef.value) return workerRef.value
@@ -330,6 +336,16 @@ function getWorker() {
   }
   workerRef.value = worker
   return worker
+}
+
+function getRealtimeClient() {
+  if (!process.client) return null
+  if (supabaseClient) return supabaseClient
+  const url = runtimeConfig.public.supabaseUrl
+  const anonKey = runtimeConfig.public.supabaseAnonKey
+  if (!url || !anonKey) return null
+  supabaseClient = createClient(url, anonKey, { auth: { persistSession: false } })
+  return supabaseClient
 }
 
 function callWorker<T>(payload: Record<string, unknown>): Promise<T> {
@@ -554,6 +570,47 @@ async function loadGuesses() {
   } finally {
     isGuessesLoading.value = false
   }
+}
+
+function scheduleGuessesRefresh() {
+  if (refreshTimer) return
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null
+    void loadGuesses()
+  }, REFRESH_THROTTLE_MS)
+}
+
+function teardownRealtime() {
+  if (!supabaseChannel || !supabaseClient) return
+  supabaseClient.removeChannel(supabaseChannel)
+  supabaseChannel = null
+}
+
+async function setupRealtime() {
+  if (!process.client) return
+  const id = roomId.value.trim()
+  if (!id) return
+  const client = getRealtimeClient()
+  if (!client) return
+  if (supabaseChannel) {
+    client.removeChannel(supabaseChannel)
+    supabaseChannel = null
+  }
+  supabaseChannel = client
+    .channel(`context-room-guesses-${id}`)
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'context_room_guesses', filter: `room_id=eq.${id}` },
+      (payload) => {
+        console.log('realtime payload', payload)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        console.log('realtime roomId', id, 'payload.room_id', (payload as any)?.new?.room_id)
+        scheduleGuessesRefresh()
+      }
+    )
+    .subscribe((status) => {
+      console.log('realtime status', status)
+    })
 }
 
 async function submitGuess() {
@@ -877,6 +934,9 @@ async function initRoom() {
   if (!room.value) return
   await ensureTargetReady()
   await loadGuesses()
+  if (process.client) {
+    await setupRealtime()
+  }
 }
 
 onMounted(() => {
@@ -898,6 +958,11 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  teardownRealtime()
+  if (refreshTimer) {
+    clearTimeout(refreshTimer)
+    refreshTimer = null
+  }
   if (!workerRef.value) return
   workerRef.value.terminate()
   workerRef.value = null
