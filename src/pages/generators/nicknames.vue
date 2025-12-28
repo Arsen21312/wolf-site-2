@@ -2,32 +2,108 @@
   <section class="tod-page">
     <div class="tod-container">
       <Breadcrumbs class="center" :items="breadcrumbs" />
-      <div v-if="!started" class="tod-intro">
+      <div class="tod-intro">
         <h1 class="tod-title">Никнейм или волчье имя</h1>
         <p class="tod-subtitle">Введи имя или слово — сгенерим несколько вариантов ников без кринжа.</p>
-        <div class="tod-form">
-          <input v-model="base" type="text" placeholder="Твоё имя или слово" />
-          <button class="tod-btn tod-btn-primary" @click="generate">Дать варианты</button>
-        </div>
-        <p class="tod-hint">Сразу выдадим подборку из пяти вариантов.</p>
       </div>
 
-      <div v-else class="tod-game">
-        <div class="tod-card">
-          <div class="tod-label">подборка ников</div>
-          <ul class="nick-list">
-            <li v-for="nick in nicknames" :key="nick">{{ nick }}</li>
-          </ul>
+      <div class="tod-generator">
+        <div class="tod-form-block">
+          <div class="tod-form">
+            <input v-model="base" type="text" placeholder="Твоё имя или слово" />
+            <button class="tod-btn tod-btn-primary" @click="generate">Дать варианты</button>
+          </div>
+
         </div>
 
-        <div class="tod-actions">
-          <div class="tod-buttons">
-            <button class="tod-btn tod-btn-ghost" @click="generate">Ещё варианты</button>
+        <div class="tod-card">
+          <div class="tod-label">подборка ников</div>
+          <ul v-if="nicknames.length" class="nick-list">
+            <li v-for="nick in nicknames" :key="nick">{{ nick }}</li>
+          </ul>
+          <p v-else class="tod-empty">Нажми «Дать варианты» или введи основу, чтобы получить список.</p>
+        </div>
+      </div>
+
+      <div class="tod-settings">
+        <div class="tod-setting-group">
+          <div class="tod-setting">
+            <span class="tod-setting-label">Формат</span>
+            <div class="tod-segmented">
+              <button
+                type="button"
+                :class="['tod-segment', { active: format === 'one-word' }]"
+                @click="format = 'one-word'"
+              >
+                Одно слово
+              </button>
+              <button
+                type="button"
+                :class="['tod-segment', { active: format === 'phrase' }]"
+                @click="format = 'phrase'"
+              >
+                Фраза
+              </button>
+            </div>
           </div>
-          <div class="tod-form-inline">
-            <input v-model="base" type="text" placeholder="Сменить базу (имя / слово)" />
-            <button class="tod-btn" @click="generate">Обновить</button>
+
+          <div class="tod-setting">
+            <span class="tod-setting-label">Алфавит</span>
+            <div class="tod-segmented">
+              <button
+                type="button"
+                :class="['tod-segment', { active: alphabet === 'latin' }]"
+                :disabled="format === 'phrase'"
+                @click="alphabet = 'latin'"
+              >
+                Латиница
+              </button>
+              <button
+                type="button"
+                :class="['tod-segment', { active: alphabet === 'cyrillic' }]"
+                :disabled="format === 'phrase'"
+                @click="alphabet = 'cyrillic'"
+              >
+                Кириллица
+              </button>
+            </div>
           </div>
+
+          <div class="tod-setting">
+            <span class="tod-setting-label">Длина ника: {{ length }}</span>
+            <input
+              v-model.number="length"
+              class="tod-range"
+              type="range"
+              min="4"
+              max="20"
+              step="1"
+              :disabled="format === 'phrase'"
+            />
+          </div>
+        </div>
+
+        <div class="tod-toggle-grid">
+          <label class="tod-toggle" :class="{ disabled: format === 'phrase' }">
+            <input v-model="addNumbers" type="checkbox" :disabled="format === 'phrase'" />
+            <span class="tod-toggle-ui" aria-hidden="true"></span>
+            <span>Добавлять цифры в конец</span>
+          </label>
+          <label class="tod-toggle" :class="{ disabled: format === 'phrase' }">
+            <input v-model="addUnderscore" type="checkbox" :disabled="format === 'phrase'" />
+            <span class="tod-toggle-ui" aria-hidden="true"></span>
+            <span>Подчёркивание (snake_case)</span>
+          </label>
+          <label class="tod-toggle" :class="{ disabled: format === 'phrase' || addUnderscore }">
+            <input v-model="pascalCase" type="checkbox" :disabled="format === 'phrase' || addUnderscore" />
+            <span class="tod-toggle-ui" aria-hidden="true"></span>
+            <span>PascalCase</span>
+          </label>
+          <label class="tod-toggle" :class="{ disabled: format === 'phrase' }">
+            <input v-model="wolfy" type="checkbox" :disabled="format === 'phrase'" />
+            <span class="tod-toggle-ui" aria-hidden="true"></span>
+            <span>Добавлять волчий вайб</span>
+          </label>
         </div>
       </div>
     </div>
@@ -40,6 +116,7 @@
       <p class="seo-lead">
         Ник нужен быстро, но так, чтобы звучал как легенда, а не как пароль от вайфая
         Введи имя или любое слово и получи подборку вариантов, для игр, соцсетей, Telegram и где угодно
+        Можно выбрать однословный формат, длину ника и алфавит, латиницу или кириллицу
       </p>
 
       <div class="seo-grid">
@@ -84,6 +161,18 @@
           В соцсетях ник задаёт тон профилю, серьёзный ты или постирония на максималках
           Поэтому лучше один раз собрать хороший вариант и жить красиво, чем менять каждую неделю
         </p>
+
+        <h3>Почему одно слово лучше для Telegram, игр и соцсетей</h3>
+        <p>
+          Однословный ник быстрее читается и лучше запоминается, не ломает поиск и не выглядит как фраза
+          Такой формат удобнее для никнейма в Telegram, игровых тегов и шапок профилей, где каждая буква на счету
+        </p>
+
+        <h3>Латиница vs кириллица</h3>
+        <p>
+          Латиница универсальна для игр, Discord и любых международных площадок
+          Кириллица хорошо работает, когда важна родная подача и ты хочешь, чтобы ник выглядел живо на русском
+        </p>
       </div>
 
       <div class="seo-faq">
@@ -103,6 +192,21 @@
           <summary>Можно сделать ник короче</summary>
           <p>Да, введи короткую базу, типа 3–5 букв, или используй сокращение имени</p>
         </details>
+
+        <details class="seo-faq-item">
+          <summary>Как сделать ник одним словом</summary>
+          <p>Включи формат «Одно слово», выбери длину и алфавит, база подстроится под нужный размер</p>
+        </details>
+
+        <details class="seo-faq-item">
+          <summary>Почему ник без пробелов удобнее</summary>
+          <p>Так ник проще копировать, он влезает в ограничения площадок и выглядит аккуратнее в списках</p>
+        </details>
+
+        <details class="seo-faq-item">
+          <summary>Можно ли сделать ник на английском из русского имени</summary>
+          <p>Да, при выборе латиницы база на русском будет транслитерирована в английские буквы</p>
+        </details>
       </div>
     </div>
   </section>
@@ -110,8 +214,8 @@
 
 <script setup>
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
-import { ref } from 'vue'
-import { nickParts } from '@/data/nicknames'
+import { ref, watch } from 'vue'
+import { generateNicknames } from '@/utils/nicknames/generateNickname'
 
 const breadcrumbs = [
   { label: 'Главная', to: '/' },
@@ -122,32 +226,37 @@ const breadcrumbs = [
 const started = ref(false)
 const base = ref('')
 const nicknames = ref([])
-const lastSeed = ref('')
+const format = ref('one-word')
+const alphabet = ref('latin')
+const length = ref(12)
+const addNumbers = ref(false)
+const addUnderscore = ref(false)
+const wolfy = ref(true)
+const pascalCase = ref(false)
 
-function randomItem(list) {
-  return list[Math.floor(Math.random() * list.length)]
+function normalizeSettings() {
+  length.value = Math.min(20, Math.max(4, Math.round(length.value)))
 }
 
-function buildNick(raw) {
-  const adj = randomItem(nickParts.adjectives)
-  const animal = randomItem(nickParts.animals)
-  const suffix = randomItem(nickParts.suffixes)
-  const trimmedBase = raw.trim()
-  const core = trimmedBase ? `${adj} ${animal} ${trimmedBase}` : `${adj} ${animal}`
-  return suffix ? `${core} ${suffix}` : core
-}
+watch(addUnderscore, (value) => {
+  if (value) {
+    pascalCase.value = false
+  }
+})
 
 function generate() {
+  normalizeSettings()
   started.value = true
-  const seed = base.value || ''
-  const set = new Set()
-  let attempts = 0
-  while (set.size < 5 && attempts < 40) {
-    set.add(buildNick(seed))
-    attempts += 1
-  }
-  nicknames.value = Array.from(set).slice(0, 5)
-  lastSeed.value = seed
+  nicknames.value = generateNicknames({
+    base: base.value,
+    format: format.value,
+    alphabet: alphabet.value,
+    length: length.value,
+    addNumbers: addNumbers.value,
+    addUnderscore: addUnderscore.value,
+    wolfy: wolfy.value,
+    pascalCase: pascalCase.value
+  })
 }
 </script>
 
@@ -176,7 +285,7 @@ function generate() {
   box-shadow: none;
   display: grid;
   justify-items: center;
-  gap: clamp(16px, 3vw, 28px);
+  gap: clamp(14px, 3vw, 24px);
   margin: 0 auto;
 }
 
@@ -219,15 +328,39 @@ function generate() {
 .tod-form {
   display: grid;
   gap: 10px;
-  width: min(480px, 100%);
+  width: 100%;
+  max-width: 720px;
+  justify-items: center;
+  margin: 0 auto;
 }
 
-.tod-form-inline {
+.tod-generator {
+  width: min(900px, 100%);
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  width: min(600px, 100%);
+  gap: 18px;
+  padding: clamp(18px, 3vw, 26px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.4));
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
 }
+
+.tod-form-block {
+  display: grid;
+  gap: 8px;
+  justify-items: stretch;
+  width: 100%;
+  align-items: center;
+}
+
+.tod-form input {
+  width: 100%;
+}
+
+.tod-btn-primary {
+  justify-self: center;
+}
+
 
 input {
   width: 100%;
@@ -275,27 +408,17 @@ input {
   justify-content: center;
 }
 
-.tod-game {
-  display: grid;
-  gap: clamp(18px, 3vw, 30px);
-  justify-items: center;
-  align-items: center;
-  min-height: 70vh;
-  padding: clamp(12px, 2vw, 24px) 0 clamp(18px, 3vw, 32px);
-  margin-top: 0;
-  width: 100%;
-}
 
 .tod-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  background: rgba(2, 6, 23, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: clamp(20px, 3vw, 32px);
+  padding: clamp(18px, 3vw, 28px);
   display: grid;
   gap: clamp(12px, 2vw, 20px);
   position: relative;
   overflow: hidden;
-  max-width: min(900px, 100%);
+  width: 100%;
   margin: 0 auto 0;
 }
 
@@ -326,6 +449,7 @@ input {
   padding: 0;
   display: grid;
   gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .nick-list li {
@@ -338,23 +462,140 @@ input {
   color: #e5e7eb;
 }
 
-.tod-actions {
+.tod-empty {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+.tod-settings {
+  width: min(900px, 100%);
   display: grid;
-  gap: clamp(10px, 2vw, 16px);
-  justify-items: center;
+  gap: 16px;
+  margin-top: 6px;
+  padding: clamp(14px, 2vw, 20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.tod-setting-group {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   width: 100%;
 }
 
-.tod-buttons {
-  display: flex;
-  gap: clamp(8px, 1.6vw, 14px);
-  flex-wrap: wrap;
-  justify-content: center;
+.tod-setting {
+  display: grid;
+  gap: 10px;
 }
 
-.tod-btn-ghost {
-  background: rgba(255, 255, 255, 0.04);
+.tod-setting-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
 }
+
+.tod-segmented {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tod-segment {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.35);
+  color: #e5e7eb;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease, border 0.2s ease;
+}
+
+.tod-segment:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.tod-segment.active {
+  background: linear-gradient(120deg, rgba(56, 189, 248, 0.8), rgba(168, 85, 247, 0.7));
+  color: #0b1220;
+  border: none;
+}
+
+.tod-segment:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tod-range {
+  width: 100%;
+}
+
+.tod-toggle-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.tod-toggle {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 10px;
+  align-items: center;
+  color: #e2e8f0;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px 12px;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.tod-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tod-toggle-ui {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.35);
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.tod-toggle-ui::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  transition: transform 0.2s ease;
+}
+
+.tod-toggle input:checked + .tod-toggle-ui {
+  background: rgba(56, 189, 248, 0.65);
+}
+
+.tod-toggle input:checked + .tod-toggle-ui::after {
+  transform: translateX(18px);
+}
+
+.tod-toggle.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 @media (max-width: 768px) {
   .tod-page {
@@ -386,20 +627,27 @@ input {
     font-size: 15px;
   }
 
-  .tod-form-inline {
-    grid-template-columns: 1fr;
-  }
 
   .tod-btn-primary {
     padding: 12px 22px;
   }
 
-  .tod-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
-    justify-items: center;
-    gap: 10px;
+  .tod-generator {
+    padding: 14px;
   }
+
+  .nick-list {
+    grid-template-columns: 1fr;
+  }
+
+  .tod-settings {
+    padding: 12px;
+  }
+
+  .tod-toggle-grid {
+    grid-template-columns: 1fr;
+  }
+
 }
 
 .seo-section {

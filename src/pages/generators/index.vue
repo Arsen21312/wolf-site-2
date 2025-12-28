@@ -79,6 +79,30 @@ const generators = [
     link: '/generators/remove-spaces'
   },
   {
+    title: 'Генератор паролей',
+    tag: 'безопасность / пароль',
+    description: 'Надежные пароли за секунду: длина, символы, оценка силы и копирование.',
+    mood: 'надежно',
+    scope: '1 клик',
+    link: '/generators/password-generator'
+  },
+  {
+    title: 'Удаление переносов строк',
+    tag: 'текст / чистка',
+    description: 'Склеивает строки из PDF и Word, сохраняет абзацы и наводит порядок с переносами.',
+    mood: 'чисто',
+    scope: '4 режима',
+    link: '/generators/remove-line-breaks'
+  },
+  {
+    title: 'Изменение регистра',
+    tag: 'текст / формат',
+    description: 'Меняй регистр, стиль слов и делай camelCase, snake_case или kebab-case за секунду.',
+    mood: 'гибко',
+    scope: '10 режимов',
+    link: '/generators/text-case'
+  },
+  {
     title: 'Цитаты волка',
     tag: 'цитаты / мотивация',
     description: 'Дерзкие короткие цитаты про смелость и движение для сторис и чатов.',
