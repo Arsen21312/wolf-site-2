@@ -341,6 +341,12 @@ onBeforeUnmount(() => {
   gap: 16px;
 }
 
+@media (min-width: 900px) {
+  .wc-container {
+    max-width: 620px;
+  }
+}
+
 .wc-input-row {
   display: grid;
   grid-template-columns: 1fr auto;

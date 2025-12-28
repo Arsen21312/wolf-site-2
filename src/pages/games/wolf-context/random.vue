@@ -853,6 +853,12 @@ function focusInput() {
   gap: 14px;
 }
 
+@media (min-width: 900px) {
+  .wc-container {
+    max-width: 620px;
+  }
+}
+
 .wc-head {
   display: grid;
   gap: 6px;

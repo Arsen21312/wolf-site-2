@@ -95,7 +95,7 @@ const breadcrumbs = [
   { label: 'Вечеринка' }
 ]
 
-const isPublic = ref(true)
+const isPublic = ref(false)
 const allowRandomTarget = ref(true)
 const targetWord = ref('')
 const statusMessage = ref('')
@@ -290,6 +290,12 @@ onBeforeUnmount(() => {
   display: grid;
   gap: 16px;
   width: 100%;
+}
+
+@media (min-width: 900px) {
+  .wc-container {
+    max-width: 620px;
+  }
 }
 
 .wc-card {

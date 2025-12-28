@@ -986,6 +986,12 @@ onBeforeUnmount(() => {
   gap: 14px;
 }
 
+@media (min-width: 900px) {
+  .wc-container {
+    max-width: 620px;
+  }
+}
+
 
 
 

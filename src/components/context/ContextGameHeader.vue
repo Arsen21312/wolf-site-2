@@ -230,7 +230,7 @@ const { breadcrumbs } = toRefs(props)
 .wc-title {
   grid-column: 2;
   justify-self: center;
-  font-size: clamp(52px, 10vw, 80px);
+  font-size: clamp(36px, 5.2vw, 56px);
   font-weight: 900;
   letter-spacing: -0.02em;
   font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
@@ -263,7 +263,7 @@ const { breadcrumbs } = toRefs(props)
   cursor: pointer;
   display: grid;
   place-items: center;
-  margin-top: 6px;
+
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -381,6 +381,12 @@ const { breadcrumbs } = toRefs(props)
 
   .wc-menu-btn {
     margin-top: -6px;
+  }
+}
+
+@media (min-width: 900px) {
+  .wc-title {
+    white-space: nowrap;
   }
 }
 </style>
