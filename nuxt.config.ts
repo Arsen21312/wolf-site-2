@@ -251,6 +251,153 @@ export default defineNuxtConfig({
       },
       '/tools/factorial-calculator': {
         redirect: { to: '/', statusCode: 301 }
+      },
+      '/index': {
+        redirect: { to: '/', statusCode: 301 }
+      },
+      '/tools/coin-flipper.html': {
+        redirect: { to: '/decisions/coin-flip', statusCode: 301 }
+      },
+      '/tools/yes-or-no-wheel.html': {
+        redirect: { to: '/decisions/wheel-of-fortune', statusCode: 301 }
+      },
+      '/tools/random-picker-wheel.html': {
+        redirect: { to: '/decisions/wheel-of-fortune', statusCode: 301 }
+      },
+      '/tools/random-item-picker.html': {
+        redirect: { to: '/decisions/randomizer', statusCode: 301 }
+      },
+      '/tools/random-team-generator.html': {
+        redirect: { to: '/decisions/team-generator', statusCode: 301 }
+      },
+      '/tools/calorie-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/calorie-counter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/inflation-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/horonomer.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/mac-address-lookup.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/ip-location-finder.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/zodiac-sign-finder.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/text-case-converter.html': {
+        redirect: { to: '/generators/text-case', statusCode: 301 }
+      },
+      '/tools/user-agent-parser.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/whois-lookup.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/fuel-consumption-converter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/matrix-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/css-formatter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/line-remover.html': {
+        redirect: { to: '/generators/remove-line-breaks', statusCode: 301 }
+      },
+      '/tools/binary-to-text.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/text-to-binary.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/text-repeater.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/roman-numerals.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/qr-code-generator.html': {
+        redirect: { to: '/generators/qr-generator', statusCode: 301 }
+      },
+      '/tools/character-counter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/word-counter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/vat-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/logarithm-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/dns-lookup.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/gcd-lcm.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/random-password-generator.html': {
+        redirect: { to: '/generators/password-generator', statusCode: 301 }
+      },
+      '/tools/number-base-converter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/algebra-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/color-converter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/sitemap-generator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/investment-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/md5-generator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/favicon-generator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/quadratic-equation-solver.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/gpa-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/car-loan-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/tax-calculator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/data-converter.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/html-encoder-decoder.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/robots-txt-generator.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/domain-age-checker.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/proxy-checker.html': {
+        redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/tools/pregnancy-due-date.html': {
+        redirect: { to: '/generators', statusCode: 301 }
       }
     },
     prerender: {
