@@ -63,6 +63,14 @@ const breadcrumbs = [
 
 const generators = [
   {
+    title: 'Генератор QR-кодов',
+    tag: 'qr / ссылка',
+    description: 'QR для ссылок, Wi-Fi, телефона, текста и мессенджеров. Скачивание PNG и SVG.',
+    mood: 'быстро',
+    scope: 'онлайн',
+    link: '/generators/qr-generator'
+  },
+  {
     title: 'Волчий рыбий текст',
     tag: 'текст / макеты',
     description: 'Абзацы, предложения или слова про волков - для лендингов, постов и интерфейсов.',
@@ -101,6 +109,30 @@ const generators = [
     mood: 'гибко',
     scope: '10 режимов',
     link: '/generators/text-case'
+  },
+  {
+    title: 'JSON Formatter',
+    tag: 'json / dev',
+    description: 'Форматируй, минифицируй и проверяй JSON, смотри дерево и скачивай результат.',
+    mood: 'точно',
+    scope: 'онлайн',
+    link: '/generators/json-formatter'
+  },
+  {
+    title: 'Base64',
+    tag: 'encode / decode',
+    description: 'Кодируй и декодируй Base64 с поддержкой Unicode, URL-safe и скачиванием.',
+    mood: 'быстро',
+    scope: 'онлайн',
+    link: '/generators/base64'
+  },
+  {
+    title: 'URL Encode Decode',
+    tag: 'url / encode',
+    description: 'Кодируй URL, UTM и query параметры, работай с form urlencoded и сборкой ссылки.',
+    mood: 'точно',
+    scope: 'онлайн',
+    link: '/generators/url-encode'
   },
   {
     title: 'Цитаты волка',

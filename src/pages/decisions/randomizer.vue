@@ -156,6 +156,10 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { computed, reactive, ref } from 'vue'
 import { useHead, useRequestURL, useSeoMeta } from '#imports'
 
+definePageMeta({
+  alias: ['/decisions/random-choice', '/decisions/yes-no']
+})
+
 const breadcrumbs = [
   { label: 'Главная', to: '/' },
   { label: 'Инструменты', to: '/decisions' },

@@ -17,11 +17,12 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
     "gsap": "^3.14.2",
-    "openai": "^4.72.0",
     "ml-matrix": "^6.12.0",
     "ml-pca": "^4.1.1",
     "motion-v": "^1.7.4",
-    "nuxt": "^3.13.0"
+    "nuxt": "^3.13.0",
+    "openai": "^4.72.0",
+    "qr-code-styling": "^1.9.2"
   },
   "devDependencies": {
     "ts-node": "^10.9.2"
