@@ -138,6 +138,14 @@ const tools = [
     mood: 'SEO магнит',
     speed: 'Мгновенно',
     slug: '/decisions/text-counter'
+  },
+  {
+    title: 'Генератор пива',
+    tag: 'Мемный выбор',
+    description: 'Случайный стиль пива, температура подачи, закуска и волчий вердикт на вечер.',
+    mood: 'Лёгкий вайб',
+    speed: '1 клик',
+    slug: '/decisions/beer'
   }
 ]
 </script>

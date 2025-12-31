@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
 })
 
 const requestUrl = useRequestURL()
-const canonicalUrl = computed(() => `${requestUrl.origin}/tools/text-counter`)
+const canonicalUrl = computed(() => `${requestUrl.origin}/decisions/text-counter`)
 const metaDescription =
   'Посчитай символы, слова, строки, абзацы, предложения и время чтения. Бесплатно и мгновенно'
 

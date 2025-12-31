@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
 })
 
 const requestUrl = useRequestURL()
-const canonicalUrl = computed(() => `${requestUrl.origin}/tools/text-reverser`)
+const canonicalUrl = computed(() => `${requestUrl.origin}/decisions/text-reverser`)
 const metaDescription =
   'Переверни текст задом наперед, по словам или по строкам. Бесплатно, работает с emoji, копирование в один клик'
 

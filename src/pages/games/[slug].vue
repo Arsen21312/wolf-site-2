@@ -3,7 +3,6 @@
     <section class="game-hero">
       <div class="game-hero-inner">
         <component v-if="ViewComponent" :is="ViewComponent" class="game-host" />
-
         <div v-else class="card empty-state">
           <div class="tag">/games/{{ slug }}</div>
           <h3>Страница ещё не приручена</h3>
@@ -57,14 +56,101 @@
                 <li>Вечеринка — максимум хаоса и смеха.</li>
               </ul>
             </div>
+
+            <div class="seo-media">
+              <img
+                src="/images/truth-or-dare/tod-wolf-party.png"
+                alt="Мемный Волк и вечеринка: правда или действие"
+                loading="lazy"
+                width="960"
+                height="540"
+              />
+            </div>
+
+            <div class="seo-block">
+              <h3>Правила игры “Правда или действие”</h3>
+              <p>
+                Игроки по очереди выбирают «правду» или «действие». В «правде» отвечают честно, в «действии» выполняют задание.
+                Один ход — один ответ или одно задание. Если выбор кажется сложным, включайте кнопку «Случайно».
+              </p>
+              <p>
+                Главное правило — уважение. Игра не про давление, а про разговор и весёлые задания, которые остаются комфортными
+                для всех участников.
+              </p>
+            </div>
+
+            <div class="seo-block">
+              <h3>Вопросы для друзей, пары и компании</h3>
+              <p>
+                Для друзей подходят темы про смешные истории, фобии и «а как бы ты поступил». Для пары — тёплые воспоминания,
+                флирт и планы. Для большой компании — лёгкие вопросы, которые не заставляют человека оправдываться.
+              </p>
+              <p>
+                Комбинируйте режимы: так вопросы не приедаются, а игра остаётся динамичной, даже если участвует десять человек.
+              </p>
+            </div>
+
+            <div class="seo-media seo-media--right">
+              <img
+                src="/images/truth-or-dare/tod-wolf-campfire.png"
+                alt="Волчий разговор у костра: вопросы для правды"
+                loading="lazy"
+                width="960"
+                height="540"
+              />
+            </div>
+
+            <div class="seo-block">
+              <h3>Как сделать игру интереснее, идеи и мини-правила</h3>
+              <p>
+                Дайте таймер на ответ, меняйте очередность или вводите «бонусный круг» каждые пять вопросов. Так темп не падает,
+                а атмосфера остаётся живой.
+              </p>
+              <p>
+                Добавляйте свои мини-правила: например, пропуск стоит смешного штрафа вроде «сказать комплимент слева».
+              </p>
+            </div>
+
+            <div class="seo-block">
+              <h3>Мягкие правила безопасности, чтобы не было кринжа</h3>
+              <p>
+                Договоритесь о стоп-темах заранее. Никаких унижений, давления, раскрытия чужих секретов или опасных заданий.
+                Уважительное «нет» — всегда нормальный ответ.
+              </p>
+              <p>
+                Если кто-то устал, переключайтесь на лёгкий режим или делайте паузы. Игра должна оставлять приятный след, а не
+                неловкость.
+              </p>
+            </div>
+
+            <div class="seo-media seo-media--wide">
+              <img
+                src="/images/truth-or-dare/tod-wolf-safe.png"
+                alt="Мемный Волк про безопасную игру"
+                loading="lazy"
+                width="960"
+                height="540"
+              />
+            </div>
+
+            <div class="seo-block">
+              <h3>Версии игры: правда или напиток, правда или штраф</h3>
+              <p>
+                В некоторых компаниях играют в мягкие варианты: «правда или напиток» или «правда или штраф». Это не про жёсткие
+                наказания, а про дружеские, нейтральные задания — например, спеть строчку или рассказать факт о себе.
+              </p>
+              <p>
+                Лучше всего заранее обсудить формат и держаться в комфортных границах, особенно если играете впервые.
+              </p>
+            </div>
           </div>
 
           <div class="seo-details">
             <div class="seo-toggle">
               <button class="seo-btn" type="button" @click="showTodDetails = !showTodDetails">
-                {{ showTodDetails ? 'Я все понял, закрывай!' : 'Почитать правила' }}
+                {{ showTodDetails ? 'Скрыть дополнительные правила' : 'Дополнительные правила' }}
               </button>
-              
+
             </div>
 
             <div class="seo-accordion" v-show="showTodDetails">
@@ -90,6 +176,32 @@
                 <li>Переключайтесь на лёгкий режим, если компания устала.</li>
               </ul>
             </div>
+          </div>
+        </div>
+
+        <div class="seo-faq">
+          <h3>FAQ по игре «Правда или действие»</h3>
+          <div class="seo-faq-list">
+            <details v-for="item in truthOrDareFaq" :key="item.question" class="seo-faq-item">
+              <summary>{{ item.question }}</summary>
+              <p>{{ item.answer }}</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="seo-links">
+          <h3>Попробуй ещё</h3>
+          <div class="seo-links-grid">
+            <NuxtLink class="seo-link-chip" to="/games">Все игры</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/decisions">Решайки</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/generators">Генераторы</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/sudoku">Судоку</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/minesweeper">Сапёр</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/wolf-clicker">Wolf Clicker</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/decisions/coin-flip">Монетка</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/decisions/wheel-of-fortune">Колесо выбора</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/generators/age-calculator">Калькулятор возраста</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/generators/morse">Азбука Морзе</NuxtLink>
           </div>
         </div>
       </div>
@@ -231,7 +343,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { createError, useRoute } from '#imports'
+import { createError, useHead, useRoute } from '#imports'
 import TruthOrDareGame from '@/components/games/TruthOrDare/TruthOrDareGame.vue'
 import NeverGame from '@/components/games/NeverHaveIEver/NeverHaveIEver.vue'
 import FiveSecondsGame from '@/components/games/FiveSeconds/FiveSeconds.vue'
@@ -258,6 +370,130 @@ const isNeverHaveIEver = computed(() => slug.value === 'never-have-i-ever')
 const isTrueOrFalse = computed(() => slug.value === 'true-or-false')
 const isFiveSeconds = computed(() => slug.value === '5-seconds')
 const showTodDetails = ref(false)
+
+const truthOrDareTitle =
+  'Правда или действие онлайн, вопросы и задания для компании и пары | Neural Wise Wolf'
+const truthOrDareDescription =
+  'Игра «Правда или действие» онлайн, вопросы и задания для друзей, пары и компании. Режимы, случайный выбор, играть бесплатно без регистрации.'
+const truthOrDareUrl = 'https://www.neuralwisewolf.com/games/truth-or-dare'
+const truthOrDareImage = 'https://www.neuralwisewolf.com/favicon.png'
+
+const truthOrDareFaq = [
+  {
+    question: 'Как играть в “Правда или действие” онлайн?',
+    answer:
+      'Нажми «Играть онлайн», выбери режим и жми «Правда», «Действие» или «Случайно». Вопросы и задания появляются сразу.'
+  },
+  {
+    question: 'Можно ли играть вдвоём?',
+    answer: 'Да, игра отлично подходит для пары: выбирайте романтичные или лёгкие режимы и чередуйте вопросы.'
+  },
+  {
+    question: 'Какие режимы лучше для компании?',
+    answer: 'Для компании обычно заходят «Вечеринка», «Лайт» или «Случайно», чтобы вопросы были разнообразными.'
+  },
+  {
+    question: 'Какие режимы лучше для пары?',
+    answer: 'Подойдут «Романтика» и «Лайт» — там больше тёплых вопросов и мягких заданий.'
+  },
+  {
+    question: 'Можно ли пропускать задания?',
+    answer: 'Да, если задание не подходит. Введите мягкий штраф или просто пропустите ход.'
+  },
+  {
+    question: 'Как работает “Случайно”?',
+    answer: 'Игра сама выбирает между «правдой» и «действием», а также случайный режим с вопросами.'
+  },
+  {
+    question: 'Есть ли 18+ режимы?',
+    answer: 'В этой версии мы держим вопросы и задания в нейтральных пределах. 18+ режимов нет.'
+  },
+  {
+    question: 'Что делать, если вопросы повторяются?',
+    answer: 'Смените режим или нажмите «Случайно». Вопросы распределяются так, чтобы не повторяться подряд.'
+  },
+  {
+    question: 'Игра работает на телефоне?',
+    answer: 'Да, интерфейс адаптирован под мобильные экраны и работает в браузере.'
+  },
+  {
+    question: 'Нужно ли регистрироваться?',
+    answer: 'Нет, игра запускается сразу и без регистрации.'
+  },
+  {
+    question: 'Как сделать игру безопасной и без неловкости?',
+    answer:
+      'Согласуйте стоп-темы и заранее договоритесь, что уважительное «нет» всегда нормально. Не используйте унизительные задания.'
+  },
+  {
+    question: 'Можно ли играть без интернета?',
+    answer: 'Нет, для загрузки вопросов нужна связь с сайтом.'
+  }
+]
+
+useHead(() => {
+  if (!isTruthOrDare.value) return {}
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: truthOrDareFaq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer
+      }
+    }))
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Главная',
+        item: 'https://www.neuralwisewolf.com/'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Игры',
+        item: 'https://www.neuralwisewolf.com/games'
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: 'Правда или действие',
+        item: truthOrDareUrl
+      }
+    ]
+  }
+
+  return {
+    title: truthOrDareTitle,
+    link: [{ rel: 'canonical', href: truthOrDareUrl }],
+    meta: [
+      { name: 'description', content: truthOrDareDescription },
+      { name: 'robots', content: 'index,follow' },
+      { property: 'og:title', content: truthOrDareTitle },
+      { property: 'og:description', content: truthOrDareDescription },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: truthOrDareUrl },
+      { property: 'og:image', content: truthOrDareImage },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: truthOrDareTitle },
+      { name: 'twitter:description', content: truthOrDareDescription },
+      { name: 'twitter:image', content: truthOrDareImage }
+    ],
+    script: [
+      { type: 'application/ld+json', children: JSON.stringify(breadcrumbSchema) },
+      { type: 'application/ld+json', children: JSON.stringify(faqSchema) }
+    ]
+  }
+})
 
 </script>
 
@@ -298,6 +534,27 @@ const showTodDetails = ref(false)
   margin: 0;
 }
 
+.seo-anchor {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 800;
+  color: #93c5fd;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(147, 197, 253, 0.35);
+  background: rgba(15, 23, 42, 0.6);
+  transition: transform 0.12s ease, border-color 0.2s ease;
+}
+
+.seo-anchor:hover {
+  transform: translateY(-1px);
+  border-color: rgba(147, 197, 253, 0.7);
+}
+
 .seo-section {
   padding: 56px 0 72px;
 }
@@ -327,7 +584,7 @@ const showTodDetails = ref(false)
   max-width: 100%;
   padding: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: 1fr;
   gap: 22px;
 }
 
@@ -344,6 +601,11 @@ const showTodDetails = ref(false)
   padding: 14px 16px;
   display: grid;
   gap: 10px;
+}
+
+.seo-block p {
+  margin: 0;
+  color: #cbd5f5;
 }
 
 .seo-kicker {
@@ -477,6 +739,130 @@ const showTodDetails = ref(false)
   gap: 12px;
 }
 
+.seo-media {
+  width: 100%;
+  margin: 4px 0;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.seo-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.seo-media--right {
+  justify-self: stretch;
+  width: 100%;
+}
+
+.seo-media--wide {
+  width: 100%;
+}
+
+.seo-faq {
+  margin-top: 28px;
+  display: grid;
+  gap: 14px;
+  color: #e5e7eb;
+}
+
+.seo-faq h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.seo-faq-list {
+  display: grid;
+  gap: 12px;
+}
+
+.seo-faq-item {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 8px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.seo-faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.seo-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.seo-faq-item summary::after {
+  content: '';
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(147, 197, 253, 0.9);
+  border-bottom: 2px solid rgba(147, 197, 253, 0.9);
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+
+.seo-faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.seo-faq-item p {
+  margin: 0;
+  color: #cbd5f5;
+}
+
+.seo-faq-item[open] {
+  border-color: rgba(147, 197, 253, 0.35);
+  background: rgba(147, 197, 253, 0.06);
+}
+
+.seo-links {
+  margin-top: 24px;
+  display: grid;
+  gap: 12px;
+  color: #e5e7eb;
+}
+
+.seo-links h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.seo-links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.seo-link-chip {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e5e7eb;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.seo-link-chip:hover {
+  border-color: rgba(147, 197, 253, 0.6);
+  color: #93c5fd;
+}
+
 @media (max-width: 768px) {
   .game-hero {
     min-height: 90vh;
@@ -499,6 +885,10 @@ const showTodDetails = ref(false)
   .seo-content h1,
   .seo-content h2 {
     font-size: 22px;
+  }
+
+  .seo-anchor {
+    width: 100%;
   }
 }
 </style>

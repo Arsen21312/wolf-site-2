@@ -6,7 +6,7 @@
       class="section-lead"
       :text="[
         'Цитаты волка, никнеймы, микро действия и другие быстрые генераторы под настроение.',
-        'Работают в браузере, без регистрации — кинул ссылку и пользуешься.'
+        'Работают в браузере, без регистрации - кинул ссылку и пользуешься.'
       ]"
       :typing-speed="75"
       :pause-duration="1500"
@@ -127,6 +127,22 @@ const generators = [
     link: '/generators/base64'
   },
   {
+    title: 'Генератор Морзе',
+    tag: 'morse / сигнал',
+    description: 'Переводи текст в Морзе и обратно, слушай ритм, копируй и скачивай результат.',
+    mood: 'ритм',
+    scope: 'онлайн',
+    link: '/generators/morse'
+  },
+  {
+    title: 'Калькулятор возраста',
+    tag: 'дата / возраст',
+    description: 'Возраст в годах, месяцах и днях, сколько прожито, и сколько до следующего ДР.',
+    mood: 'точно',
+    scope: 'онлайн',
+    link: '/generators/age-calculator'
+  },
+  {
     title: 'URL Encode Decode',
     tag: 'url / encode',
     description: 'Кодируй URL, UTM и query параметры, работай с form urlencoded и сборкой ссылки.',
@@ -173,6 +189,14 @@ const generators = [
     mood: 'визуализация',
     scope: 'мгновенно',
     link: '/generators/maze-generator'
+  },
+  {
+    title: 'Сколько дней до лета',
+    tag: 'таймер / сезон',
+    description: 'Отсчет до 1 июня по локальному времени, режимы календарного и астрономического лета.',
+    mood: 'ожидание',
+    scope: 'онлайн',
+    link: '/generators/days-to-summer'
   }
 ]
 </script>

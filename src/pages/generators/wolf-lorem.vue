@@ -507,7 +507,7 @@ onBeforeUnmount(() => {
 })
 
 const requestUrl = useRequestURL()
-const canonicalUrl = computed(() => `${requestUrl.origin}/tools/wolf-lorem`)
+const canonicalUrl = computed(() => `${requestUrl.origin}/generators/wolf-lorem`)
 const metaDescription =
   'Сгенерируй рыбий текст про волков. Абзацы, предложения, слова. Мемный или нейтральный стиль, копирование в один клик'
 

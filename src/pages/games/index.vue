@@ -111,6 +111,15 @@ const games = [
     to: '/games/wolf-runner'
   },
   {
+    slug: 'wolf-clicker',
+    title: 'Волчий кликер',
+    description: 'Кликаешь по волку, собираешь очки, качаешь стаю и запускаешь режим АУФ.',
+    tag: 'кликер / стая',
+    mood: 'затягивает',
+    duration: '1-10 минут',
+    to: '/games/wolf-clicker'
+  },
+  {
     slug: 'wolf-jump',
     title: 'Wolf Jump',
     description: 'Прыгай по платформам вверх: камера скроллится, рекорд растет, падение - финал.',
@@ -118,6 +127,24 @@ const games = [
     mood: 'вверх и выше',
     duration: '1-3 минуты',
     to: '/games/wolf-jump'
+  },
+  {
+    slug: 'sudoku',
+    title: 'Судоку',
+    description: 'Генератор судоку 9x9: уровни сложности, подсказки, таймер и сохранение прогресса.',
+    tag: 'логика / головоломка',
+    mood: 'вдумчиво',
+    duration: '5-30 минут',
+    to: '/games/sudoku'
+  },
+  {
+    slug: 'minesweeper',
+    title: 'Сапёр',
+    description: 'Классическая мини-игра: безопасный первый клик, флажки, таймер и три уровня сложности.',
+    tag: 'логика / осторожность',
+    mood: 'концентрация',
+    duration: '2-15 минут',
+    to: '/games/minesweeper'
   },
   {
     slug: 'coin',
