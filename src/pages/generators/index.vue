@@ -197,6 +197,14 @@ const generators = [
     mood: 'ожидание',
     scope: 'онлайн',
     link: '/generators/days-to-summer'
+  },
+  {
+    title: 'До Нового года',
+    tag: 'таймер / праздник',
+    description: 'Счетчик дней, часов, минут и секунд до ближайшего 1 января по локальному времени.',
+    mood: 'ожидание',
+    scope: 'онлайн',
+    link: '/generators/days-until-new-year'
   }
 ]
 </script>
