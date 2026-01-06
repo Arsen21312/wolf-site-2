@@ -30,7 +30,7 @@ function PlayControls(loopy){
 		// PLAY BUTTON
 		var buttonDOM = page.addComponent(new PlayButton({
 			icon: 0,
-			label: "Play",
+			label: "??????",
 			tooltip: isMacLike ? "⌘-Enter" : "control-enter",
 			onclick: function(){
 				loopy.setMode(Loopy.MODE_PLAY);
@@ -55,7 +55,7 @@ function PlayControls(loopy){
 			// RESET
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 2,
-				label: "Reset",
+				label: "?????",
 				onclick: function(){
 					publish("model/reset");
 				}
@@ -67,7 +67,7 @@ function PlayControls(loopy){
 			// REMIX BUTTON
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 3,
-				label: "Remix",
+				label: "??????",
 				onclick: function(){
 					var url = loopy.saveToURL();
 					window.open(url,'_blank');
@@ -84,7 +84,7 @@ function PlayControls(loopy){
 			// STOP BUTTON
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 1,
-				label: "Stop",
+				label: "????",
 				onclick: function(){
 					loopy.setMode(Loopy.MODE_EDIT);
 				}
@@ -96,7 +96,7 @@ function PlayControls(loopy){
 			// RESET BUTTON
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 2,
-				label: "Reset",
+				label: "?????",
 				onclick: function(){
 					publish("model/reset");
 				}

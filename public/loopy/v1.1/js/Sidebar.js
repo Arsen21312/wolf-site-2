@@ -31,18 +31,18 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentButton({
 			header: true,
-			label: "back to top",
+			label: "????? ? ????",
 			onclick: function(){
 				self.showPage("Edit");
 			}
 		}));
 		page.addComponent("label", new ComponentInput({
-			label: "<br><br>Name:"
+			label: "<br><br>???:"
 			//label: "Name:"
 		}));
 		page.addComponent("hue", new ComponentSlider({
 			bg: "color",
-			label: "Color:",
+			label: "????:",
 			options: [0,1,2,3,4,5],
 			oninput: function(value){
 				Node.defaultHue = value;
@@ -50,7 +50,7 @@ function Sidebar(loopy){
 		}));
 		page.addComponent("init", new ComponentSlider({
 			bg: "initial",
-			label: "Start Amount:",
+			label: "????????? ????????:",
 			options: [0, 0.16, 0.33, 0.50, 0.66, 0.83, 1],
 			//options: [0, 1/6, 2/6, 3/6, 4/6, 5/6, 1],
 			oninput: function(value){
@@ -70,7 +70,7 @@ function Sidebar(loopy){
 
 		};
 		page.addComponent(new ComponentButton({
-			label: "delete node",
+			label: "??????? ????",
 			//label: "delete circle",
 			onclick: function(node){
 				node.kill();
@@ -85,14 +85,14 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentButton({
 			header: true,
-			label: "back to top",
+			label: "????? ? ????",
 			onclick: function(){
 				self.showPage("Edit");
 			}
 		}));
 		page.addComponent("strength", new ComponentSlider({
 			bg: "strength",
-			label: "<br><br>Relationship:",
+			label: "<br><br>?????:",
 			//label: "Relationship:",
 			options: [1, -1],
 			oninput: function(value){
@@ -100,12 +100,12 @@ function Sidebar(loopy){
 			}
 		}));
 		page.addComponent(new ComponentHTML({
-			html: "(to make a stronger relationship, draw multiple arrows!)<br><br>"+
-			"(to make a delayed relationship, draw longer arrows)"
+			html: "(????? ??????? ?????, ????????? ????????? ???????!)<br><br>"+
+			"(??? ???????? ????? ??????? ????? ??????? ???????)"
 		}));
 		page.addComponent(new ComponentButton({
 			//label: "delete edge",
-			label: "delete arrow",
+			label: "??????? ???????",
 			//label: "delete relationship",
 			onclick: function(edge){
 				edge.kill();
@@ -120,13 +120,13 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentButton({
 			header: true,
-			label: "back to top",
+			label: "????? ? ????",
 			onclick: function(){
 				self.showPage("Edit");
 			}
 		}));
 		page.addComponent("text", new ComponentInput({
-			label: "<br><br>Label:",
+			label: "<br><br>???????:",
 			//label: "Label:",
 			textarea: true
 		}));
@@ -150,7 +150,7 @@ function Sidebar(loopy){
 
 		};
 		page.addComponent(new ComponentButton({
-			label: "delete label",
+			label: "??????? ???????",
 			onclick: function(label){
 				label.kill();
 				self.showPage("Edit");
@@ -165,26 +165,26 @@ function Sidebar(loopy){
 		page.addComponent(new ComponentHTML({
 			html: ""+
 			
-			"<b style='font-size:1.4em'>LOOPY</b> (v1.1)<br>a tool for thinking in systems<br><br>"+
+			"<b style='font-size:1.4em'>LOOPY</b> (v1.1)<br>?????????? ??? ?????????? ????????<br><br>"+
 
-			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>how to</span> "+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>credits</span><br><br>"+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>???????</span> "+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>??? ????????????</span> "+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>??????</span><br><br>"+
 
 			"<hr/><br>"+
 
-			"<span class='mini_button' onclick='publish(\"modal\",[\"save_link\"])'>save as link</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"export/file\")'>save as file</span> "+
-			"<span class='mini_button' onclick='publish(\"import/file\")'>load from file</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"save_link\"])'>????????? ??? ??????</span> <br><br>"+
+			"<span class='mini_button' onclick='publish(\"export/file\")'>????????? ? ????</span> "+
+			"<span class='mini_button' onclick='publish(\"import/file\")'>????????? ?? ?????</span> <br><br>"+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>???????? ?? ????</span> <br><br>"+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>??????? GIF ????? LICEcap</span> <br><br>"+
 
 			"<hr/><br>"+
 				
-			"<a target='_blank' href='../'>LOOPY</a> is "+
-			"made by <a target='_blank' href='http://ncase.me'>nicky case</a> "+
-			"with your support <a target='_blank' href='https://www.patreon.com/ncase'>on patreon</a> &lt;3<br><br>"+
-			"<span style='font-size:0.85em'>P.S: go read <a target='_blank' href='https://www.amazon.com/Thinking-Systems-Donella-H-Meadows/dp/1603580557'>Thinking In Systems</a>, thx</span>"
+			"<a target='_blank' href='../'>LOOPY</a> ? "+
+			"?????? <a target='_blank' href='http://ncase.me'>Nicky Case</a> "+
+			"??? ????????? <a target='_blank' href='https://www.patreon.com/ncase'>?? Patreon</a> &lt;3<br><br>"+
+			"<span style='font-size:0.85em'>P.S. ????????? <a target='_blank' href='https://www.amazon.com/Thinking-Systems-Donella-H-Meadows/dp/1603580557'>Thinking In Systems</a>, ???????</span>"
 
 		}));
 		self.addPage("Edit", page);
