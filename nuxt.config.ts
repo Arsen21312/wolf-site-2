@@ -398,6 +398,12 @@ export default defineNuxtConfig({
       },
       '/tools/pregnancy-due-date.html': {
         redirect: { to: '/generators', statusCode: 301 }
+      },
+      '/5-seconds': {
+        redirect: { to: '/games/5-seconds', statusCode: 301 }
+      },
+      '/5-seconds/': {
+        redirect: { to: '/games/5-seconds', statusCode: 301 }
       }
     },
     prerender: {

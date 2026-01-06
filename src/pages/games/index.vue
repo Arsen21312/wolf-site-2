@@ -59,7 +59,16 @@ const breadcrumbs = [
   { label: 'Игры' }
 ]
 
-const games = [
+  const games = [
+  {
+    slug: 'trust-wolf',
+    title: 'Волчья версия доверия',
+    description: 'Интерактивная история и матчи по мотивам The Evolution of Trust, теперь в волчьей атмосфере.',
+    tag: 'стратегия / сторителлинг',
+    mood: 'иронично',
+    duration: '25-35 минут',
+    to: '/games/trust-wolf'
+  },
   {
     slug: 'truth-or-dare',
     title: 'Правда или действие',
