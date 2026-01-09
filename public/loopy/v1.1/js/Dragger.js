@@ -13,6 +13,10 @@ function Dragger(loopy){
 	self.dragging = null;
 	self.offsetX = 0;
 	self.offsetY = 0;
+	self.panStartRawX = 0;
+	self.panStartRawY = 0;
+	self.panStartOffsetX = 0;
+	self.panStartOffsetY = 0;
 
 	subscribe("mousedown",function(){
 
@@ -49,6 +53,13 @@ function Dragger(loopy){
 			loopy.sidebar.edit(dragEdge); // and edit!
 			return;
 		}
+
+		// Otherwise, pan the view.
+		self.dragging = "pan";
+		self.panStartRawX = Mouse.rawX;
+		self.panStartRawY = Mouse.rawY;
+		self.panStartOffsetX = loopy.offsetX;
+		self.panStartOffsetY = loopy.offsetY;
 
 	});
 	subscribe("mousemove",function(){
@@ -136,6 +147,13 @@ function Dragger(loopy){
 			
 		}
 
+		// Pan the view when dragging empty space.
+		if(self.dragging === "pan"){
+			var scale = 1/loopy.offsetScale;
+			loopy.offsetX = self.panStartOffsetX + (Mouse.rawX - self.panStartRawX) * scale;
+			loopy.offsetY = self.panStartOffsetY + (Mouse.rawY - self.panStartRawY) * scale;
+		}
+
 	});
 	subscribe("mouseup",function(){
 
@@ -147,6 +165,10 @@ function Dragger(loopy){
 		self.dragging = null;
 		self.offsetX = 0;
 		self.offsetY = 0;
+		self.panStartRawX = 0;
+		self.panStartRawY = 0;
+		self.panStartOffsetX = 0;
+		self.panStartOffsetY = 0;
 
 	});
 

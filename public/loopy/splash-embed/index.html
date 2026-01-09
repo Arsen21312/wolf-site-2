@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Loopy Splash Embed</title>
+  <base href="/loopy/splash/">
+  <style>
+    html,
+    body {
+      width: 360px;
+      height: 240px;
+      margin: 0;
+      background: transparent;
+      overflow: hidden;
+      border: 0;
+      outline: none;
+      box-shadow: none;
+    }
+    html {
+      background: transparent;
+    }
+    body {
+      opacity: 1 !important;
+      background: transparent;
+    }
+    canvas {
+      background: transparent !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #canvasses {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      border: 0;
+      outline: none;
+      box-shadow: none;
+    }
+    #toolbar,
+    #playbar,
+    #sidebar {
+      display: none !important;
+    }
+  </style>
+</head>
+<body style="opacity:1; background: transparent !important;">
+  <div id="canvasses"></div>
+  <div id="toolbar"></div>
+  <div id="playbar"></div>
+  <div id="sidebar"></div>
+  <div id="cursor"><img src="/loopy/splash/css/cursors/ink.png" width="30" height="30"/></div>
+</body>
+<script src="/loopy/splash/js/helpers.js"></script>
+<script src="/loopy/splash/js/minpubsub.js"></script>
+<script src="/loopy/splash/js/Mouse.js"></script>
+<script src="/loopy/splash/js/Key.js"></script>
+<script src="/loopy/splash/js/Loopy.js"></script>
+<script src="/loopy/splash/js/Model.js"></script>
+<script src="/loopy/splash/js/Node.js"></script>
+<script src="/loopy/splash/js/Edge.js"></script>
+<script src="/loopy/splash/js/Label.js"></script>
+<script src="/loopy/splash/js/PageUI.js"></script>
+<script src="/loopy/splash/js/Sidebar.js"></script>
+<script src="/loopy/splash/js/Toolbar.js"></script>
+<script src="/loopy/splash/js/PlayControls.js"></script>
+<script src="/loopy/splash/js/Modal.js"></script>
+<script src="/loopy/splash/js/Ink.js"></script>
+<script src="/loopy/splash/js/Dragger.js"></script>
+<script src="/loopy/splash/js/Eraser.js"></script>
+<script src="/loopy/splash/js/Labeller.js"></script>
+<script>
+window.onload = function(){
+  window.loopy = new Loopy();
+  var canvases = document.querySelectorAll("canvas");
+  canvases.forEach(function(canvas){
+    canvas.style.background = "transparent";
+  });
+};
+</script>
+</html>

@@ -29,6 +29,53 @@ function Loopy(config){
 
 	// Mouse
 	Mouse.init(document.getElementById("canvasses")); // TODO: ugly fix, ew
+
+	// Pan & zoom helpers
+	var clamp = function(value, min, max){
+		return Math.max(min, Math.min(max, value));
+	};
+	var getBaseTransform = function(scale){
+		var canvasses = document.getElementById("canvasses");
+		var CW = canvasses.clientWidth - _PADDING - _PADDING;
+		var CH = canvasses.clientHeight - _PADDING_BOTTOM - _PADDING;
+		var s = 1/scale;
+		var tx = 0;
+		var ty = 0;
+		if(self.embedded){
+			tx -= _PADDING/2;
+			ty -= _PADDING/2;
+		}
+		tx -= (CW+_PADDING)/2;
+		ty -= (CH+_PADDING)/2;
+		tx = s*tx;
+		ty = s*ty;
+		tx += (CW+_PADDING)/2;
+		ty += (CH+_PADDING)/2;
+		return { s: s, tx: tx, ty: ty };
+	};
+
+	// Zoom with mouse wheel
+	var canvasses = document.getElementById("canvasses");
+	canvasses.addEventListener("wheel", function(event){
+		if(self.modal && self.modal.isShowing) return;
+		event.preventDefault();
+
+		var rect = canvasses.getBoundingClientRect();
+		var sx = event.clientX - rect.left;
+		var sy = event.clientY - rect.top;
+		var before = getBaseTransform(self.offsetScale);
+		var worldX = sx*before.s + before.tx - self.offsetX;
+		var worldY = sy*before.s + before.ty - self.offsetY;
+
+		var factor = event.deltaY > 0 ? 0.9 : 1.1;
+		var nextScale = clamp(self.offsetScale * factor, 0.35, 2.5);
+		var after = getBaseTransform(nextScale);
+
+		self.offsetScale = nextScale;
+		self.offsetX = sx*after.s + after.tx - worldX;
+		self.offsetY = sy*after.s + after.ty - worldY;
+		publish("resize");
+	}, { passive: false });
 	
 	// Model
 	self.model = new Model(self);
@@ -57,6 +104,38 @@ function Loopy(config){
 
 	// Modal
 	self.modal = new Modal(self);
+
+	// External control (help/examples/save)
+	window.addEventListener("message", function(event){
+		if(event.origin && event.origin !== window.location.origin) return;
+		var payload = event.data || {};
+		if(payload.type === "loopy-load-example"){
+			if(!payload.data) return;
+			try{
+				var dataString = payload.data;
+				if(typeof dataString !== "string") dataString = JSON.stringify(dataString);
+				self.model.deserialize(dataString);
+				self.setMode(Loopy.MODE_EDIT);
+				self.model.center(true);
+				publish("resize");
+			}catch(e){}
+		}
+		if(payload.type === "loopy-save"){
+			publish("modal",["save_link"]);
+		}
+		if(payload.type === "loopy-export"){
+			publish("export/file");
+		}
+		if(payload.type === "loopy-open-howto"){
+			publish("modal",["howto"]);
+		}
+		if(payload.type === "loopy-open-examples"){
+			publish("modal",["examples"]);
+		}
+		if(payload.type === "loopy-open-credits"){
+			publish("modal",["credits"]);
+		}
+	});
 
 	//////////
 	// INIT //
@@ -191,7 +270,7 @@ function Loopy(config){
 	};
 	
 	// "BLANK START" DATA:
-	var _blankData = "[[[1,403,223,1,%22%25D1%2587%25D1%2582%25D0%25BE-%25D1%2582%25D0%25BE%22,4],[2,405,382,1,%22%25D1%2587%25D1%2582%25D0%25BE-%25D1%2582%25D0%25BE%2520%25D0%25B5%25D1%2589%25D0%25B5%22,5]],[[2,1,94,-1,0],[1,2,89,1,0]],[[609,311,%22%25D0%259D%25D1%2583%25D0%25B6%25D0%25BD%25D1%258B%2520%25D0%25B8%25D0%25B4%25D0%25B5%25D0%25B8%252C%2520%25D1%2587%25D1%2582%25D0%25BE%2520%25D1%2581%25D0%25BC%25D0%25BE%25D0%25B4%25D0%25B5%25D0%25BB%25D0%25B8%25D1%2580%25D0%25BE%25D0%25B2%25D0%25B0%25D1%2582%25D1%258C%253F%2520%25D0%259F%25D0%25BE%25D0%25BF%25D1%2580%25D0%25BE%25D0%25B1%25D1%2583%25D0%25B9%25D1%2582%25D0%25B5%252C%2520%25D0%25BD%25D0%25B0%25D0%25BF%25D1%2580%25D0%25B8%25D0%25BC%25D0%25B5%25D1%2580%253A%250A%250A%25E3%2583%25BB%25D1%2582%25D0%25B5%25D1%2585%25D0%25BD%25D0%25BE%25D0%25BB%25D0%25BE%25D0%25B3%25D0%25B8%25D0%25B8%250A%25E3%2583%25BB%25D1%258D%25D0%25BA%25D0%25BE%25D0%25BB%25D0%25BE%25D0%25B3%25D0%25B8%25D1%258F%250A%25E3%2583%25BB%25D1%258D%25D0%25BA%25D0%25BE%25D0%25BD%25D0%25BE%25D0%25BC%25D0%25B8%25D0%25BA%25D0%25B0%250A%25E3%2583%25BB%25D0%25B1%25D0%25B8%25D0%25B7%25D0%25BD%25D0%25B5%25D1%2581%250A%25E3%2583%25BB%25D0%25BF%25D0%25BE%25D0%25BB%25D0%25B8%25D1%2582%25D0%25B8%25D0%25BA%25D0%25B0%250A%25E3%2583%25BB%25D0%25BA%25D1%2583%25D0%25BB%25D1%258C%25D1%2582%25D1%2583%25D1%2580%25D0%25B0%250A%25E3%2583%25BB%25D0%25BF%25D1%2581%25D0%25B8%25D1%2585%25D0%25BE%25D0%25BB%25D0%25BE%25D0%25B3%25D0%25B8%25D1%258F%250A%250A%25D0%2598%25D0%25BB%25D0%25B8%252C%2520%25D0%25B5%25D1%2589%25D0%25B5%2520%25D0%25BB%25D1%2583%25D1%2587%25D1%2588%25D0%25B5%252C%2520%25D0%25BA%25D0%25BE%25D0%25BC%25D0%25B1%25D0%25B8%25D0%25BD%25D0%25B0%25D1%2586%25D0%25B8%25D1%258E%2520%25D1%258D%25D1%2582%25D0%25B8%25D1%2585%2520%25D1%2581%25D0%25B8%25D1%2581%25D1%2582%25D0%25B5%25D0%25BC.%250A%25D0%25A3%25D0%25B4%25D0%25B0%25D1%2587%25D0%25BD%25D0%25BE%25D0%25B3%25D0%25BE%2520%25D0%25BC%25D0%25BE%25D0%25B4%25D0%25B5%25D0%25BB%25D0%25B8%25D1%2580%25D0%25BE%25D0%25B2%25D0%25B0%25D0%25BD%25D0%25B8%25D1%258F!%22]],2%5D";
+	var _blankData = "[[[1, 360, 230, 0.6, %22%25D0%259F%25D1%2580%25D0%25B8%25D1%2587%25D0%25B8%25D0%25BD%25D0%25B0%22, 2], [2, 540, 360, 0.6, %22%25D0%25A1%25D0%25BB%25D0%25B5%25D0%25B4%25D1%2581%25D1%2582%25D0%25B2%25D0%25B8%25D0%25B5%22, 4]], [[1, 2, 120, 1], [2, 1, -120, -1]], [[360, 120, %22%25D0%259F%25D0%25B5%25D1%2582%25D0%25BB%25D0%25B8%2520%25D1%2581%25D1%2582%25D0%25B0%25D0%25B8%2520%25E2%2580%2594%2520%25D1%2581%25D0%25B8%25D0%25BC%25D1%2583%25D0%25BB%25D1%258F%25D1%2582%25D0%25BE%25D1%2580%2520%25D0%25BF%25D1%2580%25D0%25B8%25D1%2587%25D0%25B8%25D0%25BD%2520%25D0%25B8%2520%25D1%2581%25D0%25BB%25D0%25B5%25D0%25B4%25D1%2581%25D1%2582%25D0%25B2%25D0%25B8%25D0%25B9%2520%25D0%25BF%25D0%25BE%2520%25D0%25B2%25D0%25BE%25D0%25BB%25D1%2587%25D1%258C%25D0%25B8.%250A%25D0%259D%25D0%25B0%25D1%2580%25D0%25B8%25D1%2581%25D1%2583%25D0%25B9%25D1%2582%25D0%25B5%2520%25D1%2583%25D0%25B7%25D0%25BB%25D1%258B%2520%25D0%25B8%2520%25D1%2581%25D0%25B2%25D1%258F%25D0%25B7%25D0%25B8%252C%2520%25D0%25B7%25D0%25B0%25D1%2582%25D0%25B5%25D0%25BC%2520%25D0%25BD%25D0%25B0%25D0%25B6%25D0%25BC%25D0%25B8%25D1%2582%25D0%25B5%2520%25C2%25AB%25D0%2597%25D0%25B0%25D0%25BF%25D1%2583%25D1%2581%25D0%25BA%25C2%25BB.%250A%25D0%25A1%25D0%25BF%25D1%2580%25D0%25B0%25D0%25B2%25D0%25BA%25D0%25B0%2520%25D0%25B8%2520%25D0%25BF%25D1%2580%25D0%25B8%25D0%25BC%25D0%25B5%25D1%2580%25D1%258B%2520%25D0%25B4%25D0%25BE%25D1%2581%25D1%2582%25D1%2583%25D0%25BF%25D0%25BD%25D1%258B%2520%25D0%25B2%2520%25D0%25B2%25D0%25B5%25D1%2580%25D1%2585%25D0%25BD%25D0%25B5%25D0%25B9%2520%25D0%25BF%25D0%25B0%25D0%25BD%25D0%25B5%25D0%25BB%25D0%25B8.%22]], 3%5D";
 
 	self.loadFromURL = function(){
 		var data = _getParameterByName("data");

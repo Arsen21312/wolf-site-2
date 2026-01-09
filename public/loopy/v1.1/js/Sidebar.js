@@ -1,4 +1,4 @@
-/**********************************
+﻿/**********************************
 
 SIDEBAR CODE
 
@@ -31,18 +31,18 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentButton({
 			header: true,
-			label: "????? ? ????",
+			label: "назад в меню",
 			onclick: function(){
 				self.showPage("Edit");
 			}
 		}));
 		page.addComponent("label", new ComponentInput({
-			label: "<br><br>???:"
+			label: "<br><br>Имя:"
 			//label: "Name:"
 		}));
 		page.addComponent("hue", new ComponentSlider({
 			bg: "color",
-			label: "????:",
+			label: "Цвет:",
 			options: [0,1,2,3,4,5],
 			oninput: function(value){
 				Node.defaultHue = value;
@@ -50,7 +50,7 @@ function Sidebar(loopy){
 		}));
 		page.addComponent("init", new ComponentSlider({
 			bg: "initial",
-			label: "????????? ????????:",
+			label: "Стартовое значение:",
 			options: [0, 0.16, 0.33, 0.50, 0.66, 0.83, 1],
 			//options: [0, 1/6, 2/6, 3/6, 4/6, 5/6, 1],
 			oninput: function(value){
@@ -70,7 +70,7 @@ function Sidebar(loopy){
 
 		};
 		page.addComponent(new ComponentButton({
-			label: "??????? ????",
+			label: "удалить узел",
 			//label: "delete circle",
 			onclick: function(node){
 				node.kill();
@@ -85,14 +85,14 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentButton({
 			header: true,
-			label: "????? ? ????",
+			label: "назад в меню",
 			onclick: function(){
 				self.showPage("Edit");
 			}
 		}));
 		page.addComponent("strength", new ComponentSlider({
 			bg: "strength",
-			label: "<br><br>?????:",
+			label: "<br><br>Связь:",
 			//label: "Relationship:",
 			options: [1, -1],
 			oninput: function(value){
@@ -100,12 +100,12 @@ function Sidebar(loopy){
 			}
 		}));
 		page.addComponent(new ComponentHTML({
-			html: "(????? ??????? ?????, ????????? ????????? ???????!)<br><br>"+
-			"(??? ???????? ????? ??????? ????? ??????? ???????)"
+			html: "(чтобы усилить связь, нарисуйте несколько стрелок!)<br><br>"+
+			"(для задержки связи рисуйте более длинные стрелки)"
 		}));
 		page.addComponent(new ComponentButton({
 			//label: "delete edge",
-			label: "??????? ???????",
+			label: "удалить стрелку",
 			//label: "delete relationship",
 			onclick: function(edge){
 				edge.kill();
@@ -120,13 +120,13 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentButton({
 			header: true,
-			label: "????? ? ????",
+			label: "назад в меню",
 			onclick: function(){
 				self.showPage("Edit");
 			}
 		}));
 		page.addComponent("text", new ComponentInput({
-			label: "<br><br>???????:",
+			label: "<br><br>Подпись:",
 			//label: "Label:",
 			textarea: true
 		}));
@@ -150,7 +150,7 @@ function Sidebar(loopy){
 
 		};
 		page.addComponent(new ComponentButton({
-			label: "??????? ???????",
+			label: "удалить подпись",
 			onclick: function(label){
 				label.kill();
 				self.showPage("Edit");
@@ -165,26 +165,21 @@ function Sidebar(loopy){
 		page.addComponent(new ComponentHTML({
 			html: ""+
 			
-			"<b style='font-size:1.4em'>LOOPY</b> (v1.1)<br>?????????? ??? ?????????? ????????<br><br>"+
+			"<b style='font-size:1.4em'>Петли стаи</b><br>симулятор причин и следствий по волчьи<br><br>"+
+			"<span class='mini_button' onclick=\"publish('modal',['howto'])\">справка</span> "+
+			"<span class='mini_button' onclick=\"publish('modal',['examples'])\">примеры</span><br>"+
+			"<span class='mini_button save_button' onclick=\"publish('modal',['save_link'])\">сохранить</span><br><br>"+
 
-			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>???????</span> "+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>??? ????????????</span> "+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>??????</span><br><br>"+
+			"<hr/><br>"+
+
+			"<span class='mini_button' onclick=\"publish('export/file')\">сохранить в файл</span> "+
+			"<span class='mini_button' onclick=\"publish('import/file')\">загрузить из файла</span> <br><br>"+
+			"<span class='mini_button' onclick=\"publish('modal',['embed_info'])\">встроить на сайт</span> <br><br>"+
+			"<span class='mini_button' onclick=\"publish('modal',['gif_info'])\">сделать GIF</span> <br><br>"+
 
 			"<hr/><br>"+
 
-			"<span class='mini_button' onclick='publish(\"modal\",[\"save_link\"])'>????????? ??? ??????</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"export/file\")'>????????? ? ????</span> "+
-			"<span class='mini_button' onclick='publish(\"import/file\")'>????????? ?? ?????</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>???????? ?? ????</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>??????? GIF ????? LICEcap</span> <br><br>"+
-
-			"<hr/><br>"+
-				
-			"<a target='_blank' href='../'>LOOPY</a> ? "+
-			"?????? <a target='_blank' href='http://ncase.me'>Nicky Case</a> "+
-			"??? ????????? <a target='_blank' href='https://www.patreon.com/ncase'>?? Patreon</a> &lt;3<br><br>"+
-			"<span style='font-size:0.85em'>P.S. ????????? <a target='_blank' href='https://www.amazon.com/Thinking-Systems-Donella-H-Meadows/dp/1603580557'>Thinking In Systems</a>, ???????</span>"
+			"<div style='font-size:0.9em; color:#9fb2d8;'>Основа: <a href='https://ncase.me/loopy/' target='_blank' rel='noopener'>Loopy (Nicky Case)</a>. Переработано <a href='https://neuralwisewolf.com/' target='_blank' rel='noopener'>NeuralWiseWolf</a>.</div>"
 
 		}));
 		self.addPage("Edit", page);
@@ -192,7 +187,7 @@ function Sidebar(loopy){
 
 	// Ctrl-S to SAVE
 	subscribe("key/save",function(){
-		if(Key.control){ // Ctrl-S or ⌘-S
+		if(Key.control){ // Ctrl-S or тМШ-S
 			publish("modal",["save_link"]);
 		}
 	});

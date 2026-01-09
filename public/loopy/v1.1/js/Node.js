@@ -241,14 +241,14 @@ function Node(model, config){
 
 		// Text!
 		var fontsize = 40;
-		ctx.font = "normal "+fontsize+"px sans-serif";
+		ctx.font = "600 "+fontsize+"px \'Space Grotesk\', sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = "#0b0d14";
 		var width = ctx.measureText(self.label).width;
 		while(width > r*2 - 30){ // -30 for buffer. HACK: HARD-CODED.
 			fontsize -= 1;
-			ctx.font = "normal "+fontsize+"px sans-serif";
+			ctx.font = "600 "+fontsize+"px \'Space Grotesk\', sans-serif";
 			width = ctx.measureText(self.label).width;
 		}
 		ctx.fillText(self.label, 0, 0);
@@ -263,7 +263,7 @@ function Node(model, config){
 
 		// Controls!
 		ctx.globalAlpha = _controlsAlpha;
-		ctx.strokeStyle = "rgba(0,0,0,0.8)";
+		ctx.strokeStyle = "rgba(233, 236, 245, 0.85)";
 		// top arrow
 		ctx.beginPath();
 		ctx.moveTo(-cl,-cy-cl);

@@ -366,7 +366,7 @@ function Edge(model, config){
 
 		// Width & Color
 		ctx.lineWidth = 4*Math.abs(self.strength)-2;
-		ctx.strokeStyle = "#666";
+		ctx.strokeStyle = "#9fb2d8";
 
 		// Translate & Rotate!
 		ctx.save();
@@ -407,13 +407,13 @@ function Edge(model, config){
 		ctx.stroke();
 
 		// Draw label
-		ctx.font = "100 60px sans-serif";
+		ctx.font = "600 48px \'Space Grotesk\', sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.save();
 		ctx.translate(lx, ly);
 		ctx.rotate(-a);
-		ctx.fillStyle = "#999";
+		ctx.fillStyle = "#c9eeff";
 		ctx.fillText(self.label, 0, 0);
 		ctx.restore();
 

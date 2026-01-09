@@ -1,5 +1,6 @@
 var slideshow, slideSelect;
 window.onload = function(){
+	window.__trustWolfInitialized = true;
 
 	// PRELOADER
 	Q.all([
@@ -8,7 +9,10 @@ window.onload = function(){
 	]).then(function(){
 
 		// CHANGE DOM
-		document.body.removeChild($("#preloader"));
+		var preloader = $("#preloader");
+		if (preloader && preloader.parentNode) {
+			preloader.parentNode.removeChild(preloader);
+		}
 		$("#main").style.display = "block";
 		$("#footer").style.display = "block";
 

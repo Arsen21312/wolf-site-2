@@ -26,11 +26,13 @@ button[data-balloon] {
   transform-origin: top;
 }
 [data-balloon]:after {
-  background: rgba(17, 17, 17, 0.9);
+  background: rgba(17, 26, 47, 0.95);
   border-radius: 4px;
   color: #fff;
   content: attr(data-balloon);
-  font-size: 18px;
+  font-size: 16px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-weight: 600;
   padding: .5em 1em;
   white-space: nowrap;
   margin-bottom: 11px;

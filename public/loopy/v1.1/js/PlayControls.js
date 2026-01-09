@@ -1,4 +1,4 @@
-/**********************************
+﻿/**********************************
 
 PLAY CONTROLS CODE:
 - play
@@ -18,7 +18,7 @@ function PlayControls(loopy){
 	// PLAY BUTTON's keyboard shortcut
 	// TODO: Toggle back & forth??????
 	subscribe("key/enter",function(){
-		if(Key.control){ // Ctrl-Enter or ⌘-Enter
+		if(Key.control){ // Ctrl-Enter or тМШ-Enter
 			loopy.setMode(Loopy.MODE_PLAY);
 		}
 	});
@@ -30,8 +30,8 @@ function PlayControls(loopy){
 		// PLAY BUTTON
 		var buttonDOM = page.addComponent(new PlayButton({
 			icon: 0,
-			label: "??????",
-			tooltip: isMacLike ? "⌘-Enter" : "control-enter",
+			label: "Запуск",
+			tooltip: isMacLike ? "тМШ-Enter" : "control-enter",
 			onclick: function(){
 				loopy.setMode(Loopy.MODE_PLAY);
 				//self.showPage("Edit");
@@ -55,7 +55,7 @@ function PlayControls(loopy){
 			// RESET
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 2,
-				label: "?????",
+				label: "Сброс",
 				onclick: function(){
 					publish("model/reset");
 				}
@@ -67,7 +67,7 @@ function PlayControls(loopy){
 			// REMIX BUTTON
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 3,
-				label: "??????",
+				label: "Ремикс",
 				onclick: function(){
 					var url = loopy.saveToURL();
 					window.open(url,'_blank');
@@ -84,7 +84,7 @@ function PlayControls(loopy){
 			// STOP BUTTON
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 1,
-				label: "????",
+				label: "Стоп",
 				onclick: function(){
 					loopy.setMode(Loopy.MODE_EDIT);
 				}
@@ -96,7 +96,7 @@ function PlayControls(loopy){
 			// RESET BUTTON
 			var buttonDOM = page.addComponent(new PlayButton({
 				icon: 2,
-				label: "?????",
+				label: "Сброс",
 				onclick: function(){
 					publish("model/reset");
 				}

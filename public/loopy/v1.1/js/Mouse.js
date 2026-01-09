@@ -9,6 +9,8 @@ Mouse.init = function(target){
 		publish("mousedown");
 	};
 	var _onmousemove = function(event){
+		Mouse.rawX = event.x;
+		Mouse.rawY = event.y;
 
 		// DO THE INVERSE
 		var canvasses = document.getElementById("canvasses");

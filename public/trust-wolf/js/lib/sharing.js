@@ -1,7 +1,7 @@
-window.addEventListener("load",function(){
-
+var initSharing = function () {
 	// Find the "sharing" dom
 	var sharingDOM = document.body.querySelector("sharing");
+	if (!sharingDOM) return;
 
 	// URL encodeable
 	var title = sharingDOM.getAttribute("title");
@@ -19,5 +19,10 @@ window.addEventListener("load",function(){
 
 	// Replace it in the dom
 	sharingDOM.parentNode.replaceChild(sharing, sharingDOM);
+};
 
-});
+if (document.readyState === "complete") {
+	initSharing();
+} else {
+	window.addEventListener("load", initSharing);
+}

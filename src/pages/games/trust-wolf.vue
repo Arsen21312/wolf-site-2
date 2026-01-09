@@ -2,7 +2,7 @@
   <main class="trust-wolf-redirect">
     <div class="loader-card">
       <div class="spinner" aria-hidden="true"></div>
-      <p>Запускаем игру…</p>
+      <p>ђ-ђшђх‘?‘?ђуђшђзђ? ђсђ?‘?‘?ў?і</p>
     </div>
   </main>
 </template>

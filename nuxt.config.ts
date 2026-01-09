@@ -76,7 +76,7 @@ export default defineNuxtConfig({
         redirect: { to: '/', statusCode: 301 }
       },
       '/tools/maze-generator.html': {
-        redirect: { to: '/tools/maze-generator', statusCode: 301 }
+        redirect: { to: '/generators/maze-generator', statusCode: 301 }
       },
       '/tools/decimal-to-fraction': {
         redirect: { to: '/', statusCode: 301 }

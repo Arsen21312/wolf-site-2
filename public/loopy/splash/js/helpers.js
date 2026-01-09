@@ -32,6 +32,9 @@ function _createCanvas(){
 
 	var canvasses = document.getElementById("canvasses");
 	var canvas = document.createElement("canvas");
+	canvas.style.background = "transparent";
+	canvas.style.backgroundColor = "transparent";
+	canvas.style.setProperty("background", "transparent", "important");
 
 	// Dimensions
 	var _onResize = function(){

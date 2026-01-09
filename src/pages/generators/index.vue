@@ -95,6 +95,14 @@ const generators = [
     link: '/generators/password-generator'
   },
   {
+    title: 'Петли стаи',
+    tag: 'системы / симулятор',
+    description: 'Собирай причинно-следственные модели и наблюдай, как ведет себя система.',
+    mood: 'глубже',
+    scope: 'интерактив',
+    link: '/generators/loops'
+  },
+  {
     title: 'Удаление переносов строк',
     tag: 'текст / чистка',
     description: 'Склеивает строки из PDF и Word, сохраняет абзацы и наводит порядок с переносами.',

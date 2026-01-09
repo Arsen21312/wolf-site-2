@@ -1,10 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 body{
 	margin:0;
-	background: #fff;
+	background: #0b1021;
+	color: #e9ecf5;
 
-	font-family: Helvetica, Arial, sans-serif;
-	font-weight: normal;
-	font-size: 20px;
+	font-family: "Manrope", "Segoe UI", Arial, sans-serif;
+	font-weight: 500;
+	font-size: 18px;
 
 	overflow: hidden;
 }
@@ -62,10 +65,12 @@ canvas{
 	bottom: 0;
 	width: 230px;
 	height: 25px;
-	background: #444;
+	background: #1f2a44;
+	color: #e9ecf5;
+	border: 1px solid rgba(255,255,255,0.08);
 }
 #playbar .component_button:hover{
-	background: #555;
+	background: #2a3756;
 }
 #playbar .play_slider{
 	width: 190px;
@@ -110,7 +115,8 @@ div[big=yes] .play_button_label{
 
 	width:75px; height:280px;
 	padding: 5px;
-	background-color: #ddd;
+	background-color: #0f172a;
+	border-right: 1px solid rgba(255,255,255,0.08);
 
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -124,13 +130,16 @@ div[big=yes] .play_button_label{
 .toolbar_button{
 	width:60px; height:60px;
 	margin: 5px;
-	border: 2px solid #ddd;
+	border: 2px solid #1f2a44;
 	cursor: pointer;
 	background-size: 100% 100%;
+	background-color: #f6f7fb;
+	border-radius: 12px;
 }
 .toolbar_button[selected=yes]{
-	border: 2px solid #888;
-	background-color: #999;
+	border: 2px solid #6ad7ff;
+	background-color: #ffffff;
+	box-shadow: 0 0 0 2px rgba(106, 215, 255, 0.4) inset;
 }
 
 /**********
@@ -142,10 +151,11 @@ div[big=yes] .play_button_label{
 	top:0; right:0;
 	width: 300px;
 	height: 100%;
-	background: #ddd;
+	background: #0f172a;
+	color: #e9ecf5;
 
-	font-weight: 100;
-	font-size: 17px;
+	font-weight: 500;
+	font-size: 16px;
 
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -153,69 +163,92 @@ div[big=yes] .play_button_label{
 	user-select: none;
 }
 #sidebar > div{
-	margin: 25px;
+	margin: 0;
+	padding: 16px 20px 24px;
 }
 #sidebar > div > div{
 	margin-bottom: 20px;
 }
 #sidebar[mode=play]{
-	background: #222;
-	color: #777;
+	background: #0b1021;
+	color: #9fb2d8;
 }
 #sidebar .mini_button{
-	background: #999;
-	color: #fff;
-	padding: 3px 5px;
-	border-radius: 2px;
+	background: #1f2a44;
+	color: #e9ecf5;
+	padding: 6px 10px;
+	border-radius: 999px;
 	font-size: 16px;
+	line-height: 1.2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
 
 	cursor: pointer;
 }
+#sidebar .mini_button + .mini_button{
+	margin-left: 6px;
+	margin-top: 6px;
+}
+#sidebar .mini_button.save_button{
+	margin-top: 10px;
+	background: #f59e0b;
+	color: #0b1021;
+	font-weight: 600;
+}
+#sidebar .mini_button.save_button:hover{
+	background: #fbbf24;
+}
 #sidebar .mini_button:hover{
-	background: #aaa;
+	background: #2a3756;
 }
 #sidebar[mode=play] .mini_button{
-	background: #555;
-	color: #111;
+	background: #1f2a44;
+	color: #c9eeff;
 }
 #sidebar[mode=play] .mini_button:hover{
-	background: #666;
+	background: #2a3756;
 }
-#sidebar a{ color: #777; }
-#sidebar a:hover{ color: #999; }
+#sidebar a{ color: #c9eeff; }
+#sidebar a:hover{ color: #6ad7ff; }
 #sidebar hr{
 	border: none;
-	border-bottom: 2px solid rgba(150,150,150,0.5);
-	width: 300px;
+	border-bottom: 2px solid rgba(255,255,255,0.08);
+	width: 100%;
 	position: relative;
-	left:-25px;
-	margin: 10px 0;
+	left: 0;
+	margin: 14px 0;
 }
 .component_input{
-	border: none;
+	border: 1px solid rgba(255,255,255,0.08);
+	background: #0b1021;
+	color: #e9ecf5;
 	
 	width:calc(100% - 10px);
 	height:22px;
 	padding: 5px;
 	
-	font-size: 20px;
-	font-weight: 100;
+	font-size: 18px;
+	font-weight: 500;
 }
 .component_textarea{
-	border: none;
+	border: 1px solid rgba(255,255,255,0.08);
+	background: #0b1021;
+	color: #e9ecf5;
 	width:calc(100% - 10px);
 	height: 100px;
 	padding: 5px;
 	font-size: 16px;
-	font-weight: 100;
+	font-weight: 500;
 }
 .component_output{
-	border: 1px solid #aaa;
+	border: 1px solid rgba(255,255,255,0.08);
 	width:100%;
-	background: #ccc;
-	color: #666;
+	background: #111a2f;
+	color: #9fb2d8;
 	font-size: 15px;
-	font-weight: 100;
+	font-weight: 500;
 }
 .component_slider{
 	position: relative;
@@ -240,29 +273,30 @@ div[big=yes] .play_button_label{
 .component_button{
 
 	width: calc(100% - 20px);
-	background: #888;
-	color: #fff;
-	font-size: 20px;
-	font-weight: 100;
+	background: linear-gradient(120deg, #fca63d, #f76c1b);
+	color: #0b0d14;
+	font-size: 18px;
+	font-weight: 600;
 	text-align: center;
 	padding: 10px;
 	border-radius: 5px;
+	border: 1px solid rgba(255,255,255,0.08);
 
 	cursor: pointer;
 }
 .component_button:hover{
-	background: #999;
+	background: linear-gradient(120deg, #ffb55b, #ff7f2a);
 }
 .component_button[header=yes]{
 	position: absolute;
 	top:0; left:0;
 	width: 280px;
-	background: #222;
+	background: #111a2f;
     border-radius: 0px;
-    color: #888;
+    color: #9fb2d8;
 }
 .component_button[header=yes]:hover{
-	background: #333;
+	background: #1a2542;
 }
 
 
@@ -299,22 +333,24 @@ MODAL
 
 	width: 600px; height: 300px;
 	padding: 10px;
-	background: #ddd;
+	background: #0f172a;
+	border: 1px solid rgba(255,255,255,0.08);
+	color: #e9ecf5;
 }
 #modal_close{
 	width: 120px;
-	font-weight: 100;
-	color: #777;
+	font-weight: 500;
+	color: #9fb2d8;
 	cursor: pointer;
 }
 #modal_close:hover{
-	color: #888;
+	color: #e9ecf5;
 }
 #modal_page{
 	margin: 15px;
-	font-size: 25px;
-	font-weight: 100;
-	color: #333;
+	font-size: 20px;
+	font-weight: 500;
+	color: #e9ecf5;
 }
 #modal iframe{
 	border: none;

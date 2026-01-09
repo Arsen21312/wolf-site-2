@@ -14,7 +14,7 @@ function Model(loopy){
 
 	// Create canvas & context
 	var canvas = _createCanvas();
-	var ctx = canvas.getContext("2d");
+	var ctx = canvas.getContext("2d", { alpha: true });
 	self.canvas = canvas;
 	self.context = ctx;
 

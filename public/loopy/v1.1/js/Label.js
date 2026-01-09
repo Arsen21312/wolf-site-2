@@ -48,10 +48,10 @@ function Label(model, config){
 		ctx.translate(x,y);
 
 		// Text!
-		ctx.font = "100 "+Label.FONTSIZE+"px sans-serif";
+		ctx.font = "600 "+Label.FONTSIZE+"px \'Space Grotesk\', sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = "#e9ecf5";
 
 		// ugh new lines are a PAIN.
 		var lines = self.breakText();
