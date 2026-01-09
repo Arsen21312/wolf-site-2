@@ -425,23 +425,6 @@ export default defineNuxtConfig({
           name: 'viewport',
           content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
         }
-      ],
-      script: [
-        {
-          hid: 'adsense',
-          src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1011761534614555',
-          async: true,
-          crossorigin: 'anonymous'
-        },
-        {
-          hid: 'yandex-rtb-init',
-          innerHTML: 'window.yaContextCb=window.yaContextCb||[]'
-        },
-        {
-          hid: 'yandex-rtb',
-          src: 'https://yandex.ru/ads/system/context.js',
-          async: true
-        }
       ]
     }
   }
