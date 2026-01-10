@@ -686,4 +686,5 @@ const openExample = (id) => {
 :global(#__nuxt) {
   min-height: 100%;
 }
+
 </style>
