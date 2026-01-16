@@ -1,18 +1,5 @@
 <template>
   <div class="layout-shell">
-    <ClientOnly>
-      <RippleGrid
-        class="ripple-grid-layer"
-        :enable-rainbow="false"
-        :ripple-intensity="0.01"
-        :grid-size="20"
-        :grid-thickness="20"
-        :mouse-interaction="true"
-        :mouse-interaction-radius="1.2"
-        :opacity="0.85"
-        grid-color="#d6e6ff"
-      />
-    </ClientOnly>
     <GlobalSnow />
     <MainHeader />
 
@@ -34,12 +21,11 @@ import MainFooter from '@/components/navigation/MainFooter.vue'
 import YandexRtbBlock from '@/components/ads/YandexRtbBlock.vue'
 import YandexRtbFloorAd from '@/components/ads/YandexRtbFloorAd.vue'
 import GlobalSnow from '@/components/ui/GlobalSnow.vue'
-import RippleGrid from '@/components/ui/RippleGrid.vue'
 import CookieBanner from '@/components/CookieBanner.vue'
 import faviconUrl from '~/assets/images/wolf-favicon.png'
 
 const route = useRoute()
-const showAds = computed(() => route.path !== '/witch')
+const showAds = computed(() => !['/witch', '/witch-hut'].includes(route.path))
 
 useHead(() => ({
   link: [
@@ -79,15 +65,10 @@ useHead(() => ({
 <style scoped>
 .layout-shell {
   overflow-x: hidden;
-  position: relative;
 }
 
 .main-content {
   overflow-x: hidden;
 }
 
-.layout-shell > :not(.ripple-grid-layer) {
-  position: relative;
-  z-index: 2;
-}
 </style>

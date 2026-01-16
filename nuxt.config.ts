@@ -407,7 +407,7 @@ export default defineNuxtConfig({
       }
     },
     prerender: {
-      routes: ['/', '/generators/wolf-quotes', '/generators/wolf-quotes/', '/sitemap.xml']
+      routes: ['/', '/generators/wolf-quotes', '/generators/wolf-quotes/', '/witch-hut', '/sitemap.xml']
     }
   },
   app: {
