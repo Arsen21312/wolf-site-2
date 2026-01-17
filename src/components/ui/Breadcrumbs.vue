@@ -122,12 +122,12 @@ watch(displayItems, () => {
   color: var(--muted);
   font-size: 12px;
   letter-spacing: 0.02em;
-  margin-bottom: 12px;
+  margin: 0 auto 12px;
   width: max-content;
   max-width: 100%;
   overflow: hidden;
-  align-self: start;
-  justify-self: start;
+  align-self: center;
+  justify-self: center;
 }
 
 .breadcrumbs.center {
