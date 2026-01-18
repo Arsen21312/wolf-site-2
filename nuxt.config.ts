@@ -12,6 +12,10 @@ export default defineNuxtConfig({
     public: publicDir
   },
   devtools: { enabled: true },
+  modules: ['@nuxtjs/i18n'],
+  i18n: {
+    // Module Options
+  },
   runtimeConfig: {
     supabaseUrl: process.env.SUPABASE_URL,
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
@@ -20,7 +24,7 @@ export default defineNuxtConfig({
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY
     }
   },
-  css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css'],
+  css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css', '~/assets/css/tarot-theme.css'],
   vite: {
     publicDir
   },

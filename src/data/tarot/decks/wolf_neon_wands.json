@@ -1,0 +1,156 @@
+﻿{
+  "Ace": {
+    "name": "Туз Жезлов",
+    "meme_quote": "Огонь включился, делай дело",
+    "meaning_upright": "Старт, импульс, вдохновение",
+    "meaning_reversed": "Вспышка без продолжения",
+    "love": "Искра мощная, но держи огонь ровно",
+    "money": "Запуск идеальный, главное не бросить",
+    "shadow": "Вспышка без продолжения",
+    "pack_rule": "Огонь надо кормить делом",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wand like lightning torch in wolf paw, amber fire glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "2": {
+    "name": "2 Жезлов",
+    "meme_quote": "Планирую маршрут, карта в голове",
+    "meaning_upright": "Выбор направления, стратегия",
+    "meaning_reversed": "Страх выйти из зоны комфорта",
+    "love": "Определитесь куда вы идёте, иначе застынете",
+    "money": "Хорошо планировать рост и расширение",
+    "shadow": "Страх выйти из зоны комфорта",
+    "pack_rule": "Курс важнее скорости",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf on tower looking far, two wands as pillars, amber and ice glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "3": {
+    "name": "3 Жезлов",
+    "meme_quote": "Отправил сигнал в будущее, жду результат",
+    "meaning_upright": "Расширение, перспектива, рост",
+    "meaning_reversed": "Ожидание без движения",
+    "love": "Пора выходить из привычного, это освежит связь",
+    "money": "Проекты могут выстрелить, если ты не стоишь на месте",
+    "shadow": "Ожидание без движения",
+    "pack_rule": "Сигнал в будущее работает, если ты идёшь",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf on cliff watching distant ships of light, amber glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "4": {
+    "name": "4 Жезлов",
+    "meme_quote": "Праздник, стая дома, вайб тёплый",
+    "meaning_upright": "Успех, дом, радость, союз",
+    "meaning_reversed": "Показуха вместо счастья",
+    "love": "Тепло рядом, наслаждайся без сравнения с другими",
+    "money": "Есть повод радоваться, закрепи результат",
+    "shadow": "Показуха вместо счастья",
+    "pack_rule": "Праздник это когда внутри спокойно",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, arch of wands, wolves dancing by fire, warm amber glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "5": {
+    "name": "5 Жезлов",
+    "meme_quote": "Все спорят, но это прокачка",
+    "meaning_upright": "Конкуренция, тренировка, конфликт идей",
+    "meaning_reversed": "Срач ради срача",
+    "love": "Спор может укрепить, если вы уважаете друг друга",
+    "money": "Конкуренция даст рост, держи стиль",
+    "shadow": "Срач ради срача",
+    "pack_rule": "Бейся за идею, не за эго",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolves sparring with wands, sparks in air, amber glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "6": {
+    "name": "6 Жезлов",
+    "meme_quote": "Победа моя, лайки ваши",
+    "meaning_upright": "Признание, успех, лидерство",
+    "meaning_reversed": "Гордыня, зависимость от одобрения",
+    "love": "Признание приятно, но не превращай чувство в сцену",
+    "money": "Успех виден, закрепи репутацию",
+    "shadow": "Гордыня, зависимость от одобрения",
+    "pack_rule": "Победа это ответственность, не корона",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf on rise holding wand like banner, silhouette crowd, amber glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "7": {
+    "name": "7 Жезлов",
+    "meme_quote": "Стою на своём, хоть ветер воет",
+    "meaning_upright": "Защита позиции, стойкость",
+    "meaning_reversed": "Устал от борьбы",
+    "love": "Держи границы, но не превращайся в стену",
+    "money": "Защищай проект, но не сжигай ресурс",
+    "shadow": "Устал от борьбы",
+    "pack_rule": "Стойкость спасает, если ты знаешь зачем",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf on rock surrounded by spear-wands, storm wind, amber and ice glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "8": {
+    "name": "8 Жезлов",
+    "meme_quote": "Полетело, держись",
+    "meaning_upright": "Скорость, новости, ускорение",
+    "meaning_reversed": "Хаос, спешка",
+    "love": "События быстро идут, держи контакт и честность",
+    "money": "Ускорение в делах, реагируй быстро и чисто",
+    "shadow": "Хаос, спешка",
+    "pack_rule": "Скорость требует порядка",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wands as comets, wolf running through dark forest, amber streaks, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "9": {
+    "name": "9 Жезлов",
+    "meme_quote": "Я побитый, но рабочий",
+    "meaning_upright": "Выносливость, опыт, защита",
+    "meaning_reversed": "Подозрительность, закрытость",
+    "love": "Опыт сделал тебя сильным, но не закрывайся от тепла",
+    "money": "Держись, ты почти дошёл, не сливай опыт",
+    "shadow": "Подозрительность, закрытость",
+    "pack_rule": "Шрамы это броня, не клетка",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal dark background, scarred wolf holding a wand, amber glow low, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "10": {
+    "name": "10 Жезлов",
+    "meme_quote": "Тащу всё сам, ну и зачем",
+    "meaning_upright": "Перегруз, ответственность",
+    "meaning_reversed": "Выгорание",
+    "love": "Скажи что тяжело, не делай вид что норм",
+    "money": "Делегируй, иначе ресурс закончится",
+    "shadow": "Выгорание",
+    "pack_rule": "Стая помогает, если ты просишь",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf carrying bundle of wands, fading firelight, amber glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Page": {
+    "name": "Паж Жезлов",
+    "meme_quote": "Искры в глазах, мозг уже в приключении",
+    "meaning_upright": "Идея, старт, вдохновение",
+    "meaning_reversed": "Нестабильность",
+    "love": "Флирт и новизна, но держи честность",
+    "money": "Идея сильная, начни с простого шага",
+    "shadow": "Нестабильность",
+    "pack_rule": "Искру превращай в дело",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, young wolf with burning wand and portal hint, amber glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Knight": {
+    "name": "Рыцарь Жезлов",
+    "meme_quote": "Влетел красиво, сделал шум",
+    "meaning_upright": "Страсть, движение, риск",
+    "meaning_reversed": "Импульсивность, бросаешь на полпути",
+    "love": "Страсть мощная, но держи слово",
+    "money": "Риск может дать рост, если ты не суетишься",
+    "shadow": "Импульсивность, бросаешь на полпути",
+    "pack_rule": "Шум ок, если за ним результат",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf mid-jump with fiery trail, amber blaze, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Queen": {
+    "name": "Королева Жезлов",
+    "meme_quote": "Харизма 100, страх 0",
+    "meaning_upright": "Уверенность, лидерство, притяжение",
+    "meaning_reversed": "Вспыльчивость, ревность",
+    "love": "Ты магнит, но не прожигай человека эмоциями",
+    "money": "Уверенное ведение даст рост и уважение",
+    "shadow": "Вспыльчивость, ревность",
+    "pack_rule": "Харизма это тепло, не дым",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, she-wolf with torch, gold and amber neon, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "King": {
+    "name": "Король Жезлов",
+    "meme_quote": "Сказал, сделал, зажёг стаю",
+    "meaning_upright": "Лидер, стратегия, большой огонь",
+    "meaning_reversed": "Давление, диктат",
+    "love": "Веди мягко, иначе любовь станет приказом",
+    "money": "Сильная стратегия, масштабирование, лидерский рост",
+    "shadow": "Давление, диктат",
+    "pack_rule": "Лидер зажигает, не сжигает",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf-king in flames with wand scepter, amber fire, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  }
+}

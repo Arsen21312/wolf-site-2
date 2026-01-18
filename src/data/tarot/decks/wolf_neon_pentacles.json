@@ -1,0 +1,156 @@
+﻿{
+  "Ace": {
+    "name": "Туз Пентаклей",
+    "meme_quote": "Легендарный дроп, бери шанс",
+    "meaning_upright": "Новый ресурс, удачный старт, прибыль",
+    "meaning_reversed": "Упустить возможность, лень",
+    "love": "Надёжность важнее красивых слов, покажи делом",
+    "money": "Топовый старт, фиксируй шанс и действуй",
+    "shadow": "Упустить возможность, лень",
+    "pack_rule": "Если ресурс пришёл, не отпускай",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, glowing pentacle falling into wolf paws, emerald neon, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "2": {
+    "name": "2 Пентаклей",
+    "meme_quote": "Балансирую дела как жонглёр на нервах",
+    "meaning_upright": "Гибкость, два проекта, адаптация",
+    "meaning_reversed": "Суета, нестабильность, выгорание",
+    "love": "Держи баланс между делами и вниманием, иначе остынет",
+    "money": "Два направления тянут, нужен ритм и приоритет",
+    "shadow": "Суета, нестабильность, выгорание",
+    "pack_rule": "Баланс это дисциплина, не удача",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal wave-like background, wolf juggling two pentacles, emerald and ice blue highlights, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "3": {
+    "name": "3 Пентаклей",
+    "meme_quote": "Команда норм, строим крепко",
+    "meaning_upright": "Сотрудничество, качество, мастерство",
+    "meaning_reversed": "Конфликты ролей, недоверие",
+    "love": "Работайте вместе, а не против друг друга",
+    "money": "Командная сборка даст результат быстрее",
+    "shadow": "Конфликты ролей, недоверие",
+    "pack_rule": "Стая сильнее одиночки, если уважение живое",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, three wolves building a stone sigil, light in cracks, emerald glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "4": {
+    "name": "4 Пентаклей",
+    "meme_quote": "Держу своё крепко, даже настроение",
+    "meaning_upright": "Сбережения, контроль, защита ресурсов",
+    "meaning_reversed": "Жадность, страх потерь, зажим",
+    "love": "Не душни контролем, иначе чувство задохнётся",
+    "money": "Сохраняй, но не превращайся в сейф без двери",
+    "shadow": "Жадность, страх потерь, зажим",
+    "pack_rule": "Защищай ресурс, но не теряй свободу",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal cold background, wolf hugging a pentacle like a vault, glass shine, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "5": {
+    "name": "5 Пентаклей",
+    "meme_quote": "Холодно, бедно, но я не сдался",
+    "meaning_upright": "Нужда, кризис, попросить помощь",
+    "meaning_reversed": "Изоляция, стыд, обида на мир",
+    "love": "Сложный период лечится поддержкой, не молчанием",
+    "money": "Не тяни один, проси помощь, ищи опору",
+    "shadow": "Изоляция, стыд, обида на мир",
+    "pack_rule": "Стая спасает тех, кто не прячется",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal snowy background, two wolves in snow, warm shelter light far away, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "6": {
+    "name": "6 Пентаклей",
+    "meme_quote": "Дал, принял, живём по понятиям",
+    "meaning_upright": "Обмен, помощь, справедливость в ресурсах",
+    "meaning_reversed": "Долги, зависимость, унижение",
+    "love": "Честный обмен держит пару ровно",
+    "money": "Раздавай ресурс умно, без перекоса и зависимости",
+    "shadow": "Долги, зависимость, унижение",
+    "pack_rule": "Делись по силе, бери по нужде",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal soft light background, wolf sharing coins with the pack, emerald glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "7": {
+    "name": "7 Пентаклей",
+    "meme_quote": "Посеял, жду профит, ауф",
+    "meaning_upright": "Терпение, рост, инвестиции",
+    "meaning_reversed": "Нетерпение, срыв",
+    "love": "Дай отношениям время вырасти, не дёргай каждую минуту",
+    "money": "Инвестиции любят терпение и регулярность",
+    "shadow": "Нетерпение, срыв",
+    "pack_rule": "Сначала корни, потом плоды",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal misty background, wolf watching seedlings with pentacles in soil, emerald haze, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "8": {
+    "name": "8 Пентаклей",
+    "meme_quote": "Качаю скилл, не качаю драму",
+    "meaning_upright": "Учёба, ремесло, стабильная работа",
+    "meaning_reversed": "Рутина, перегруз",
+    "love": "Стабильность появляется, когда ты держишь слово",
+    "money": "Копай навык, он даст постоянный доход",
+    "shadow": "Рутина, перегруз",
+    "pack_rule": "Мастерство делает волка свободным",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal workshop background, wolf carving a pentacle, sparks, emerald light, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "9": {
+    "name": "9 Пентаклей",
+    "meme_quote": "Один волк, но на своём уровне",
+    "meaning_upright": "Самостоятельность, комфорт, успех",
+    "meaning_reversed": "Одиночество, закрытость",
+    "love": "Ты ценен сам по себе, но не закрывай дверь навсегда",
+    "money": "Уровень крепкий, сохраняй стиль и не распыляйся",
+    "shadow": "Одиночество, закрытость",
+    "pack_rule": "Самостоятельность это сила, не броня",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal garden-like forest background, pentacles as lanterns, emerald glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "10": {
+    "name": "10 Пентаклей",
+    "meme_quote": "Дом, стая, и всё под крышей",
+    "meaning_upright": "Семья, наследие, большой ресурс",
+    "meaning_reversed": "Страх потерять, контроль",
+    "love": "Семейность укрепляет, если нет диктатуры",
+    "money": "Большая база, думай про долгую игру",
+    "shadow": "Страх потерять, контроль",
+    "pack_rule": "Дом держится на доверии, не на страхе",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, pack near tree-house, pentacle crests, emerald warm glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Page": {
+    "name": "Паж Пентаклей",
+    "meme_quote": "Новый квест открыт, лут блестит",
+    "meaning_upright": "Первый шаг, шанс, обучение",
+    "meaning_reversed": "Мечты без движения",
+    "love": "Сначала покажи серьёзность, потом проси доверие",
+    "money": "Учись и пробуй, первые деньги рядом",
+    "shadow": "Мечты без движения",
+    "pack_rule": "Шанс любит тех, кто идёт",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, young wolf holding a glowing pentacle artifact, emerald neon, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Knight": {
+    "name": "Рыцарь Пентаклей",
+    "meme_quote": "Я медленный, зато железный",
+    "meaning_upright": "Стабильность, упорство, режим",
+    "meaning_reversed": "Застой, скука, упрямство",
+    "love": "Надёжность ценна, но не забывай про тепло",
+    "money": "Режим и дисциплина дадут стабильный профит",
+    "shadow": "Застой, скука, упрямство",
+    "pack_rule": "Медленно это нормально, если ты идёшь",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, armored wolf with heavy steps, ground glowing faint emerald, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Queen": {
+    "name": "Королева Пентаклей",
+    "meme_quote": "Уют, деньги, и всё под контролем лап",
+    "meaning_upright": "Забота, дом, ресурс, практичность",
+    "meaning_reversed": "Гиперконтроль, тревожность",
+    "love": "Забота лечит, но не превращай любовь в проверку",
+    "money": "Управляй ресурсом мягко и точно",
+    "shadow": "Гиперконтроль, тревожность",
+    "pack_rule": "Тёплый дом строится руками и сердцем",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, she-wolf by hearth with emerald lights and talismans, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "King": {
+    "name": "Король Пентаклей",
+    "meme_quote": "Говорю мало, делаю прибыль",
+    "meaning_upright": "Управление ресурсами, лидерство",
+    "meaning_reversed": "Холодный расчёт, жадность",
+    "love": "Стань опорой, но не становись камнем",
+    "money": "Сильная позиция, держи стратегию и репутацию",
+    "shadow": "Холодный расчёт, жадность",
+    "pack_rule": "Лидер это тот, кто держит ресурс честно",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf on throne with pentacle seal of power, emerald glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  }
+}

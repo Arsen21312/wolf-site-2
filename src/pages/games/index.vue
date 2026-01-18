@@ -70,6 +70,15 @@ const breadcrumbs = [
     to: '/games/trust-wolf'
   },
   {
+    slug: 'wolftest',
+    title: 'Кто ты в стае?',
+    description: 'Вирусный неоновый тест про архетип волка: пройди путь и получи трофей для скрина.',
+    tag: 'тест / стая',
+    mood: 'мистично',
+    duration: '2-4 минуты',
+    to: '/games/wolftest'
+  },
+  {
     slug: 'truth-or-dare',
     title: 'Правда или действие',
     description: 'Вопросы и задания без подготовки: выбирай режим, нажимай и играй онлайн.',
