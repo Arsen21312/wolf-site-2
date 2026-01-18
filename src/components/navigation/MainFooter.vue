@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <footer class="nw-footer">
     <div class="nw-footer-inner">
       <NuxtLink to="/" class="nw-brand">
-        <span class="nw-title">Нейронный волк</span>
+        <span class="nw-title">Сайт нейронного волка</span>
         <img class="nw-icon" :src="faviconSrc" alt="" aria-hidden="true" />
         <span class="nw-year">{{ year }}</span>
       </NuxtLink>
@@ -27,6 +27,8 @@ const year = new Date().getFullYear()
   background: #020617;
   padding: 16px;
   color: #e5e7eb;
+  position: relative;
+  z-index: 12;
 }
 
 .nw-footer-inner {

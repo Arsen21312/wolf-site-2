@@ -1,0 +1,156 @@
+﻿{
+  "Ace": {
+    "name": "Туз Мечей",
+    "meme_quote": "Режь туман, иди прямо",
+    "meaning_upright": "Инсайт, ясность, решение",
+    "meaning_reversed": "Резкость, конфликт",
+    "love": "Правда лечит, но подавай её без унижения",
+    "money": "Режь лишние задачи, делай один точный удар",
+    "shadow": "Резкость, конфликт",
+    "pack_rule": "Ясность сильнее эмоций",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal stormy background, lightning sword raised by wolf, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "2": {
+    "name": "2 Мечей",
+    "meme_quote": "Два выбора, я в режим не вижу",
+    "meaning_upright": "Пауза, баланс, решение на подходе",
+    "meaning_reversed": "Отрицание, страх выбирать",
+    "love": "Не закрывай глаза на очевидное, это не спасает",
+    "money": "Собери данные и решай, иначе зависнешь",
+    "shadow": "Отрицание, страх выбирать",
+    "pack_rule": "Выбор всё равно случится, лучше осознанно",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal moonlit background, blindfolded wolf with two crossed swords, ice blue neon, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "3": {
+    "name": "3 Мечей",
+    "meme_quote": "Больно, но честно",
+    "meaning_upright": "Разрыв, обида, очищение через правду",
+    "meaning_reversed": "Самоедство, драматизация",
+    "love": "Боль пройдёт быстрее, если ты не врёшь себе",
+    "money": "Отрежь то, что тянет вниз, даже если жалко",
+    "shadow": "Самоедство, драматизация",
+    "pack_rule": "Честность режет, но спасает",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal rainy background, cracked ice heart, wolf under rain, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "4": {
+    "name": "4 Мечей",
+    "meme_quote": "Я в режиме восстановления, не трогай",
+    "meaning_upright": "Отдых, пауза, лечение",
+    "meaning_reversed": "Изоляция, избегание",
+    "love": "Отдохни, но не исчезай без слов",
+    "money": "Пауза полезна, если ты восстанавливаешь ресурс",
+    "shadow": "Изоляция, избегание",
+    "pack_rule": "Восстановление это часть пути",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal temple of silence background, wolf resting with swords as guards, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "5": {
+    "name": "5 Мечей",
+    "meme_quote": "Победил, но осадочек как всегда",
+    "meaning_upright": "Конфликт, цена победы, эго",
+    "meaning_reversed": "Токсичность, унижение, пустая драка",
+    "love": "Не доказывай правоту ценой близости",
+    "money": "Выигрыш не стоит репутации, выбирай умно",
+    "shadow": "Токсичность, унижение, пустая драка",
+    "pack_rule": "Победа без уважения пустая",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf holding swords while shadows retreat, cold neon haze, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "6": {
+    "name": "6 Мечей",
+    "meme_quote": "Уходим туда, где дышится легче",
+    "meaning_upright": "Переход, исцеление, путь",
+    "meaning_reversed": "Побег от уроков",
+    "love": "Можно уйти от боли, но урок лучше забрать с собой",
+    "money": "Переезд, смена курса, новый этап без лишнего груза",
+    "shadow": "Побег от уроков",
+    "pack_rule": "Уходи ради роста, не ради страха",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal foggy river background, boat through mist, wolf at the front, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "7": {
+    "name": "7 Мечей",
+    "meme_quote": "Взял инфу и ушёл тихо",
+    "meaning_upright": "Хитрость, стратегия",
+    "meaning_reversed": "Самообман, мутность",
+    "love": "Не играй в тайны ради власти, потом будет больно",
+    "money": "Тактика решает, но не превращайся в тень",
+    "shadow": "Самообман, мутность",
+    "pack_rule": "Хитрость ок, если ты честен с собой",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, masked wolf in blue fog, neon ice accents, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "8": {
+    "name": "8 Мечей",
+    "meme_quote": "Ключ в кармане, а ты всё в клетке",
+    "meaning_upright": "Ограничения в голове",
+    "meaning_reversed": "Жертва-режим",
+    "love": "Не держи себя в клетке, говори прямо",
+    "money": "Ограничение больше в страхе, чем в реальности",
+    "shadow": "Жертва-режим",
+    "pack_rule": "Выход там, где ты решишь выйти",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, circle of swords with a light crack as exit, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "9": {
+    "name": "9 Мечей",
+    "meme_quote": "Ночью мозг устроил хоррор",
+    "meaning_upright": "Тревога, страх, вина",
+    "meaning_reversed": "Паника, бессонница",
+    "love": "Не мучай себя догадками, лучше проговори",
+    "money": "Страхи шумят, но планы спасают",
+    "shadow": "Паника, бессонница",
+    "pack_rule": "Ночь громкая, но она проходит",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal night background, moon overhead, thoughts like blades around, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "10": {
+    "name": "10 Мечей",
+    "meme_quote": "Финиш, больно, зато свободен",
+    "meaning_upright": "Конец этапа, отпускание",
+    "meaning_reversed": "Безнадёга, всё пропало",
+    "love": "Если конец, то без унижения, с уважением к себе",
+    "money": "Закрывай старое и не тащи это в новый цикл",
+    "shadow": "Безнадёга, всё пропало",
+    "pack_rule": "Конец это место для нового воздуха",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal dawn background, wolf on ground with sunrise ahead, ice blue haze, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Page": {
+    "name": "Паж Мечей",
+    "meme_quote": "Глаз-сканер, язык-лазер",
+    "meaning_upright": "Новости, наблюдательность, учёба",
+    "meaning_reversed": "Резкость, споры ради спора",
+    "love": "Смотри внимательней, но не цепляй словами",
+    "money": "Сбор инфы даст преимущество",
+    "shadow": "Резкость, споры ради спора",
+    "pack_rule": "Наблюдай, а потом говори",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, young wolf with a light sword, digital symbols, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Knight": {
+    "name": "Рыцарь Мечей",
+    "meme_quote": "Лечу в спор как ракета",
+    "meaning_upright": "Решительность, скорость, правда",
+    "meaning_reversed": "Импульсивность, конфликт",
+    "love": "Не руби с плеча, слышь человека до конца",
+    "money": "Быстрое решение спасёт, если оно точное",
+    "shadow": "Импульсивность, конфликт",
+    "pack_rule": "Скорость хороша, когда цель ясная",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal windy background, wolf dashing with comet-like sword trail, ice blue neon, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Queen": {
+    "name": "Королева Мечей",
+    "meme_quote": "Режу лишнее, без жалости",
+    "meaning_upright": "Ясность, границы, мудрость",
+    "meaning_reversed": "Холод, одиночество",
+    "love": "Границы спасают, но не забывай про тепло",
+    "money": "Убирай лишнее, оставляй прибыльное",
+    "shadow": "Холод, одиночество",
+    "pack_rule": "Чистота решений делает стаю сильной",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, she-wolf with light sword, cold wind, ice blue glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "King": {
+    "name": "Король Мечей",
+    "meme_quote": "Логика рулит, эмоции на паузе",
+    "meaning_upright": "Закон, разум, решение по фактам",
+    "meaning_reversed": "Жёсткость, давление",
+    "love": "Разум ок, но без чувств это будет пусто",
+    "money": "Решай по цифрам, держи систему",
+    "shadow": "Жёсткость, давление",
+    "pack_rule": "Факты это основа, но не молоток",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal geometric background, icy neon, wolf-king on peak, sharp lines, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  }
+}

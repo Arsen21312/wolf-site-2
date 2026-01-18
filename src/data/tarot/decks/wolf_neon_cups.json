@@ -1,0 +1,156 @@
+﻿{
+  "Ace": {
+    "name": "Туз Кубков",
+    "meme_quote": "Сердце включилось, потекло живое",
+    "meaning_upright": "Любовь, вдохновение, поток",
+    "meaning_reversed": "Страх чувств, закрытость",
+    "love": "Открывайся, это шанс на настоящее тепло",
+    "money": "Идеи пойдут легче, если сердце не в броне",
+    "shadow": "Страх чувств, закрытость",
+    "pack_rule": "Поток приходит к тем, кто не боится чувств",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, cup pouring light like waterfall, moonlit scene, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "2": {
+    "name": "2 Кубков",
+    "meme_quote": "Мы в паре, и это не баг",
+    "meaning_upright": "Союз, доверие, романтика",
+    "meaning_reversed": "Созависимость",
+    "love": "Партнёрство крепкое, если вы равные",
+    "money": "Сделки и союзы идут легко, держи честность",
+    "shadow": "Созависимость",
+    "pack_rule": "Союз держится на уважении",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal soft background, two wolves touching cups, gentle turquoise light, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "3": {
+    "name": "3 Кубков",
+    "meme_quote": "Стая собралась, праздник пошёл",
+    "meaning_upright": "Дружба, радость, тусовка",
+    "meaning_reversed": "Поверхностность, лишний шум",
+    "love": "Тёплая социалка добавит лёгкости отношениям",
+    "money": "Командный вайб поможет проекту вырасти",
+    "shadow": "Поверхностность, лишний шум",
+    "pack_rule": "Праздник сильный, когда он настоящий",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, three wolves by fire with glowing cups, warm turquoise and amber, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "4": {
+    "name": "4 Кубков",
+    "meme_quote": "Мне норм, но почему пусто внутри",
+    "meaning_upright": "Апатия, переоценка, скука",
+    "meaning_reversed": "Отказ от шанса",
+    "love": "Проверь, ты реально устал или просто не чувствуешь ценность",
+    "money": "Шанс рядом, не отвернись из-за привычки",
+    "shadow": "Отказ от шанса",
+    "pack_rule": "Пустота это сигнал, не приговор",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf looking away, a floating offered cup, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "5": {
+    "name": "5 Кубков",
+    "meme_quote": "Потерял, грущу, но не всё сгорело",
+    "meaning_upright": "Печаль, утрата, урок",
+    "meaning_reversed": "Залипание в боли",
+    "love": "Грусть честная, но не забывай про то, что осталось",
+    "money": "Потеря учит, но дальше можно собрать заново",
+    "shadow": "Залипание в боли",
+    "pack_rule": "Смотри на то, что стоит, не только на то, что упало",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal rainy background, three fallen cups two standing, melancholy turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "6": {
+    "name": "6 Кубков",
+    "meme_quote": "Память тёплая, как плед в душе",
+    "meaning_upright": "Ностальгия, доброта, прошлое",
+    "meaning_reversed": "Жить прошлым",
+    "love": "Тепло прошлого ок, если ты не застрял там навсегда",
+    "money": "Старые связи могут помочь, но думай про сейчас",
+    "shadow": "Жить прошлым",
+    "pack_rule": "Бери тепло, но иди вперёд",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal soft background, wolf and pup near flowers, gentle turquoise light, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "7": {
+    "name": "7 Кубков",
+    "meme_quote": "Столько вариантов, что завис",
+    "meaning_upright": "Фантазии, выбор, желания",
+    "meaning_reversed": "Иллюзии, самообман",
+    "love": "Не строй кино в голове, выбери реального человека",
+    "money": "Опций много, выбери одну и доведи",
+    "shadow": "Иллюзии, самообман",
+    "pack_rule": "Выбор сильнее фантазии",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal mist background, floating cups each with a different vision, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "8": {
+    "name": "8 Кубков",
+    "meme_quote": "Ушёл, потому что вырос",
+    "meaning_upright": "Поиск смысла, уход от старого",
+    "meaning_reversed": "Бегство",
+    "love": "Уход бывает зрелым, если ты не исчезаешь молча",
+    "money": "Пора сменить путь, если старый не растит",
+    "shadow": "Бегство",
+    "pack_rule": "Уходи ради роста, не ради страха",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal night background, wolf walking toward moon leaving cups behind, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "9": {
+    "name": "9 Кубков",
+    "meme_quote": "Я доволен, это мой маленький рай",
+    "meaning_upright": "Желание, награда, кайф",
+    "meaning_reversed": "Лень, застой",
+    "love": "Удовольствие рядом, но не засыпай в комфорте",
+    "money": "Награда заслуженная, закрепи привычками",
+    "shadow": "Лень, застой",
+    "pack_rule": "Кайф ценнее, когда ты его заслужил",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf at table with cups like trophies, soft turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "10": {
+    "name": "10 Кубков",
+    "meme_quote": "Стая счастлива, жизнь мягкая",
+    "meaning_upright": "Гармония, дом, любовь",
+    "meaning_reversed": "Идеальная картинка вместо правды",
+    "love": "Настоящее счастье тихое, не обязано быть идеальным",
+    "money": "Стабильность есть, думай про баланс и заботу",
+    "shadow": "Идеальная картинка вместо правды",
+    "pack_rule": "Дом это правда и тепло, не витрина",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal river background, rainbow-like light above the pack, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Page": {
+    "name": "Паж Кубков",
+    "meme_quote": "Сердце прислало уведомление",
+    "meaning_upright": "Новые чувства, романтика, вдохновение",
+    "meaning_reversed": "Наивность",
+    "love": "Сообщение судьбы пришло, откройся мягко",
+    "money": "Идея прилетела, дай ей форму",
+    "shadow": "Наивность",
+    "pack_rule": "Чувства ок, если ты не теряешь голову",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal background, wolf holding a cup with glowing fish-idea inside, turquoise neon, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Knight": {
+    "name": "Рыцарь Кубков",
+    "meme_quote": "Иду красиво, говорю мягко, но по сути",
+    "meaning_upright": "Романтика, приглашение, послание",
+    "meaning_reversed": "Сладкие обещания без дела",
+    "love": "Красивые слова ок, но показывай действием",
+    "money": "Переговоры и предложения зайдут, если они честные",
+    "shadow": "Сладкие обещания без дела",
+    "pack_rule": "Обещал, сделал, вот и магия",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal reflective water background, wolf walking on water holding a cup, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "Queen": {
+    "name": "Королева Кубков",
+    "meme_quote": "Чую всё, даже когда ты молчишь",
+    "meaning_upright": "Эмпатия, интуиция, глубина",
+    "meaning_reversed": "Раствориться в других",
+    "love": "Чувствуй, но не забывай про свои границы",
+    "money": "Интуиция подскажет верный шаг, если ты спокойна",
+    "shadow": "Раствориться в других",
+    "pack_rule": "Глубина это сила, не болото",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal water background, she-wolf by moonlit cup, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  },
+  "King": {
+    "name": "Король Кубков",
+    "meme_quote": "Океан спокойный, но с клыками",
+    "meaning_upright": "Зрелые эмоции, контроль, поддержка",
+    "meaning_reversed": "Подавление чувств",
+    "love": "Спокойствие лечит, если ты не прячешь всё внутрь",
+    "money": "Держи эмоции ровно, тогда решения будут сильные",
+    "shadow": "Подавление чувств",
+    "pack_rule": "Сила в тишине, но не в молчании",
+    "visual_prompt": "ink sketch, cinematic concept art, Jodorowsky Dune vibe, wolf tarot card, minimal ocean background, wolf on a throne above waves, storm far away, turquoise glow, subtle caucasus/turkish motifs, gold micro accents, high detail linework"
+  }
+}

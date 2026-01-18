@@ -29,6 +29,13 @@ import logoSrc from '~/assets/images/wolf-favicon.png'
 const menuItems = [
   { label: 'Игры', href: '/games', ariaLabel: 'Игры', rotation: -2, hoverStyles: { bgColor: '#fca63d', textColor: '#0c1117' } },
   {
+    label: 'Таро',
+    href: '/tarot',
+    ariaLabel: 'Таро',
+    rotation: -1,
+    hoverStyles: { bgColor: '#34d399', textColor: '#02130f' }
+  },
+  {
     label: 'Реши за меня',
     href: '/decisions',
     ariaLabel: 'Реши за меня',
