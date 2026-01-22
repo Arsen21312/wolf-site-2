@@ -602,6 +602,7 @@ useHead(() => ({
   margin: 0 0 18px;
   color: var(--muted);
   line-height: 1.6;
+  min-height: calc(1.6em * 3);
 }
 
 .hero-actions {
