@@ -5,8 +5,6 @@
 
     <main class="container main-content">
       <slot />
-      <YandexRtbBlock v-if="showAds" />
-      <YandexRtbFloorAd v-if="showAds" />
     </main>
 
     <MainFooter />
@@ -15,17 +13,43 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import MainHeader from '@/components/navigation/MainHeader.vue'
 import MainFooter from '@/components/navigation/MainFooter.vue'
-import YandexRtbBlock from '@/components/ads/YandexRtbBlock.vue'
-import YandexRtbFloorAd from '@/components/ads/YandexRtbFloorAd.vue'
 import GlobalSnow from '@/components/ui/GlobalSnow.vue'
 import CookieBanner from '@/components/CookieBanner.vue'
 import faviconUrl from '~/assets/images/wolf-favicon.png'
 
 const route = useRoute()
-const showAds = computed(() => !['/witch', '/witch-hut'].includes(route.path))
+const runtimeConfig = useRuntimeConfig()
+const adsEnabled = computed(() => runtimeConfig.public.adsEnabled === 'true')
+const isDesktopClient = ref(false)
+const adsSessionAllowed = ref(false)
+
+onMounted(() => {
+  if (!process.client) return
+
+  isDesktopClient.value = window.matchMedia('(min-width: 1024px)').matches
+
+  const sessionKey = 'ads_session_allowed'
+  const existing = sessionStorage.getItem(sessionKey)
+  if (existing === null) {
+    const allowThisSession = Math.random() < 0.35
+    sessionStorage.setItem(sessionKey, allowThisSession ? '1' : '0')
+    adsSessionAllowed.value = allowThisSession
+    return
+  }
+
+  adsSessionAllowed.value = existing === '1'
+})
+
+const shouldLoadAds = computed(
+  () =>
+    adsEnabled.value &&
+    !['/witch', '/witch-hut'].includes(route.path) &&
+    isDesktopClient.value &&
+    adsSessionAllowed.value
+)
 
 useHead(() => ({
   link: [
@@ -40,22 +64,13 @@ useHead(() => ({
       href: faviconUrl
     }
   ],
-  script: showAds.value
+  script: shouldLoadAds.value
     ? [
         {
           hid: 'adsense',
-          src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1011761534614555',
+          src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${runtimeConfig.public.googleAdsClient}`,
           async: true,
           crossorigin: 'anonymous'
-        },
-        {
-          hid: 'yandex-rtb-init',
-          innerHTML: 'window.yaContextCb=window.yaContextCb||[]'
-        },
-        {
-          hid: 'yandex-rtb',
-          src: 'https://yandex.ru/ads/system/context.js',
-          async: true
         }
       ]
     : []

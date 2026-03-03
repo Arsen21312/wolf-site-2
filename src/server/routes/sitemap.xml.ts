@@ -7,6 +7,11 @@ const SITE_URL = 'https://neuralwisewolf.com'
 // Ручные маршруты, которые не лежат прямо в src/pages (или которые нужно включить явно).
 const extraRoutes = [
   '/games/truth-or-dare',
+  '/games/truth-or-dare/for-friends',
+  '/games/truth-or-dare/for-couple',
+  '/games/truth-or-dare/for-company',
+  '/games/truth-or-dare/for-teens',
+  '/games/truth-or-dare/18-plus',
   '/games/never-have-i-ever',
   '/games/5-seconds',
   '/games/true-or-false',

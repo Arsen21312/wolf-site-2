@@ -21,7 +21,9 @@ export default defineNuxtConfig({
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+      adsEnabled: process.env.NUXT_PUBLIC_ADS_ENABLED ?? 'false',
+      googleAdsClient: process.env.NUXT_PUBLIC_GOOGLE_ADS_CLIENT ?? 'ca-pub-1011761534614555'
     }
   },
   css: ['~/assets/styles/base.css', '~/assets/styles/tailwind.css', '~/assets/css/tarot-theme.css'],

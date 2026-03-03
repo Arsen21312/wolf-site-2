@@ -74,11 +74,12 @@
         <p class="section-lead">С них чаще всего начинают: вечеринки, квизы и волчьи аркады.</p>
       </div>
       <div class="grid three">
-        <NuxtLink
+        <component
           v-for="game in featuredGames"
           :key="game.title"
+          :is="game.external ? 'a' : 'NuxtLink'"
           class="card game-card game-card-link"
-          :to="game.link"
+          v-bind="game.external ? { href: game.link } : { to: game.link }"
         >
           <div class="tag">{{ game.tag }}</div>
           <h3>{{ game.title }}</h3>
@@ -87,7 +88,7 @@
             <div class="chip">{{ game.mood }}</div>
             <div class="chip">{{ game.duration }}</div>
           </div>
-        </NuxtLink>
+        </component>
       </div>
     </section>
 
@@ -108,11 +109,12 @@
             <p>{{ category.description }}</p>
           </div>
           <div class="grid two">
-            <NuxtLink
+            <component
               v-for="game in category.items"
               :key="game.title"
+              :is="game.external ? 'a' : 'NuxtLink'"
               class="card game-card game-card-link"
-              :to="game.link"
+              v-bind="game.external ? { href: game.link } : { to: game.link }"
             >
               <div class="tag">{{ game.tag }}</div>
               <h4>{{ game.title }}</h4>
@@ -121,7 +123,7 @@
                 <div class="chip">{{ game.mood }}</div>
                 <div class="chip">{{ game.duration }}</div>
               </div>
-            </NuxtLink>
+            </component>
           </div>
         </section>
       </div>
@@ -246,6 +248,17 @@ const games = [
     category: 'story',
     featured: true,
     link: '/games/wolftest'
+  },
+  {
+    title: 'Психологический тест: твое волчье Я',
+    tag: 'психология / тест',
+    description: 'Интерактивный психологический тест в стиле Figma-концепта: вопросы, анимации и персональный результат.',
+    mood: 'интроспективно',
+    duration: '3-6 минут',
+    category: 'story',
+    featured: true,
+    link: '/testnw',
+    external: true
   },
   {
     title: 'Правда или действие',
@@ -384,7 +397,7 @@ const faqItems = [
 const requestUrl = useRequestURL()
 const canonicalUrl = computed(() => `${requestUrl.origin}/games`)
 const metaDescription =
-  'Игры Волий: вечеринки, аркады, квизы и логика. Правда или действие, я никогда не, раннер, кликер, судоку и сапер. Все работает в браузере, бесплатно и без регистрации.'
+  'Игры Волий: вечеринки, аркады, квизы, психологические тесты и логика. Правда или действие, я никогда не, раннер, кликер, судоку и сапер. Все работает в браузере, бесплатно и без регистрации.'
 
 const structuredData = computed(() => ({
   '@context': 'https://schema.org',

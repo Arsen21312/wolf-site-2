@@ -192,6 +192,11 @@
         <div class="seo-links">
           <h3>Попробуй ещё</h3>
           <div class="seo-links-grid">
+            <NuxtLink class="seo-link-chip" to="/games/truth-or-dare/for-friends">Правда или действие для друзей</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/truth-or-dare/for-couple">Правда или действие для пары</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/truth-or-dare/for-company">Правда или действие для компании</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/truth-or-dare/for-teens">Правда или действие для подростков</NuxtLink>
+            <NuxtLink class="seo-link-chip" to="/games/truth-or-dare/18-plus">Правда или действие 18+</NuxtLink>
             <NuxtLink class="seo-link-chip" to="/games">Все игры</NuxtLink>
             <NuxtLink class="seo-link-chip" to="/decisions">Решайки</NuxtLink>
             <NuxtLink class="seo-link-chip" to="/generators">Генераторы</NuxtLink>
