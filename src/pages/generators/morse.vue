@@ -992,7 +992,7 @@ const route = useRoute()
 const canonicalUrl = computed(() => `${requestUrl.origin}/generators/morse`)
 const ogImageUrl = computed(() => `${requestUrl.origin}/favicon.png`)
 const metaDescription =
-  'Переводчик азбуки Морзе онлайн. Текст в Морзе и Морзе в текст, озвучка с настройкой скорости, тона и громкости, таблица RU EN цифры, копирование и скачивание.'
+  'Азбука Морзе онлайн: перевод текста в точку-тире и обратно, озвучка с настройкой скорости, таблица символов RU/EN и цифры. Работает в браузере без регистрации.'
 
 const structuredData = computed(() => ({
   '@context': 'https://schema.org',
@@ -1025,14 +1025,14 @@ const structuredData = computed(() => ({
 }))
 
 useSeoMeta({
-  title: 'Азбука Морзе онлайн — переводчик текста, расшифровка, звук, таблица | Neural Wise Wolf',
+  title: 'Азбука Морзе онлайн 2026: переводчик текста, звук и расшифровка',
   description: metaDescription,
-  ogTitle: 'Азбука Морзе онлайн — переводчик текста, расшифровка, звук, таблица | Neural Wise Wolf',
+  ogTitle: 'Азбука Морзе онлайн 2026: переводчик текста, звук и расшифровка',
   ogDescription: metaDescription,
   ogUrl: canonicalUrl,
   ogImage: ogImageUrl,
   ogType: 'website',
-  twitterTitle: 'Азбука Морзе онлайн — переводчик текста, расшифровка, звук, таблица | Neural Wise Wolf',
+  twitterTitle: 'Азбука Морзе онлайн 2026: переводчик текста, звук и расшифровка',
   twitterDescription: metaDescription,
   twitterImage: ogImageUrl,
   twitterCard: 'summary_large_image',

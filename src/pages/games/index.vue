@@ -174,6 +174,10 @@
       </div>
     </section>
 
+    <section class="related-section">
+      <RelatedTools />
+    </section>
+
     <section class="faq-section">
       <div class="section-head">
         <h2 class="section-title">FAQ про игры Волий</h2>
@@ -509,6 +513,7 @@ useHead(() => ({
 .featured-section,
 .category-section,
 .seo-section,
+.related-section,
 .faq-section {
   position: relative;
   z-index: 1;
@@ -831,6 +836,7 @@ useHead(() => ({
   .featured-section,
   .category-section,
   .seo-section,
+  .related-section,
   .faq-section {
     width: min(1200px, 100% - 32px);
   }

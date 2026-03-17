@@ -281,7 +281,7 @@ const requestUrl = useRequestURL()
 const canonicalUrl = computed(() => `${requestUrl.origin}/decisions/love-calculator`)
 const ogImageUrl = computed(() => `${requestUrl.origin}/favicon.png`)
 const metaDescription =
-  'Калькулятор любви по именам онлайн. Введите два имени и получите процент совместимости, вердикт и идеи для игры. Работает в браузере, без регистрации.'
+  'Калькулятор любви по именам онлайн: узнай совместимость пары в процентах, получи вердикт и идею для общения. Быстро, бесплатно и без регистрации.'
 
 const shareUrl = computed(() => {
   const q1 = name1.value.trim()
@@ -467,18 +467,15 @@ onMounted(() => {
 })
 
 useSeoMeta(() => ({
-  title:
-    'Калькулятор любви по именам онлайн — совместимость, процент, тест пары | Neural Wise Wolf',
+  title: 'Калькулятор Любви по Именам 2026: совместимость онлайн',
   description: metaDescription,
-  ogTitle:
-    'Калькулятор любви по именам онлайн — совместимость, процент, тест пары | Neural Wise Wolf',
+  ogTitle: 'Калькулятор Любви по Именам 2026: совместимость онлайн',
   ogDescription: metaDescription,
   ogType: 'website',
   ogUrl: canonicalUrl.value,
   ogImage: ogImageUrl.value,
   twitterCard: 'summary_large_image',
-  twitterTitle:
-    'Калькулятор любви по именам онлайн — совместимость, процент, тест пары | Neural Wise Wolf',
+  twitterTitle: 'Калькулятор Любви по Именам 2026: совместимость онлайн',
   twitterDescription: metaDescription,
   twitterImage: ogImageUrl.value,
   robots: 'index, follow'

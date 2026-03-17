@@ -343,6 +343,12 @@
         </ul>
       </div>
     </section>
+
+    <section class="seo-section">
+      <div class="seo-card">
+        <RelatedTools />
+      </div>
+    </section>
   </div>
 </template>
 
@@ -376,10 +382,9 @@ const isTrueOrFalse = computed(() => slug.value === 'true-or-false')
 const isFiveSeconds = computed(() => slug.value === '5-seconds')
 const showTodDetails = ref(false)
 
-const truthOrDareTitle =
-  'Правда или действие онлайн, вопросы и задания для компании и пары | Neural Wise Wolf'
+const truthOrDareTitle = 'Правда или Действие Онлайн 2026: вопросы для друзей, пары и компании'
 const truthOrDareDescription =
-  'Игра «Правда или действие» онлайн, вопросы и задания для друзей, пары и компании. Режимы, случайный выбор, играть бесплатно без регистрации.'
+  'Играй в Правда или Действие онлайн: вопросы и задания для друзей, пары и компании. Быстрый старт в браузере, режимы по интенту, без регистрации.'
 const truthOrDareUrl = 'https://www.neuralwisewolf.com/games/truth-or-dare'
 const truthOrDareImage = 'https://www.neuralwisewolf.com/favicon.png'
 
