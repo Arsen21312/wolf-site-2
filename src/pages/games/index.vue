@@ -74,21 +74,26 @@
         <p class="section-lead">С них чаще всего начинают: вечеринки, квизы и волчьи аркады.</p>
       </div>
       <div class="grid three">
-        <component
-          v-for="game in featuredGames"
-          :key="game.title"
-          :is="game.external ? 'a' : 'NuxtLink'"
-          class="card game-card game-card-link"
-          v-bind="game.external ? { href: game.link } : { to: game.link }"
-        >
-          <div class="tag">{{ game.tag }}</div>
-          <h3>{{ game.title }}</h3>
-          <p>{{ game.description }}</p>
-          <div class="chip-row">
-            <div class="chip">{{ game.mood }}</div>
-            <div class="chip">{{ game.duration }}</div>
-          </div>
-        </component>
+        <template v-for="game in featuredGames" :key="game.title">
+          <a v-if="game.external" class="card game-card game-card-link" :href="game.link">
+            <div class="tag">{{ game.tag }}</div>
+            <h3>{{ game.title }}</h3>
+            <p>{{ game.description }}</p>
+            <div class="chip-row">
+              <div class="chip">{{ game.mood }}</div>
+              <div class="chip">{{ game.duration }}</div>
+            </div>
+          </a>
+          <NuxtLink v-else class="card game-card game-card-link" :to="game.link">
+            <div class="tag">{{ game.tag }}</div>
+            <h3>{{ game.title }}</h3>
+            <p>{{ game.description }}</p>
+            <div class="chip-row">
+              <div class="chip">{{ game.mood }}</div>
+              <div class="chip">{{ game.duration }}</div>
+            </div>
+          </NuxtLink>
+        </template>
       </div>
     </section>
 
@@ -109,21 +114,26 @@
             <p>{{ category.description }}</p>
           </div>
           <div class="grid two">
-            <component
-              v-for="game in category.items"
-              :key="game.title"
-              :is="game.external ? 'a' : 'NuxtLink'"
-              class="card game-card game-card-link"
-              v-bind="game.external ? { href: game.link } : { to: game.link }"
-            >
-              <div class="tag">{{ game.tag }}</div>
-              <h4>{{ game.title }}</h4>
-              <p>{{ game.description }}</p>
-              <div class="chip-row">
-                <div class="chip">{{ game.mood }}</div>
-                <div class="chip">{{ game.duration }}</div>
-              </div>
-            </component>
+            <template v-for="game in category.items" :key="game.title">
+              <a v-if="game.external" class="card game-card game-card-link" :href="game.link">
+                <div class="tag">{{ game.tag }}</div>
+                <h4>{{ game.title }}</h4>
+                <p>{{ game.description }}</p>
+                <div class="chip-row">
+                  <div class="chip">{{ game.mood }}</div>
+                  <div class="chip">{{ game.duration }}</div>
+                </div>
+              </a>
+              <NuxtLink v-else class="card game-card game-card-link" :to="game.link">
+                <div class="tag">{{ game.tag }}</div>
+                <h4>{{ game.title }}</h4>
+                <p>{{ game.description }}</p>
+                <div class="chip-row">
+                  <div class="chip">{{ game.mood }}</div>
+                  <div class="chip">{{ game.duration }}</div>
+                </div>
+              </NuxtLink>
+            </template>
           </div>
         </section>
       </div>
