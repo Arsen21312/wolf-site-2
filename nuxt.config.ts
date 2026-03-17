@@ -430,6 +430,10 @@ export default defineNuxtConfig({
         {
           name: 'viewport',
           content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+        },
+        {
+          name: 'p:domain_verify',
+          content: 'db2e3e6617c899533f3dfa4321761d86'
         }
       ]
     }
