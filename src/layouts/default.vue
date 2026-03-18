@@ -1,9 +1,8 @@
 <template>
   <div class="layout-shell">
-    <GlobalSnow />
     <MainHeader />
 
-    <main class="container main-content">
+    <main class="main-content">
       <slot />
     </main>
 
@@ -16,7 +15,6 @@
 import { computed, onMounted, ref } from 'vue'
 import MainHeader from '@/components/navigation/MainHeader.vue'
 import MainFooter from '@/components/navigation/MainFooter.vue'
-import GlobalSnow from '@/components/ui/GlobalSnow.vue'
 import CookieBanner from '@/components/CookieBanner.vue'
 import faviconUrl from '~/assets/images/wolf-favicon.png'
 
@@ -54,6 +52,23 @@ const shouldLoadAds = computed(
 useHead(() => ({
   link: [
     {
+      rel: 'preconnect',
+      href: 'https://fonts.googleapis.com'
+    },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com',
+      crossorigin: 'anonymous'
+    },
+    {
+      rel: 'dns-prefetch',
+      href: 'https://fonts.googleapis.com'
+    },
+    {
+      rel: 'dns-prefetch',
+      href: 'https://fonts.gstatic.com'
+    },
+    {
       rel: 'icon',
       type: 'image/x-icon',
       href: '/favicon.ico'
@@ -83,7 +98,7 @@ useHead(() => ({
 }
 
 .main-content {
-  overflow-x: hidden;
+  overflow-x: visible;
 }
 
 </style>

@@ -62,6 +62,8 @@
                 src="/images/truth-or-dare/tod-wolf-party.png"
                 alt="Мемный Волк и вечеринка: правда или действие"
                 loading="lazy"
+                decoding="async"
+                fetchpriority="low"
                 width="960"
                 height="540"
               />
@@ -95,6 +97,8 @@
                 src="/images/truth-or-dare/tod-wolf-campfire.png"
                 alt="Волчий разговор у костра: вопросы для правды"
                 loading="lazy"
+                decoding="async"
+                fetchpriority="low"
                 width="960"
                 height="540"
               />
@@ -128,6 +132,8 @@
                 src="/images/truth-or-dare/tod-wolf-safe.png"
                 alt="Мемный Волк про безопасную игру"
                 loading="lazy"
+                decoding="async"
+                fetchpriority="low"
                 width="960"
                 height="540"
               />
@@ -567,6 +573,8 @@ useHead(() => {
 
 .seo-section {
   padding: 56px 0 72px;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 3200px;
 }
 
 .seo-card {
@@ -763,6 +771,7 @@ useHead(() => {
   width: 100%;
   height: auto;
   display: block;
+  aspect-ratio: 16 / 9;
 }
 
 .seo-media--right {

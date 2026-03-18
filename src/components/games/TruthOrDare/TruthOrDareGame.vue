@@ -280,9 +280,10 @@ function handlePopupClose() {
   margin: 0 0 6px;
   font-size: clamp(34px, 7vw, 64px);
   letter-spacing: 0;
-  font-family: 'Space Grotesk', 'Montserrat', 'Manrope', sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-weight: 800;
   line-height: 1.05;
+  text-wrap: balance;
 }
 
 .tod-subtitle {
@@ -526,7 +527,7 @@ function handlePopupClose() {
   .tod-intro {
     gap: 14px;
     padding: 10px 0 14px;
-    min-height: 68vh;
+    min-height: 62vh;
     margin-top: 0;
   }
 

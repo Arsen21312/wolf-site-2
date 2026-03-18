@@ -1,6 +1,17 @@
 <template>
   <section class="hero">
-    <div class="container hero__grid">
+    <div class="hero__background" aria-hidden="true">
+      <SquaresBackground
+        direction="diagonal"
+        :speed="0.45"
+        :square-size="52"
+        border-color="rgba(159, 178, 216, 0.16)"
+        hover-fill-color="rgba(106, 215, 255, 0.12)"
+        fade-color="#090d1a"
+      />
+    </div>
+
+    <div class="hero__grid">
       <div class="hero__copy">
         <p class="hero__eyebrow">NeuralWiseWolf / мем-станция</p>
         <h1 class="hero__title">Игры и генераторы, чтобы мозг выл, но по кайфу</h1>
@@ -51,6 +62,7 @@
 
 <script setup>
 import { homeRandomRoutes } from '@/content/home/featured'
+import SquaresBackground from '@/components/ui/SquaresBackground.vue'
 import WButton from '@/components/ui/WButton.vue'
 import aufImage from '@/assets/images/auf1.png'
 
@@ -95,14 +107,54 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .hero {
-  padding: 72px 0 48px;
+  position: relative;
+  isolation: isolate;
+  width: 100vw;
+  max-width: 100vw;
+  padding: 96px 0 48px;
+  overflow: hidden;
+  margin-top: -12px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+.hero__background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.95;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.45) 72%, transparent);
+}
+
+.hero__background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(4, 7, 16, 0.9), rgba(4, 7, 16, 0.3) 12%, rgba(4, 7, 16, 0) 24%),
+    radial-gradient(circle at 50% 0%, rgba(106, 215, 255, 0.1), transparent 38%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.hero__background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(106, 215, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 78% 20%, rgba(252, 166, 61, 0.1), transparent 26%);
+  pointer-events: none;
 }
 
 .hero__grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 40px;
   align-items: center;
+  width: min(1200px, 100% - 48px);
+  margin: 0 auto;
 }
 
 .hero__eyebrow {
@@ -308,6 +360,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 960px) {
+  .hero {
+    padding-top: 76px;
+  }
+
   .hero__grid {
     grid-template-columns: 1fr;
   }
